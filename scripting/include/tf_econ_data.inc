@@ -19,13 +19,14 @@ typedef ItemFilterCriteria = function bool(int defindex, any data);
 native bool TF2Econ_IsValidDefinitionIndex(int defindex);
 
 /**
- * Returns the item class name.
+ * Stores the item class name in the given buffer and returns true if given a valid definition
+ * index, otherwise returns false.
  */
 native bool TF2Econ_GetItemClassName(int defindex, char[] buffer, int maxlen);
 
 /**
- * Returns the item's weapon slot, or -1 if the defindex or item / class combination is not
- * valid.
+ * Returns the item's weapon slot for the given class, or -1 if the defindex or item / class
+ * combination is not valid.
  */
 native int TF2Econ_GetItemSlot(int defindex, TFClassType playerClass);
 
@@ -39,7 +40,8 @@ native bool TF2Econ_TranslateWeaponEntForClass(char[] className, int maxlen,
 		TFClassType playerClass);
 
 /**
- * Returns the minimum and maximum level range for the item.
+ * Stores the minimum and maximum item level range in the given cell references and
+ * returns true for a valid definition index, otherwise returns false.
  */
 native bool TF2Econ_GetItemLevelRange(int defindex, int &iMinLevel, int &iMaxLevel);
 
