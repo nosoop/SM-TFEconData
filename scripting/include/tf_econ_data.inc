@@ -7,6 +7,8 @@
 	#endinput
 #endif
 
+#include <tf2_stocks>
+
 #define __tf_econ_data_included
 
 typedef ItemFilterCriteria = function bool(int defindex, any data);
