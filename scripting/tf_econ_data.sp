@@ -12,7 +12,7 @@
 
 #include <stocksoup/memory>
 
-#define PLUGIN_VERSION "0.0.0"
+#define PLUGIN_VERSION "0.0.1"
 public Plugin myinfo = {
 	name = "[TF2] Econ Data",
 	author = "nosoop",
@@ -80,6 +80,32 @@ public void OnPluginStart() {
 	delete hGameConf;
 	
 	RegAdminCmd("sm_itemclass", GetItemClassCmd, ADMFLAG_ROOT);
+	RegAdminCmd("sm_dumpitemdefs", DumpItemDefinitions, ADMFLAG_ROOT);
+}
+
+public Action DumpItemDefinitions(int client, int argc) {
+	Address pSchema = GetEconItemSchema();
+	
+	int nItemDefs = LoadFromAddress(pSchema + view_as<Address>(0xFC), NumberType_Int32);
+	PrintToServer("%d item definitions", nItemDefs);
+	
+	// 0xE8 is a CUtlVector of some struct size 0x0C
+	// (int defindex, CEconItemDefinition*, int m_Unknown)
+	
+	char itemClass[64];
+	for (int i = 0; i < nItemDefs; i++) {
+		Address entry = DereferencePointer(pSchema + view_as<Address>(0xE8)) + view_as<Address>(i * 12);
+		if (LoadFromAddress(entry + 8, NumberType_Int32) < -1) {
+			continue;
+		}
+		Address pItem = DereferencePointer(entry + 4);
+		int defindex = LoadFromAddress(entry, NumberType_Int32);
+		
+		GetItemClass(defindex, itemClass, sizeof(itemClass));
+		PrintToServer("%d / %s", defindex, itemClass);
+	}
+	
+	return Plugin_Handled;
 }
 
 public Action GetItemClassCmd(int client, int argc) {
@@ -213,3 +239,5 @@ static Address GameConfGetAddressOffset(Handle gamedata, const char[] key) {
 	}
 	return offs;
 }
+
+// note: in CEconItemDefinition, defindex is at 0x08
