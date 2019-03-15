@@ -2,6 +2,9 @@
 
 Work-in-progress library to get TF2 item data from game memory.
 
+I got bored one day and thought about rewriting a few of my internal plugins so they didn't
+depend on external tooling anymore.
+
 A partial replacement for TF2ItemsInfo and TF2 Item DB.
 
 ## Features
@@ -10,7 +13,8 @@ A partial replacement for TF2ItemsInfo and TF2 Item DB.
 name, level range, and item slot.
 * Get an `ArrayList` of definition indexes filtered with a user-defined function.
 * Translate an entity classname for the appropriate player class (making spawned multiclass
-weapons work correctly).
+weapons work correctly).  Technically, this is just handled as a call to the game's function,
+but it saves you effort from adding / maintaining the `SDKCall` boilerplate yourself.
 
 ## Example
 
@@ -33,5 +37,4 @@ public void OnPluginStart() {
 public bool FilterClassTaunts(int defindex, TFClassType playerClass) {
 	return TF2Econ_GetItemSlot(defindex, playerClass) == 11;
 }
-
 ```

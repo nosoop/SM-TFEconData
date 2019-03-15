@@ -13,7 +13,7 @@
 #include <stocksoup/handles>
 #include <stocksoup/memory>
 
-#define PLUGIN_VERSION "0.1.1"
+#define PLUGIN_VERSION "0.2.0"
 public Plugin myinfo = {
 	name = "[TF2] Econ Data",
 	author = "nosoop",
@@ -43,6 +43,7 @@ public APLRes AskPluginLoad2(Handle self, bool late, char[] error, int maxlen) {
 	CreateNative("TF2Econ_GetItemLevelRange", Native_GetItemLevelRange);
 	CreateNative("TF2Econ_TranslateWeaponEntForClass", Native_TranslateWeaponEntForClass);
 	CreateNative("TF2Econ_GetItemList", Native_GetItemList);
+	CreateNative("TF2Econ_GetItemDefinitionAddress", Native_GetItemDefinitionAddress);
 	
 	return APLRes_Success;
 }
@@ -218,6 +219,11 @@ public int Native_GetItemList(Handle hPlugin, int nParams) {
 	}
 	
 	return MoveHandle(itemList, hPlugin);
+}
+
+public int Native_GetItemDefinitionAddress(Handle hPlugin, int nParams) {
+	int defindex = GetNativeCell(1);
+	return view_as<int>(GetEconItemDefinition(defindex));
 }
 
 bool ValidItemDefIndex(int defindex) {

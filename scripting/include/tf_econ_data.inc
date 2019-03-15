@@ -51,6 +51,14 @@ native bool TF2Econ_GetItemLevelRange(int defindex, int &iMinLevel, int &iMaxLev
  */
 native ArrayList TF2Econ_GetItemList(ItemFilterCriteria func = INVALID_FUNCTION, any data = 0);
 
+/**
+ * Returns the address of the CEconItemDefinition for the item with the given defindex, or
+ * Address_Null if not valid.
+ * 
+ * Here be dragons.
+ */
+native Address TF2Econ_GetItemDefinitionAddress(int defindex);
+
 public SharedPlugin __pl_tf_econ_data = {
 	name = "tf_econ_data",
 	file = "tf_econ_data.smx",
