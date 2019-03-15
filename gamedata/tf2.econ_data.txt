@@ -1,0 +1,48 @@
+"Games"
+{
+	"tf"
+	{
+		"Signatures"
+		{
+			"GEconItemSchema()"
+			{
+				"library"	"server"
+				"windows"	"\xE8\x2A\x2A\x2A\x2A\x83\xC0\x04\xC3"
+				"linux"		"@_Z15GEconItemSchemav"
+			}
+			
+			"CEconItemSchema::GetItemDefinition()"
+			{
+				"library"	"server"
+				"windows"	"\x55\x8B\xEC\x56\x8B\xF1\x8D\x45\x08\x57\x50\x8D\x8E\x2A\x2A\x2A\x2A\xE8\x2A\x2A\x2A\x2A\x85\xC0"
+				"linux"		"@_ZN15CEconItemSchema17GetItemDefinitionEi"
+			}
+			
+			"TranslateWeaponEntForClass()"
+			{
+				"library"	"server"
+				"linux"		"@_Z26TranslateWeaponEntForClassPKci"
+			}
+		}
+		
+		"Offsets"
+		{
+			"CEconItemDefinition::m_u8MinLevel"
+			{
+				"linux"		"17"
+			}
+			"CEconItemDefinition::m_u8MaxLevel"
+			{
+				"linux"		"18"
+			}
+			"CEconItemDefinition::m_pszItemClassname"
+			{
+				"linux"		"208"
+			}
+			"CEconItemDefinition::m_aiItemSlot"
+			{
+				"linux"		"512"
+			}
+		}
+	}
+}
