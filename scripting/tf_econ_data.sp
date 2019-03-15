@@ -10,9 +10,10 @@
 
 #pragma newdecls required
 
+#include <stocksoup/handles>
 #include <stocksoup/memory>
 
-#define PLUGIN_VERSION "0.0.1"
+#define PLUGIN_VERSION "0.1.0"
 public Plugin myinfo = {
 	name = "[TF2] Econ Data",
 	author = "nosoop",
@@ -39,6 +40,7 @@ public APLRes AskPluginLoad2(Handle self, bool late, char[] error, int maxlen) {
 	CreateNative("TF2Econ_GetItemSlot", Native_GetItemSlot);
 	CreateNative("TF2Econ_GetItemLevelRange", Native_GetItemLevelRange);
 	CreateNative("TF2Econ_TranslateWeaponEntForClass", Native_TranslateWeaponEntForClass);
+	CreateNative("TF2Econ_GetItemList", Native_GetItemList);
 	
 	return APLRes_Success;
 }
@@ -78,56 +80,6 @@ public void OnPluginStart() {
 			GameConfGetAddressOffset(hGameConf, "CEconItemDefinition::m_aiItemSlot");
 	
 	delete hGameConf;
-	
-	RegAdminCmd("sm_itemclass", GetItemClassCmd, ADMFLAG_ROOT);
-	RegAdminCmd("sm_dumpitemdefs", DumpItemDefinitions, ADMFLAG_ROOT);
-}
-
-public Action DumpItemDefinitions(int client, int argc) {
-	Address pSchema = GetEconItemSchema();
-	
-	int nItemDefs = LoadFromAddress(pSchema + view_as<Address>(0xFC), NumberType_Int32);
-	PrintToServer("%d item definitions", nItemDefs);
-	
-	// 0xE8 is a CUtlVector of some struct size 0x0C
-	// (int defindex, CEconItemDefinition*, int m_Unknown)
-	
-	char itemClass[64];
-	for (int i = 0; i < nItemDefs; i++) {
-		Address entry = DereferencePointer(pSchema + view_as<Address>(0xE8)) + view_as<Address>(i * 12);
-		if (LoadFromAddress(entry + 8, NumberType_Int32) < -1) {
-			continue;
-		}
-		Address pItem = DereferencePointer(entry + 4);
-		int defindex = LoadFromAddress(entry, NumberType_Int32);
-		
-		GetItemClass(defindex, itemClass, sizeof(itemClass));
-		PrintToServer("%d / %s", defindex, itemClass);
-	}
-	
-	return Plugin_Handled;
-}
-
-public Action GetItemClassCmd(int client, int argc) {
-	char argstring[64];
-	GetCmdArgString(argstring, sizeof(argstring));
-	
-	int defindex = StringToInt(argstring);
-	
-	char itemClass[64];
-	GetItemClass(defindex, itemClass, sizeof(itemClass));
-	
-	ReplyToCommand(client, "%d: %s", defindex, itemClass);
-	for (TFClassType i = TFClass_Unknown; i <= TFClass_Engineer; i++) {
-		ReplyToCommand(client, "usable by class %d: %d", i, GetItemSlot(defindex, i));
-	}
-	
-	int iMinLevel, iMaxLevel;
-	if (GetItemLevelRange(defindex, iMinLevel, iMaxLevel)) {
-		ReplyToCommand(client, "level range: %d, %d", iMinLevel, iMaxLevel);
-	}
-	
-	return Plugin_Handled;
 }
 
 public int Native_GetItemClassName(Handle hPlugin, int nParams) {
@@ -213,6 +165,52 @@ public int Native_TranslateWeaponEntForClass(Handle hPlugin, int nParams) {
 		return true;
 	}
 	return false;
+}
+
+public int Native_GetItemList(Handle hPlugin, int nParams) {
+	Function func = GetNativeFunction(1);
+	any data = GetNativeCell(2);
+	
+	Address pSchema = GetEconItemSchema();
+	if (!pSchema) {
+		return 0;
+	}
+	
+	ArrayList itemList = new ArrayList();
+	
+	// CEconItemSchema.field_0xE8 is a CUtlVector of some struct size 0x0C
+	// (int defindex, CEconItemDefinition*, int m_Unknown)
+	
+	int nItemDefs = LoadFromAddress(pSchema + view_as<Address>(0xFC), NumberType_Int32);
+	for (int i = 0; i < nItemDefs; i++) {
+		Address entry = DereferencePointer(pSchema + view_as<Address>(0xE8))
+				+ view_as<Address>(i * 12);
+		
+		// I have no idea how this check works but it's also in
+		// CEconItemSchema::GetItemDefinitionByName
+		if (LoadFromAddress(entry + view_as<Address>(8), NumberType_Int32) < -1) {
+			continue;
+		}
+		
+		int defindex = LoadFromAddress(entry, NumberType_Int32);
+		
+		if (func == INVALID_FUNCTION) {
+			itemList.Push(defindex);
+			continue;
+		}
+		
+		bool result;
+		Call_StartFunction(hPlugin, func);
+		Call_PushCell(defindex);
+		Call_PushCell(data);
+		Call_Finish(result);
+		
+		if (result) {
+			itemList.Push(defindex);
+		}
+	}
+	
+	return MoveHandle(itemList, hPlugin);
 }
 
 bool ValidItemDefIndex(int defindex) {

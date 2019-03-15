@@ -9,6 +9,8 @@
 
 #define __tf_econ_data_included
 
+typedef ItemFilterCriteria = function bool(int defindex, any data);
+
 /**
  * Returns true if there is an item corresponding to the given definition index.
  */
@@ -38,6 +40,14 @@ native bool TF2Econ_TranslateWeaponEntForClass(char[] className, int maxlen,
  * Returns the minimum and maximum level range for the item.
  */
 native bool TF2Econ_GetItemLevelRange(int defindex, int &iMinLevel, int &iMaxLevel);
+
+/**
+ * Returns an ArrayList containing all valid defindexes.  If an ItemFilterCriteria callback is
+ * passed in, the ArrayList only contains defindexes that the callback returned `true` on.
+ * 
+ * This handle must be freed.
+ */
+native ArrayList TF2Econ_GetItemList(ItemFilterCriteria func = INVALID_FUNCTION, any data = 0);
 
 public SharedPlugin __pl_tf_econ_data = {
 	name = "tf_econ_data",
