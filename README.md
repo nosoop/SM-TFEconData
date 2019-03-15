@@ -2,7 +2,7 @@
 
 Work-in-progress library to get TF2 item data from game memory.
 
-A semi-replacement for TF2ItemsInfo and TF2 Item DB.
+A partial replacement for TF2ItemsInfo and TF2 Item DB.
 
 ## Features
 
@@ -14,19 +14,24 @@ weapons work correctly).
 
 ## Example
 
-Dump the primary weapon defindices for a specific class:
+Dump the taunt defindices for a given class:
 
 ```
-public void DumpPrimaryWeaponsForClass(TFClassType playerClass) {
-	ArrayList primaryList = TF2Econ_GetItemList(FilterPrimaryItems, playerClass);
+public void OnPluginStart() {
+	ArrayList tauntList = TF2Econ_GetItemList(FilterClassTaunts, TFClass_Scout);
 	
-	for (int i = 0; i < primaryList.Length; i++) {
-		PrintToServer("%d", primaryList.Get(i));
+	for (int i = 0; i < tauntList.Length; i++) {
+		int defindex = tauntList.Get(i);
+		PrintToServer("%d", defindex);
 	}
-	delete primaryList;
+	delete tauntList;
 }
 
-public bool FilterPrimaryItems(int defindex, TFClassType playerClass) {
-	return TF2Econ_GetItemSlot(defindex, playerClass) == 0;
+/**
+ * Returns true if the given item is available for the given playerClass as a taunt (slot 11).
+ */
+public bool FilterClassTaunts(int defindex, TFClassType playerClass) {
+	return TF2Econ_GetItemSlot(defindex, playerClass) == 11;
 }
+
 ```

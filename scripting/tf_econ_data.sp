@@ -13,7 +13,7 @@
 #include <stocksoup/handles>
 #include <stocksoup/memory>
 
-#define PLUGIN_VERSION "0.1.0"
+#define PLUGIN_VERSION "0.1.1"
 public Plugin myinfo = {
 	name = "[TF2] Econ Data",
 	author = "nosoop",
@@ -29,7 +29,9 @@ Handle g_SDKCallTranslateWeaponEntForClass;
 Address offs_CEconItemDefinition_u8MinLevel,
 		offs_CEconItemDefinition_u8MaxLevel,
 		offs_CEconItemDefinition_pszItemClassname,
-		offs_CEconItemDefinition_aiItemSlot;
+		offs_CEconItemDefinition_aiItemSlot,
+		offs_CEconItemSchema_ItemList,
+		offs_CEconItemSchema_nItemCount;
 
 public APLRes AskPluginLoad2(Handle self, bool late, char[] error, int maxlen) {
 	RegPluginLibrary("tf_econ_data");
@@ -78,6 +80,10 @@ public void OnPluginStart() {
 			GameConfGetAddressOffset(hGameConf, "CEconItemDefinition::m_pszItemClassname");
 	offs_CEconItemDefinition_aiItemSlot =
 			GameConfGetAddressOffset(hGameConf, "CEconItemDefinition::m_aiItemSlot");
+	offs_CEconItemSchema_ItemList =
+			GameConfGetAddressOffset(hGameConf, "CEconItemSchema::m_ItemList");
+	offs_CEconItemSchema_nItemCount =
+			GameConfGetAddressOffset(hGameConf, "CEconItemSchema::m_nItemCount");
 	
 	delete hGameConf;
 }
@@ -181,14 +187,15 @@ public int Native_GetItemList(Handle hPlugin, int nParams) {
 	// CEconItemSchema.field_0xE8 is a CUtlVector of some struct size 0x0C
 	// (int defindex, CEconItemDefinition*, int m_Unknown)
 	
-	int nItemDefs = LoadFromAddress(pSchema + view_as<Address>(0xFC), NumberType_Int32);
+	int nItemDefs = LoadFromAddress(pSchema + offs_CEconItemSchema_nItemCount,
+			NumberType_Int32);
 	for (int i = 0; i < nItemDefs; i++) {
-		Address entry = DereferencePointer(pSchema + view_as<Address>(0xE8))
-				+ view_as<Address>(i * 12);
+		Address entry = DereferencePointer(pSchema + offs_CEconItemSchema_ItemList)
+				+ view_as<Address>(i * 0x0C);
 		
 		// I have no idea how this check works but it's also in
 		// CEconItemSchema::GetItemDefinitionByName
-		if (LoadFromAddress(entry + view_as<Address>(8), NumberType_Int32) < -1) {
+		if (LoadFromAddress(entry + view_as<Address>(0x08), NumberType_Int32) < -1) {
 			continue;
 		}
 		

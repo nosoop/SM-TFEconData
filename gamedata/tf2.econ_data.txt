@@ -43,6 +43,16 @@
 			{
 				"linux"		"512"
 			}
+			
+			"CEconItemSchema::m_ItemList"
+			{
+				// CUtlVector with struct (int defindex, CEconItemDefinition*, int unknown)
+				"linux"		"232"
+			}
+			"CEconItemSchema::m_nItemCount"
+			{
+				"linux"		"252"
+			}
 		}
 	}
 }
