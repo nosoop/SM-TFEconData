@@ -10,14 +10,12 @@
 				"windows"	"\xE8\x2A\x2A\x2A\x2A\x83\xC0\x04\xC3"
 				"linux"		"@_Z15GEconItemSchemav"
 			}
-			
 			"CEconItemSchema::GetItemDefinition()"
 			{
 				"library"	"server"
 				"windows"	"\x55\x8B\xEC\x56\x8B\xF1\x8D\x45\x08\x57\x50\x8D\x8E\x2A\x2A\x2A\x2A\xE8\x2A\x2A\x2A\x2A\x85\xC0"
 				"linux"		"@_ZN15CEconItemSchema17GetItemDefinitionEi"
 			}
-			
 			"TranslateWeaponEntForClass()"
 			{
 				"library"	"server"
@@ -29,28 +27,37 @@
 		{
 			"CEconItemDefinition::m_u8MinLevel"
 			{
+				// in CEconItemDefinition::RollItemLevel()
 				"linux"		"17"
 			}
 			"CEconItemDefinition::m_u8MaxLevel"
 			{
+				// in CEconItemDefinition::RollItemLevel()
 				"linux"		"18"
 			}
 			"CEconItemDefinition::m_pszItemClassname"
 			{
+				// x-ref "item_class" in CEconItemDefinition::BInitFromKV()
 				"linux"		"208"
 			}
 			"CEconItemDefinition::m_aiItemSlot"
 			{
+				// array mapping class indices to item slots (-1 if not valid for class)
+				// x-ref "used_by_classes" in CTFItemDefinition::BInitFromKV()
+				// offset in second-to-last block before loop
 				"linux"		"512"
 			}
 			
 			"CEconItemSchema::m_ItemList"
 			{
-				// CUtlVector with struct (int defindex, CEconItemDefinition*, int unknown)
+				// CUtlVector (?) with struct (int defindex, CEconItemDefinition*, int unknown)
+				// in CEconItemSchema::GetItemDefinitionByName(), dereferenced inside loop
 				"linux"		"232"
 			}
 			"CEconItemSchema::m_nItemCount"
 			{
+				// in CEconItemSchema::GetItemDefinitionByName(), in the beginning block
+				// this doesn't line up with the usual CUtlVector struct /shrug
 				"linux"		"252"
 			}
 		}
