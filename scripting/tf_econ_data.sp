@@ -38,11 +38,18 @@ public APLRes AskPluginLoad2(Handle self, bool late, char[] error, int maxlen) {
 	
 	CreateNative("TF2Econ_IsValidDefinitionIndex", Native_IsValidDefIndex);
 	
+	// defindex getters
 	CreateNative("TF2Econ_GetItemClassName", Native_GetItemClassName);
 	CreateNative("TF2Econ_GetItemSlot", Native_GetItemSlot);
 	CreateNative("TF2Econ_GetItemLevelRange", Native_GetItemLevelRange);
-	CreateNative("TF2Econ_TranslateWeaponEntForClass", Native_TranslateWeaponEntForClass);
+	
+	// global items
 	CreateNative("TF2Econ_GetItemList", Native_GetItemList);
+	
+	// other useful functions in the server bin
+	CreateNative("TF2Econ_TranslateWeaponEntForClass", Native_TranslateWeaponEntForClass);
+	
+	// low-level stuff
 	CreateNative("TF2Econ_GetItemDefinitionAddress", Native_GetItemDefinitionAddress);
 	
 	return APLRes_Success;

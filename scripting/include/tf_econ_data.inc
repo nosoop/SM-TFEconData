@@ -31,15 +31,6 @@ native bool TF2Econ_GetItemClassName(int defindex, char[] buffer, int maxlen);
 native int TF2Econ_GetItemSlot(int defindex, TFClassType playerClass);
 
 /**
- * Returns true if the specified className was translated for the given player class.
- * 
- * This is used for multiclass weapons -- if given a player class-specific classname,
- * this function returns false.
- */
-native bool TF2Econ_TranslateWeaponEntForClass(char[] className, int maxlen,
-		TFClassType playerClass);
-
-/**
  * Stores the minimum and maximum item level range in the given cell references and
  * returns true for a valid definition index, otherwise returns false.
  */
@@ -52,6 +43,15 @@ native bool TF2Econ_GetItemLevelRange(int defindex, int &iMinLevel, int &iMaxLev
  * This handle must be freed.
  */
 native ArrayList TF2Econ_GetItemList(ItemFilterCriteria func = INVALID_FUNCTION, any data = 0);
+
+/**
+ * Returns true if the specified className was translated for the given player class.
+ * 
+ * This is used for multiclass weapons -- if given a player class-specific classname,
+ * this function returns false.
+ */
+native bool TF2Econ_TranslateWeaponEntForClass(char[] className, int maxlen,
+		TFClassType playerClass);
 
 /**
  * Returns the address of the CEconItemDefinition for the item with the given defindex, or
