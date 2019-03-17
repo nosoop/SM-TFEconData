@@ -13,7 +13,7 @@
 #include <stocksoup/handles>
 #include <stocksoup/memory>
 
-#define PLUGIN_VERSION "0.3.0"
+#define PLUGIN_VERSION "0.4.0"
 public Plugin myinfo = {
 	name = "[TF2] Econ Data",
 	author = "nosoop",
@@ -25,6 +25,7 @@ public Plugin myinfo = {
 Handle g_SDKCallGetEconItemSchema;
 Handle g_SDKCallSchemaGetItemDefinition;
 Handle g_SDKCallTranslateWeaponEntForClass;
+Handle g_SDKCallGetItemDefinitionString;
 
 Address offs_CEconItemDefinition_u8MinLevel,
 		offs_CEconItemDefinition_u8MaxLevel,
@@ -46,6 +47,7 @@ public APLRes AskPluginLoad2(Handle self, bool late, char[] error, int maxlen) {
 	CreateNative("TF2Econ_GetItemClassName", Native_GetItemClassName);
 	CreateNative("TF2Econ_GetItemSlot", Native_GetItemSlot);
 	CreateNative("TF2Econ_GetItemLevelRange", Native_GetItemLevelRange);
+	CreateNative("TF2Econ_GetItemDefinitionString", Native_GetItemDefinitionString);
 	
 	// global items
 	CreateNative("TF2Econ_GetItemList", Native_GetItemList);
@@ -76,6 +78,14 @@ public void OnPluginStart() {
 	PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);
 	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);
 	g_SDKCallSchemaGetItemDefinition = EndPrepSDKCall();
+	
+	StartPrepSDKCall(SDKCall_Raw);
+	PrepSDKCall_SetFromConf(hGameConf, SDKConf_Signature,
+			"CEconItemDefinition::GetDefinitionString()");
+	PrepSDKCall_SetReturnInfo(SDKType_String, SDKPass_Pointer);
+	PrepSDKCall_AddParameter(SDKType_String, SDKPass_Pointer);
+	PrepSDKCall_AddParameter(SDKType_String, SDKPass_Pointer);
+	g_SDKCallGetItemDefinitionString = EndPrepSDKCall();
 	
 	StartPrepSDKCall(SDKCall_Static);
 	PrepSDKCall_SetFromConf(hGameConf, SDKConf_Signature, "TranslateWeaponEntForClass()");
@@ -215,6 +225,28 @@ bool GetItemLevelRange(int defindex, int &iMinLevel, int &iMaxLevel) {
 	iMaxLevel = LoadFromAddress(pItemDef + offs_CEconItemDefinition_u8MaxLevel,
 			NumberType_Int8);
 	return true;
+}
+
+public int Native_GetItemDefinitionString(Handle hPlugin, int nParams) {
+	int defindex = GetNativeCell(1);
+	int keylen;
+	GetNativeStringLength(2, keylen);
+	keylen++;
+	
+	char[] key = new char[keylen];
+	GetNativeString(2, key, keylen);
+	
+	int maxlen = GetNativeCell(4);
+	char[] buffer = new char[maxlen];
+	
+	GetNativeString(5, buffer, maxlen);
+	
+	Address pItemDef = GetEconItemDefinition(defindex);
+	if (pItemDef) {
+		SDKCall(g_SDKCallGetItemDefinitionString, pItemDef, buffer, maxlen, key, buffer);
+	}
+	
+	SetNativeString(3, buffer, maxlen, true);
 }
 
 public int Native_IsValidDefIndex(Handle hPlugin, int nParams) {

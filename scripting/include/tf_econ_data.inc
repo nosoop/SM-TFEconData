@@ -47,6 +47,13 @@ native int TF2Econ_GetItemSlot(int defindex, TFClassType playerClass);
 native bool TF2Econ_GetItemLevelRange(int defindex, int &iMinLevel, int &iMaxLevel);
 
 /**
+ * Returns an arbiitrary string from the item's KeyValues structure.
+ * You may use subkey notation ('/') to retrieve nested values.
+ */
+native void TF2Econ_GetItemDefinitionString(int defindex, const char[] key,
+		char[] buffer, int maxlen, const char[] defaultValue = "");
+
+/**
  * Returns an ArrayList containing all valid defindexes.  If an ItemFilterCriteria callback is
  * passed in, the ArrayList only contains defindexes that the callback returned `true` on.
  * 
