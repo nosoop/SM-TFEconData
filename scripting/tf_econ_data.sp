@@ -13,7 +13,7 @@
 #include <stocksoup/handles>
 #include <stocksoup/memory>
 
-#define PLUGIN_VERSION "0.2.0"
+#define PLUGIN_VERSION "0.3.0"
 public Plugin myinfo = {
 	name = "[TF2] Econ Data",
 	author = "nosoop",
@@ -28,7 +28,9 @@ Handle g_SDKCallTranslateWeaponEntForClass;
 
 Address offs_CEconItemDefinition_u8MinLevel,
 		offs_CEconItemDefinition_u8MaxLevel,
+		offs_CEconItemDefinition_pszLocalizedItemName,
 		offs_CEconItemDefinition_pszItemClassname,
+		offs_CEconItemDefinition_pszItemName,
 		offs_CEconItemDefinition_aiItemSlot,
 		offs_CEconItemSchema_ItemList,
 		offs_CEconItemSchema_nItemCount;
@@ -39,6 +41,8 @@ public APLRes AskPluginLoad2(Handle self, bool late, char[] error, int maxlen) {
 	CreateNative("TF2Econ_IsValidDefinitionIndex", Native_IsValidDefIndex);
 	
 	// defindex getters
+	CreateNative("TF2Econ_GetItemName", Native_GetItemName);
+	CreateNative("TF2Econ_GetLocalizedItemName", Native_GetLocalizedItemName);
 	CreateNative("TF2Econ_GetItemClassName", Native_GetItemClassName);
 	CreateNative("TF2Econ_GetItemSlot", Native_GetItemSlot);
 	CreateNative("TF2Econ_GetItemLevelRange", Native_GetItemLevelRange);
@@ -84,8 +88,12 @@ public void OnPluginStart() {
 			GameConfGetAddressOffset(hGameConf, "CEconItemDefinition::m_u8MinLevel");
 	offs_CEconItemDefinition_u8MaxLevel =
 			GameConfGetAddressOffset(hGameConf, "CEconItemDefinition::m_u8MaxLevel");
+	offs_CEconItemDefinition_pszLocalizedItemName =
+			GameConfGetAddressOffset(hGameConf, "CEconItemDefinition::m_pszLocalizedItemName");
 	offs_CEconItemDefinition_pszItemClassname =
 			GameConfGetAddressOffset(hGameConf, "CEconItemDefinition::m_pszItemClassname");
+	offs_CEconItemDefinition_pszItemName =
+			GameConfGetAddressOffset(hGameConf, "CEconItemDefinition::m_pszItemName");
 	offs_CEconItemDefinition_aiItemSlot =
 			GameConfGetAddressOffset(hGameConf, "CEconItemDefinition::m_aiItemSlot");
 	offs_CEconItemSchema_ItemList =
@@ -94,6 +102,52 @@ public void OnPluginStart() {
 			GameConfGetAddressOffset(hGameConf, "CEconItemSchema::m_nItemCount");
 	
 	delete hGameConf;
+}
+
+public int Native_GetItemName(Handle hPlugin, int nParams) {
+	int defindex = GetNativeCell(1);
+	int maxlen = GetNativeCell(3);
+	
+	char[] buffer = new char[maxlen];
+	bool bResult = GetItemName(defindex, buffer, maxlen);
+	if (bResult) {
+		SetNativeString(2, buffer, maxlen, true);
+	}
+	return bResult;
+}
+
+bool GetItemName(int defindex, char[] buffer, int maxlen) {
+	Address pItemDef = GetEconItemDefinition(defindex);
+	if (!pItemDef) {
+		return false;
+	}
+	LoadStringFromAddress(
+			DereferencePointer(pItemDef + offs_CEconItemDefinition_pszItemName),
+			buffer, maxlen);
+	return true;
+}
+
+public int Native_GetLocalizedItemName(Handle hPlugin, int nParams) {
+	int defindex = GetNativeCell(1);
+	int maxlen = GetNativeCell(3);
+	
+	char[] buffer = new char[maxlen];
+	bool bResult = GetLocalizedItemName(defindex, buffer, maxlen);
+	if (bResult) {
+		SetNativeString(2, buffer, maxlen, true);
+	}
+	return bResult;
+}
+
+bool GetLocalizedItemName(int defindex, char[] buffer, int maxlen) {
+	Address pItemDef = GetEconItemDefinition(defindex);
+	if (!pItemDef) {
+		return false;
+	}
+	LoadStringFromAddress(
+			DereferencePointer(pItemDef + offs_CEconItemDefinition_pszLocalizedItemName),
+			buffer, maxlen);
+	return true;
 }
 
 public int Native_GetItemClassName(Handle hPlugin, int nParams) {

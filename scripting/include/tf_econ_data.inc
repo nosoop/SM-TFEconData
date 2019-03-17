@@ -19,6 +19,16 @@ typedef ItemFilterCriteria = function bool(int defindex, any data);
 native bool TF2Econ_IsValidDefinitionIndex(int defindex);
 
 /**
+ * Returns the item's name (corresponds to the "name" key).
+ */
+native bool TF2Econ_GetItemName(int defindex, char[] name, int maxlen);
+
+/**
+ * Returns the item's localization token name (corresponds to the "item_name" key).
+ */
+native bool TF2Econ_GetLocalizedItemName(int defindex, char[] name, int maxlen);
+
+/**
  * Stores the item class name in the given buffer and returns true if given a valid definition
  * index, otherwise returns false.
  */

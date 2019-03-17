@@ -35,10 +35,18 @@
 				// in CEconItemDefinition::RollItemLevel()
 				"linux"		"18"
 			}
+			"CEconItemDefinition::m_pszLocalizedItemName"
+			{
+				"linux"		"52"
+			}
 			"CEconItemDefinition::m_pszItemClassname"
 			{
 				// x-ref "item_class" in CEconItemDefinition::BInitFromKV()
 				"linux"		"208"
+			}
+			"CEconItemDefinition::m_pszItemName"
+			{
+				"linux"		"220"
 			}
 			"CEconItemDefinition::m_aiItemSlot"
 			{
