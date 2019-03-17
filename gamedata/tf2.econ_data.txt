@@ -7,14 +7,14 @@
 			"GEconItemSchema()"
 			{
 				"library"	"server"
-				"windows"	"\xE8\x2A\x2A\x2A\x2A\x83\xC0\x04\xC3"
 				"linux"		"@_Z15GEconItemSchemav"
+				"windows"	"\xE8\x2A\x2A\x2A\x2A\x83\xC0\x04\xC3"
 			}
 			"CEconItemSchema::GetItemDefinition()"
 			{
 				"library"	"server"
-				"windows"	"\x55\x8B\xEC\x56\x8B\xF1\x8D\x45\x08\x57\x50\x8D\x8E\x2A\x2A\x2A\x2A\xE8\x2A\x2A\x2A\x2A\x85\xC0"
 				"linux"		"@_ZN15CEconItemSchema17GetItemDefinitionEi"
+				"windows"	"\x55\x8B\xEC\x56\x8B\xF1\x8D\x45\x08\x57\x50\x8D\x8E\x2A\x2A\x2A\x2A\xE8\x2A\x2A\x2A\x2A\x85\xC0"
 			}
 			"CEconItemDefinition::GetDefinitionString()"
 			{
@@ -23,8 +23,10 @@
 			}
 			"TranslateWeaponEntForClass()"
 			{
+				// get x-ref to structure containing string "saxxy"
 				"library"	"server"
 				"linux"		"@_Z26TranslateWeaponEntForClassPKci"
+				"windows"	"\x55\x8B\xEC\x53\x8B\x5D\x08\x56\x57\x85\xDB\x74\x2A\x33\xFF"
 			}
 		}
 		
@@ -34,24 +36,30 @@
 			{
 				// in CEconItemDefinition::RollItemLevel()
 				"linux"		"17"
+				"windows"	"17"
 			}
 			"CEconItemDefinition::m_u8MaxLevel"
 			{
 				// in CEconItemDefinition::RollItemLevel()
 				"linux"		"18"
+				"windows"	"18"
 			}
 			"CEconItemDefinition::m_pszLocalizedItemName"
 			{
+				// set near x-ref "Test Item %d"
 				"linux"		"52"
+				"windows"	"52"
 			}
 			"CEconItemDefinition::m_pszItemClassname"
 			{
 				// x-ref "item_class" in CEconItemDefinition::BInitFromKV()
 				"linux"		"208"
+				"windows"	"208"
 			}
 			"CEconItemDefinition::m_pszItemName"
 			{
 				"linux"		"220"
+				"windows"	"220"
 			}
 			"CEconItemDefinition::m_aiItemSlot"
 			{
@@ -59,6 +67,7 @@
 				// x-ref "used_by_classes" in CTFItemDefinition::BInitFromKV()
 				// offset in second-to-last block before loop
 				"linux"		"512"
+				"windows"	"512"
 			}
 			
 			"CEconItemSchema::m_ItemList"
@@ -66,12 +75,14 @@
 				// CUtlVector (?) with struct (int defindex, CEconItemDefinition*, int unknown)
 				// in CEconItemSchema::GetItemDefinitionByName(), dereferenced inside loop
 				"linux"		"232"
+				"windows"	"232"
 			}
 			"CEconItemSchema::m_nItemCount"
 			{
 				// in CEconItemSchema::GetItemDefinitionByName(), in the beginning block
 				// this doesn't line up with the usual CUtlVector struct /shrug
 				"linux"		"252"
+				"windows"	"252"
 			}
 		}
 	}
