@@ -1,0 +1,3 @@
+[submodule "scripting/include/stocksoup"]
+	path = scripting/include/stocksoup
+	url = https://github.com/nosoop/stocksoup
