@@ -1,6 +1,7 @@
 # TF2 Econ Data
 
-Work-in-progress library to get TF2 item data from game memory.
+Work-in-progress library to get TF2 item data from game memory.  No more parsing the the schema
+file and maintaining your own structure for plugin support.
 
 I got bored one day and thought about rewriting a few of my internal plugins so they didn't
 depend on external tooling anymore.
