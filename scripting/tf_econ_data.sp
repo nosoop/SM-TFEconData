@@ -13,7 +13,7 @@
 #include <stocksoup/handles>
 #include <stocksoup/memory>
 
-#define PLUGIN_VERSION "0.4.1"
+#define PLUGIN_VERSION "0.4.2"
 public Plugin myinfo = {
 	name = "[TF2] Econ Data",
 	author = "nosoop",
@@ -112,6 +112,9 @@ public void OnPluginStart() {
 			GameConfGetAddressOffset(hGameConf, "CEconItemSchema::m_nItemCount");
 	
 	delete hGameConf;
+	
+	CreateConVar("tfecondata_version", PLUGIN_VERSION,
+			"Version for TF2 Econ Data, to gauge popularity.", FCVAR_NOTIFY);
 }
 
 public int Native_GetItemName(Handle hPlugin, int nParams) {
