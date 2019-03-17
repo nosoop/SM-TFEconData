@@ -16,11 +16,6 @@
 				"linux"		"@_ZN15CEconItemSchema17GetItemDefinitionEi"
 				"windows"	"\x55\x8B\xEC\x56\x8B\xF1\x8D\x45\x08\x57\x50\x8D\x8E\x2A\x2A\x2A\x2A\xE8\x2A\x2A\x2A\x2A\x85\xC0"
 			}
-			"CEconItemDefinition::GetDefinitionString()"
-			{
-				"library"	"server"
-				"linux"		"@_ZNK19CEconItemDefinition19GetDefinitionStringEPKcS1_"
-			}
 			"TranslateWeaponEntForClass()"
 			{
 				// get x-ref to structure containing string "saxxy"
@@ -28,10 +23,24 @@
 				"linux"		"@_Z26TranslateWeaponEntForClassPKci"
 				"windows"	"\x55\x8B\xEC\x53\x8B\x5D\x08\x56\x57\x85\xDB\x74\x2A\x33\xFF"
 			}
+			
+			"KeyValues::GetString()"
+			{
+				// contains semi-unique x-ref "%lld" (in the windows version there's two refs to it in the function)
+				"library"	"server"
+				"linux"		"@_ZN9KeyValues9GetStringEPKcS1_"
+				"windows"	"\x55\x8B\xEC\x81\xEC\x40\x02\x00\x00"
+			}
 		}
 		
 		"Offsets"
 		{
+			"CEconItemDefinition::m_pKeyValues"
+			{
+				// in CEconItemDefinition::GetDefinitionString()
+				"linux"		"4"
+				"windows"	"4"
+			}
 			"CEconItemDefinition::m_u8MinLevel"
 			{
 				// in CEconItemDefinition::RollItemLevel()

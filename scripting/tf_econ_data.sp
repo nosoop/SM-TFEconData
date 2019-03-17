@@ -13,7 +13,7 @@
 #include <stocksoup/handles>
 #include <stocksoup/memory>
 
-#define PLUGIN_VERSION "0.4.2"
+#define PLUGIN_VERSION "0.5.0"
 public Plugin myinfo = {
 	name = "[TF2] Econ Data",
 	author = "nosoop",
@@ -25,9 +25,10 @@ public Plugin myinfo = {
 Handle g_SDKCallGetEconItemSchema;
 Handle g_SDKCallSchemaGetItemDefinition;
 Handle g_SDKCallTranslateWeaponEntForClass;
-Handle g_SDKCallGetItemDefinitionString;
+Handle g_SDKCallGetKeyValuesString;
 
-Address offs_CEconItemDefinition_u8MinLevel,
+Address offs_CEconItemDefinition_pKeyValues,
+		offs_CEconItemDefinition_u8MinLevel,
 		offs_CEconItemDefinition_u8MaxLevel,
 		offs_CEconItemDefinition_pszLocalizedItemName,
 		offs_CEconItemDefinition_pszItemClassname,
@@ -79,14 +80,6 @@ public void OnPluginStart() {
 	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);
 	g_SDKCallSchemaGetItemDefinition = EndPrepSDKCall();
 	
-	StartPrepSDKCall(SDKCall_Raw);
-	PrepSDKCall_SetFromConf(hGameConf, SDKConf_Signature,
-			"CEconItemDefinition::GetDefinitionString()");
-	PrepSDKCall_SetReturnInfo(SDKType_String, SDKPass_Pointer);
-	PrepSDKCall_AddParameter(SDKType_String, SDKPass_Pointer);
-	PrepSDKCall_AddParameter(SDKType_String, SDKPass_Pointer);
-	g_SDKCallGetItemDefinitionString = EndPrepSDKCall();
-	
 	StartPrepSDKCall(SDKCall_Static);
 	PrepSDKCall_SetFromConf(hGameConf, SDKConf_Signature, "TranslateWeaponEntForClass()");
 	PrepSDKCall_SetReturnInfo(SDKType_String, SDKPass_Pointer);
@@ -94,6 +87,15 @@ public void OnPluginStart() {
 	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);
 	g_SDKCallTranslateWeaponEntForClass = EndPrepSDKCall();
 	
+	StartPrepSDKCall(SDKCall_Raw);
+	PrepSDKCall_SetFromConf(hGameConf, SDKConf_Signature, "KeyValues::GetString()");
+	PrepSDKCall_SetReturnInfo(SDKType_String, SDKPass_Pointer);
+	PrepSDKCall_AddParameter(SDKType_String, SDKPass_Pointer);
+	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);
+	g_SDKCallGetKeyValuesString = EndPrepSDKCall();
+	
+	offs_CEconItemDefinition_pKeyValues =
+			GameConfGetAddressOffset(hGameConf, "CEconItemDefinition::m_pKeyValues");
 	offs_CEconItemDefinition_u8MinLevel =
 			GameConfGetAddressOffset(hGameConf, "CEconItemDefinition::m_u8MinLevel");
 	offs_CEconItemDefinition_u8MaxLevel =
@@ -219,7 +221,10 @@ public int Native_GetItemDefinitionString(Handle hPlugin, int nParams) {
 	
 	Address pItemDef = GetEconItemDefinition(defindex);
 	if (pItemDef) {
-		SDKCall(g_SDKCallGetItemDefinitionString, pItemDef, buffer, maxlen, key, buffer);
+		Address pKeyValues = DereferencePointer(pItemDef + offs_CEconItemDefinition_pKeyValues);
+		if (pKeyValues) {
+			SDKCall(g_SDKCallGetKeyValuesString, pKeyValues, buffer, maxlen, key, buffer);
+		}
 	}
 	
 	SetNativeString(3, buffer, maxlen, true);
