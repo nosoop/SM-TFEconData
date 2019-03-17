@@ -13,7 +13,7 @@
 #include <stocksoup/handles>
 #include <stocksoup/memory>
 
-#define PLUGIN_VERSION "0.4.0"
+#define PLUGIN_VERSION "0.4.1"
 public Plugin myinfo = {
 	name = "[TF2] Econ Data",
 	author = "nosoop",
@@ -119,22 +119,13 @@ public int Native_GetItemName(Handle hPlugin, int nParams) {
 	int maxlen = GetNativeCell(3);
 	
 	char[] buffer = new char[maxlen];
-	bool bResult = GetItemName(defindex, buffer, maxlen);
+	bool bResult = LoadEconItemDefinitionString(defindex, offs_CEconItemDefinition_pszItemName,
+			buffer, maxlen);
+	
 	if (bResult) {
 		SetNativeString(2, buffer, maxlen, true);
 	}
 	return bResult;
-}
-
-bool GetItemName(int defindex, char[] buffer, int maxlen) {
-	Address pItemDef = GetEconItemDefinition(defindex);
-	if (!pItemDef) {
-		return false;
-	}
-	LoadStringFromAddress(
-			DereferencePointer(pItemDef + offs_CEconItemDefinition_pszItemName),
-			buffer, maxlen);
-	return true;
 }
 
 public int Native_GetLocalizedItemName(Handle hPlugin, int nParams) {
@@ -142,22 +133,13 @@ public int Native_GetLocalizedItemName(Handle hPlugin, int nParams) {
 	int maxlen = GetNativeCell(3);
 	
 	char[] buffer = new char[maxlen];
-	bool bResult = GetLocalizedItemName(defindex, buffer, maxlen);
+	bool bResult = LoadEconItemDefinitionString(defindex,
+			offs_CEconItemDefinition_pszLocalizedItemName, buffer, maxlen);
+	
 	if (bResult) {
 		SetNativeString(2, buffer, maxlen, true);
 	}
 	return bResult;
-}
-
-bool GetLocalizedItemName(int defindex, char[] buffer, int maxlen) {
-	Address pItemDef = GetEconItemDefinition(defindex);
-	if (!pItemDef) {
-		return false;
-	}
-	LoadStringFromAddress(
-			DereferencePointer(pItemDef + offs_CEconItemDefinition_pszLocalizedItemName),
-			buffer, maxlen);
-	return true;
 }
 
 public int Native_GetItemClassName(Handle hPlugin, int nParams) {
@@ -165,22 +147,13 @@ public int Native_GetItemClassName(Handle hPlugin, int nParams) {
 	int maxlen = GetNativeCell(3);
 	
 	char[] buffer = new char[maxlen];
-	bool bResult = GetItemClass(defindex, buffer, maxlen);
+	bool bResult = LoadEconItemDefinitionString(defindex,
+			offs_CEconItemDefinition_pszItemClassname, buffer, maxlen);
+	
 	if (bResult) {
 		SetNativeString(2, buffer, maxlen, true);
 	}
 	return bResult;
-}
-
-bool GetItemClass(int defindex, char[] buffer, int maxlen) {
-	Address pItemDef = GetEconItemDefinition(defindex);
-	if (!pItemDef) {
-		return false;
-	}
-	LoadStringFromAddress(
-			DereferencePointer(pItemDef + offs_CEconItemDefinition_pszItemClassname),
-			buffer, maxlen);
-	return true;
 }
 
 public int Native_GetItemSlot(Handle hPlugin, int nParams) {
@@ -326,6 +299,17 @@ bool ValidItemDefIndex(int defindex) {
 static Address GetEconItemDefinition(int defindex) {
 	Address pSchema = GetEconItemSchema();
 	return pSchema? SDKCall(g_SDKCallSchemaGetItemDefinition, pSchema, defindex) : Address_Null;
+}
+
+static bool LoadEconItemDefinitionString(int defindex, Address offset, char[] buffer,
+		int maxlen) {
+	Address pItemDef = GetEconItemDefinition(defindex);
+	if (!pItemDef) {
+		return false;
+	}
+	
+	LoadStringFromAddress(DereferencePointer(pItemDef + offset), buffer, maxlen);
+	return true;
 }
 
 static Address GetEconItemSchema() {
