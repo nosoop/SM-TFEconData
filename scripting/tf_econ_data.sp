@@ -26,6 +26,7 @@ Handle g_SDKCallGetEconItemSchema;
 Handle g_SDKCallSchemaGetItemDefinition;
 Handle g_SDKCallTranslateWeaponEntForClass;
 Handle g_SDKCallGetKeyValuesString;
+Handle g_SDKCallGetKeyValuesFindKey;
 
 Address offs_CEconItemDefinition_pKeyValues,
 		offs_CEconItemDefinition_u8MinLevel,
@@ -93,6 +94,13 @@ public void OnPluginStart() {
 	PrepSDKCall_AddParameter(SDKType_String, SDKPass_Pointer);
 	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);
 	g_SDKCallGetKeyValuesString = EndPrepSDKCall();
+	
+	StartPrepSDKCall(SDKCall_Raw);
+	PrepSDKCall_SetFromConf(hGameConf, SDKConf_Signature, "KeyValues::FindKey()");
+	PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);
+	PrepSDKCall_AddParameter(SDKType_String, SDKPass_Pointer);
+	PrepSDKCall_AddParameter(SDKType_Bool, SDKPass_Plain);
+	g_SDKCallGetKeyValuesFindKey = EndPrepSDKCall();
 	
 	offs_CEconItemDefinition_pKeyValues =
 			GameConfGetAddressOffset(hGameConf, "CEconItemDefinition::m_pKeyValues");
@@ -222,7 +230,7 @@ public int Native_GetItemDefinitionString(Handle hPlugin, int nParams) {
 	Address pItemDef = GetEconItemDefinition(defindex);
 	if (pItemDef) {
 		Address pKeyValues = DereferencePointer(pItemDef + offs_CEconItemDefinition_pKeyValues);
-		if (pKeyValues) {
+		if (KeyValuesPtrKeyExists(pKeyValues, key)) {
 			SDKCall(g_SDKCallGetKeyValuesString, pKeyValues, buffer, maxlen, key, buffer);
 		}
 	}
@@ -318,6 +326,13 @@ static bool LoadEconItemDefinitionString(int defindex, Address offset, char[] bu
 	
 	LoadStringFromAddress(DereferencePointer(pItemDef + offset), buffer, maxlen);
 	return true;
+}
+
+static bool KeyValuesPtrKeyExists(Address pKeyValues, const char[] key) {
+	if (!pKeyValues) {
+		return false;
+	}
+	return !!SDKCall(g_SDKCallGetKeyValuesFindKey, pKeyValues, key, false);
 }
 
 static Address GetEconItemSchema() {

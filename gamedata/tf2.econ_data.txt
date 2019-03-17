@@ -31,6 +31,13 @@
 				"linux"		"@_ZN9KeyValues9GetStringEPKcS1_"
 				"windows"	"\x55\x8B\xEC\x81\xEC\x40\x02\x00\x00"
 			}
+			"KeyValues::FindKey()"
+			{
+				// first call in KeyValues::GetString()
+				"library"	"server"
+				"linux"		"@_ZN9KeyValues7FindKeyEPKcb"
+				"windows"	"\x55\x8B\xEC\x81\xEC\x04\x01\x00\x00\x56\x8B\x75\x08\x57"
+			}
 		}
 		
 		"Offsets"
