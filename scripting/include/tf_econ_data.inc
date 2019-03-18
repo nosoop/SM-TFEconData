@@ -11,10 +11,14 @@
 
 #define __tf_econ_data_included
 
+/**
+ * Callback for `TF2Econ_GetItemList`.  Return `true` if the specified item definition index
+ * should be added to the returned `ArrayList`.
+ */
 typedef ItemFilterCriteria = function bool(int defindex, any data);
 
 /**
- * Returns true if there is an item corresponding to the given definition index.
+ * Returns true if there is an item corresponding to the given item definition index.
  */
 native bool TF2Econ_IsValidItemDefinition(int defindex);
 
@@ -29,35 +33,37 @@ native bool TF2Econ_GetItemName(int defindex, char[] name, int maxlen);
 native bool TF2Econ_GetLocalizedItemName(int defindex, char[] name, int maxlen);
 
 /**
- * Stores the item class name in the given buffer and returns true if given a valid definition
- * index, otherwise returns false.
+ * Stores the item class name in the given buffer and returns true if given a valid item
+ * definition, otherwise returns false.
  */
 native bool TF2Econ_GetItemClassName(int defindex, char[] buffer, int maxlen);
 
 /**
- * Returns the item's weapon slot for the given class, or -1 if the defindex or item / class
- * combination is not valid.
+ * Returns the item's weapon slot for the given class, or -1 if the item definition or
+ * item / class combination is not valid.
  */
 native int TF2Econ_GetItemSlot(int defindex, TFClassType playerClass);
 
 /**
  * Stores the minimum and maximum item level range in the given cell references and
- * returns true for a valid definition index, otherwise returns false.
+ * returns true for a valid item definition, otherwise returns false.
  */
 native bool TF2Econ_GetItemLevelRange(int defindex, int &iMinLevel, int &iMaxLevel);
 
 /**
- * Returns an arbiitrary string from the item's KeyValues structure.
+ * Returns an arbiitrary string from an item definition's KeyValues structure.
  * You may use subkey notation ('/') to retrieve nested values.
  */
 native void TF2Econ_GetItemDefinitionString(int defindex, const char[] key,
 		char[] buffer, int maxlen, const char[] defaultValue = "");
 
 /**
- * Returns an ArrayList containing all valid defindexes.  If an ItemFilterCriteria callback is
- * passed in, the ArrayList only contains defindexes that the callback returned `true` on.
+ * Returns an ArrayList containing all valid item definition indices.  If an ItemFilterCriteria
+ * callback is passed in, the ArrayList only contains defindexes that the callback returned
+ * `true` on.
  * 
- * This handle must be freed.
+ * This handle is owned by the calling plugin, so it should be `delete`d when not needed
+ * anymore.
  */
 native ArrayList TF2Econ_GetItemList(ItemFilterCriteria func = INVALID_FUNCTION, any data = 0);
 
@@ -71,8 +77,8 @@ native bool TF2Econ_TranslateWeaponEntForClass(char[] className, int maxlen,
 		TFClassType playerClass);
 
 /**
- * Returns the address of the CEconItemDefinition for the item with the given defindex, or
- * Address_Null if not valid.
+ * Returns the address of the CEconItemDefinition for the item with the given definition index,
+ * or Address_Null if not valid.
  * 
  * Here be dragons.
  */
