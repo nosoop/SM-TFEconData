@@ -16,7 +16,7 @@ typedef ItemFilterCriteria = function bool(int defindex, any data);
 /**
  * Returns true if there is an item corresponding to the given definition index.
  */
-native bool TF2Econ_IsValidDefinitionIndex(int defindex);
+native bool TF2Econ_IsValidItemDefinition(int defindex);
 
 /**
  * Returns the item's name (corresponds to the "name" key).
@@ -77,6 +77,15 @@ native bool TF2Econ_TranslateWeaponEntForClass(char[] className, int maxlen,
  * Here be dragons.
  */
 native Address TF2Econ_GetItemDefinitionAddress(int defindex);
+
+/**
+ * @deprecated Renamed native to TF2Econ_IsValidItemDefinition so there is a better distinction
+ * between item and attribute definitions.
+ * 
+ * This native will still be present for backwards compatibility.
+ */
+#pragma deprecated Use TF2Econ_IsValidItemDefinition instead
+native bool TF2Econ_IsValidDefinitionIndex(int defindex);
 
 public SharedPlugin __pl_tf_econ_data = {
 	name = "tf_econ_data",

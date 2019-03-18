@@ -13,7 +13,7 @@
 #include <stocksoup/handles>
 #include <stocksoup/memory>
 
-#define PLUGIN_VERSION "0.5.1"
+#define PLUGIN_VERSION "0.6.0"
 public Plugin myinfo = {
 	name = "[TF2] Econ Data",
 	author = "nosoop",
@@ -41,7 +41,7 @@ Address offs_CEconItemDefinition_pKeyValues,
 public APLRes AskPluginLoad2(Handle self, bool late, char[] error, int maxlen) {
 	RegPluginLibrary("tf_econ_data");
 	
-	CreateNative("TF2Econ_IsValidDefinitionIndex", Native_IsValidDefIndex);
+	CreateNative("TF2Econ_IsValidItemDefinition", Native_IsValidItemDefinition);
 	
 	// defindex getters
 	CreateNative("TF2Econ_GetItemName", Native_GetItemName);
@@ -59,6 +59,9 @@ public APLRes AskPluginLoad2(Handle self, bool late, char[] error, int maxlen) {
 	
 	// low-level stuff
 	CreateNative("TF2Econ_GetItemDefinitionAddress", Native_GetItemDefinitionAddress);
+	
+	// backwards-compatibile
+	CreateNative("TF2Econ_IsValidDefinitionIndex", Native_IsValidItemDefinition);
 	
 	return APLRes_Success;
 }
@@ -238,7 +241,7 @@ public int Native_GetItemDefinitionString(Handle hPlugin, int nParams) {
 	SetNativeString(3, buffer, maxlen, true);
 }
 
-public int Native_IsValidDefIndex(Handle hPlugin, int nParams) {
+public int Native_IsValidItemDefinition(Handle hPlugin, int nParams) {
 	int defindex = GetNativeCell(1);
 	return ValidItemDefIndex(defindex);
 }
