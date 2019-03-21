@@ -106,7 +106,9 @@
 			"CTFItemSchema::m_ItemSlotNames"
 			{
 				// used in CTFItemDefinition::BInitFromKV() in the same block that "head" and "misc" are referenced
+				// on Windows, "misc" is a unique subroutine x-ref
 				"linux"		"1432"
+				"windows"	"1432"
 			}
 		}
 	}
