@@ -13,7 +13,7 @@
 #include <stocksoup/handles>
 #include <stocksoup/memory>
 
-#define PLUGIN_VERSION "0.6.0"
+#define PLUGIN_VERSION "0.7.0"
 public Plugin myinfo = {
 	name = "[TF2] Econ Data",
 	author = "nosoop",
@@ -36,7 +36,8 @@ Address offs_CEconItemDefinition_pKeyValues,
 		offs_CEconItemDefinition_pszItemName,
 		offs_CEconItemDefinition_aiItemSlot,
 		offs_CEconItemSchema_ItemList,
-		offs_CEconItemSchema_nItemCount;
+		offs_CEconItemSchema_nItemCount,
+		offs_CTFItemSchema_ItemSlotNames;
 
 public APLRes AskPluginLoad2(Handle self, bool late, char[] error, int maxlen) {
 	RegPluginLibrary("tf_econ_data");
@@ -54,8 +55,15 @@ public APLRes AskPluginLoad2(Handle self, bool late, char[] error, int maxlen) {
 	// global items
 	CreateNative("TF2Econ_GetItemList", Native_GetItemList);
 	
-	// other useful functions in the server bin
+	// other useful functions for items
 	CreateNative("TF2Econ_TranslateWeaponEntForClass", Native_TranslateWeaponEntForClass);
+	
+	// loadout slot information
+	CreateNative("TF2Econ_TranslateLoadoutSlotNameToIndex",
+			Native_TranslateLoadoutSlotNameToIndex);
+	CreateNative("TF2Econ_TranslateLoadoutSlotIndexToName",
+			Native_TranslateLoadoutSlotIndexToName);
+	CreateNative("TF2Econ_GetLoadoutSlotCount", Native_GetLoadoutSlotCount);
 	
 	// low-level stuff
 	CreateNative("TF2Econ_GetItemDefinitionAddress", Native_GetItemDefinitionAddress);
@@ -123,6 +131,8 @@ public void OnPluginStart() {
 			GameConfGetAddressOffset(hGameConf, "CEconItemSchema::m_ItemList");
 	offs_CEconItemSchema_nItemCount =
 			GameConfGetAddressOffset(hGameConf, "CEconItemSchema::m_nItemCount");
+	offs_CTFItemSchema_ItemSlotNames =
+			GameConfGetAddressOffset(hGameConf, "CTFItemSchema::m_ItemSlotNames");
 	
 	delete hGameConf;
 	
@@ -257,6 +267,87 @@ public int Native_TranslateWeaponEntForClass(Handle hPlugin, int nParams) {
 		return true;
 	}
 	return false;
+}
+
+public int Native_TranslateLoadoutSlotNameToIndex(Handle hPlugin, int nParams) {
+	char slotName[64];
+	GetNativeString(1, slotName, sizeof(slotName));
+	
+	return TranslateLoadoutSlotNameToIndex(slotName);
+}
+
+/**
+ * Iterates the vector containing the item slot names.
+ */
+static int TranslateLoadoutSlotNameToIndex(const char[] slot) {
+	Address pSchema = GetEconItemSchema();
+	if (!pSchema) {
+		return -1;
+	}
+	
+	// CTFItemSchema::ItemSlotNames is a CUtlVector<char*>
+	Address pItemSlotNames = pSchema + offs_CTFItemSchema_ItemSlotNames;
+	int nItemSlots = LoadFromAddress(pItemSlotNames + view_as<Address>(0x0C), NumberType_Int32);
+	if (!nItemSlots) {
+		return -1;
+	}
+	
+	Address pItemSlotData = DereferencePointer(pItemSlotNames);
+	for (int i = 0; i < nItemSlots; i++) {
+		char slotData[32];
+		Address pItemSlotEntry = DereferencePointer(pItemSlotData + view_as<Address>(0x04 * i));
+		
+		bool bNull;
+		LoadStringFromAddress(pItemSlotEntry, slotData, sizeof(slotData), bNull);
+		if (!bNull && StrEqual(slot, slotData, false)) {
+			return i;
+		}
+	}
+	return -1;
+}
+
+public int Native_TranslateLoadoutSlotIndexToName(Handle hPlugin, int nParams) {
+	int index = GetNativeCell(1);
+	int maxlen = GetNativeCell(3);
+	
+	char[] buffer = new char[maxlen];
+	if (TranslateLoadoutSlotIndexToName(index, buffer, maxlen)) {
+		SetNativeString(2, buffer, maxlen, true);
+		return true;
+	}
+	return false;
+}
+
+static bool TranslateLoadoutSlotIndexToName(int index, char[] buffer, int maxlen) {
+	Address pSchema = GetEconItemSchema();
+	if (!pSchema) {
+		return false;
+	}
+	
+	Address pItemSlotNames = pSchema + offs_CTFItemSchema_ItemSlotNames;
+	int nItemSlots = LoadFromAddress(pItemSlotNames + view_as<Address>(0x0C), NumberType_Int32);
+	if (index < 0 || index >= nItemSlots) {
+		return false;
+	}
+	
+	Address pItemSlotData = DereferencePointer(pItemSlotNames);
+	Address pItemSlotEntry = DereferencePointer(pItemSlotData + view_as<Address>(0x04 * index));
+	
+	bool bNull;
+	LoadStringFromAddress(pItemSlotEntry, buffer, maxlen, bNull);
+	return !bNull && strlen(buffer);
+}
+
+public int Native_GetLoadoutSlotCount(Handle hPlugin, int nParams) {
+	Address pSchema = GetEconItemSchema();
+	if (!pSchema) {
+		return false;
+	}
+	
+	Address pItemSlotNames = pSchema + offs_CTFItemSchema_ItemSlotNames;
+	int nItemSlots = LoadFromAddress(pItemSlotNames + view_as<Address>(0x0C), NumberType_Int32);
+	
+	return nItemSlots;
 }
 
 public int Native_GetItemList(Handle hPlugin, int nParams) {

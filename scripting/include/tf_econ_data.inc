@@ -69,12 +69,28 @@ native ArrayList TF2Econ_GetItemList(ItemFilterCriteria func = INVALID_FUNCTION,
 
 /**
  * Returns true if the specified className was translated for the given player class.
+ * The buffer is not modified if the className was not translated.
  * 
  * This is used for multiclass weapons -- if given a player class-specific classname,
  * this function returns false.
  */
 native bool TF2Econ_TranslateWeaponEntForClass(char[] className, int maxlen,
 		TFClassType playerClass);
+
+/**
+ * Returns true if the given loadout slot index has a name, false otherwise.
+ */
+native bool TF2Econ_TranslateLoadoutSlotIndexToName(int index, char[] buffer, int maxlen);
+
+/**
+ * Returns the loadout slot index for the given slot name, or -1 if not a valid slot.
+ */
+native int TF2Econ_TranslateLoadoutSlotNameToIndex(const char[] slotName);
+
+/**
+ * Returns the number of valid loadout slots.
+ */
+native int TF2Econ_GetLoadoutSlotCount();
 
 /**
  * Returns the address of the CEconItemDefinition for the item with the given definition index,

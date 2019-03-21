@@ -77,6 +77,8 @@
 				"linux"		"220"
 				"windows"	"220"
 			}
+			
+			// wait, shoot, this is CTFItemDefinition -- rename this once the next revision is out?
 			"CEconItemDefinition::m_aiItemSlot"
 			{
 				// array mapping class indices to item slots (-1 if not valid for class)
@@ -99,6 +101,12 @@
 				// this doesn't line up with the usual CUtlVector struct /shrug
 				"linux"		"252"
 				"windows"	"252"
+			}
+			
+			"CTFItemSchema::m_ItemSlotNames"
+			{
+				// used in CTFItemDefinition::BInitFromKV() in the same block that "head" and "misc" are referenced
+				"linux"		"1432"
 			}
 		}
 	}
