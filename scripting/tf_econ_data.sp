@@ -13,7 +13,7 @@
 #include <stocksoup/handles>
 #include <stocksoup/memory>
 
-#define PLUGIN_VERSION "0.7.0"
+#define PLUGIN_VERSION "0.7.1"
 public Plugin myinfo = {
 	name = "[TF2] Econ Data",
 	author = "nosoop",
@@ -270,36 +270,14 @@ public int Native_TranslateWeaponEntForClass(Handle hPlugin, int nParams) {
 }
 
 public int Native_TranslateLoadoutSlotNameToIndex(Handle hPlugin, int nParams) {
-	char slotName[64];
-	GetNativeString(1, slotName, sizeof(slotName));
+	char slot[64];
+	GetNativeString(1, slot, sizeof(slot));
 	
-	return TranslateLoadoutSlotNameToIndex(slotName);
-}
-
-/**
- * Iterates the vector containing the item slot names.
- */
-static int TranslateLoadoutSlotNameToIndex(const char[] slot) {
-	Address pSchema = GetEconItemSchema();
-	if (!pSchema) {
-		return -1;
-	}
-	
-	// CTFItemSchema::ItemSlotNames is a CUtlVector<char*>
-	Address pItemSlotNames = pSchema + offs_CTFItemSchema_ItemSlotNames;
-	int nItemSlots = LoadFromAddress(pItemSlotNames + view_as<Address>(0x0C), NumberType_Int32);
-	if (!nItemSlots) {
-		return -1;
-	}
-	
-	Address pItemSlotData = DereferencePointer(pItemSlotNames);
+	int nItemSlots = GetLoadoutSlotCount();
 	for (int i = 0; i < nItemSlots; i++) {
 		char slotData[32];
-		Address pItemSlotEntry = DereferencePointer(pItemSlotData + view_as<Address>(0x04 * i));
-		
-		bool bNull;
-		LoadStringFromAddress(pItemSlotEntry, slotData, sizeof(slotData), bNull);
-		if (!bNull && StrEqual(slot, slotData, false)) {
+		if (TranslateLoadoutSlotIndexToName(i, slotData, sizeof(slotData))
+				&& StrEqual(slot, slotData, false)) {
 			return i;
 		}
 	}
@@ -325,11 +303,14 @@ static bool TranslateLoadoutSlotIndexToName(int index, char[] buffer, int maxlen
 	}
 	
 	Address pItemSlotNames = pSchema + offs_CTFItemSchema_ItemSlotNames;
-	int nItemSlots = LoadFromAddress(pItemSlotNames + view_as<Address>(0x0C), NumberType_Int32);
-	if (index < 0 || index >= nItemSlots) {
+	if (index < 0 || index >= GetLoadoutSlotCount()) {
 		return false;
 	}
 	
+	/**
+	 * CTFItemSchema::ItemSlotNames is a CUtlVector<char*>, so deref to get to the underlying
+	 * memory then do an array access
+	 */
 	Address pItemSlotData = DereferencePointer(pItemSlotNames);
 	Address pItemSlotEntry = DereferencePointer(pItemSlotData + view_as<Address>(0x04 * index));
 	
@@ -339,15 +320,17 @@ static bool TranslateLoadoutSlotIndexToName(int index, char[] buffer, int maxlen
 }
 
 public int Native_GetLoadoutSlotCount(Handle hPlugin, int nParams) {
+	return GetLoadoutSlotCount();
+}
+
+static int GetLoadoutSlotCount() {
 	Address pSchema = GetEconItemSchema();
 	if (!pSchema) {
-		return false;
+		return 0;
 	}
 	
-	Address pItemSlotNames = pSchema + offs_CTFItemSchema_ItemSlotNames;
-	int nItemSlots = LoadFromAddress(pItemSlotNames + view_as<Address>(0x0C), NumberType_Int32);
-	
-	return nItemSlots;
+	return LoadFromAddress(pSchema + offs_CTFItemSchema_ItemSlotNames + view_as<Address>(0x0C),
+			NumberType_Int32);
 }
 
 public int Native_GetItemList(Handle hPlugin, int nParams) {
