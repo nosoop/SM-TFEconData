@@ -22,7 +22,15 @@ but it saves you effort from adding / maintaining the `SDKCall` boilerplate your
 Dump the taunt defindices for a given class:
 
 ```
-public void OnPluginStart() {
+int g_iTauntSlot = -1;
+
+public void OnAllPluginsLoaded() {
+	// you could use a hardcoded value of 11 if you want to bet on valve not changing indices
+	g_iTauntSlot = TF2Econ_TranslateLoadoutSlotNameToIndex("taunt");
+	if (g_iTauntSlot == -1) {
+		SetFailState("Failed to determine index for slot name '%s'", "taunt");
+	}
+	
 	ArrayList tauntList = TF2Econ_GetItemList(FilterClassTaunts, TFClass_Scout);
 	
 	for (int i = 0; i < tauntList.Length; i++) {
@@ -33,9 +41,9 @@ public void OnPluginStart() {
 }
 
 /**
- * Returns true if the given item is available for the given playerClass as a taunt (slot 11).
+ * Returns true if the given item is available for the given playerClass as a taunt.
  */
 public bool FilterClassTaunts(int defindex, TFClassType playerClass) {
-	return TF2Econ_GetItemSlot(defindex, playerClass) == 11;
+	return TF2Econ_GetItemSlot(defindex, playerClass) == g_iTauntSlot;
 }
 ```
