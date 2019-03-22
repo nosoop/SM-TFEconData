@@ -13,7 +13,7 @@
 #include <stocksoup/handles>
 #include <stocksoup/memory>
 
-#define PLUGIN_VERSION "0.7.2"
+#define PLUGIN_VERSION "0.8.0"
 public Plugin myinfo = {
 	name = "[TF2] Econ Data",
 	author = "nosoop",
@@ -24,10 +24,12 @@ public Plugin myinfo = {
 
 #include "tf_econ_data/loadout_slot.sp"
 #include "tf_econ_data/item_definition.sp"
+#include "tf_econ_data/attribute_definition.sp"
 #include "tf_econ_data/keyvalues.sp"
 
 Handle g_SDKCallGetEconItemSchema;
 Handle g_SDKCallSchemaGetItemDefinition;
+Handle g_SDKCallSchemaGetAttributeDefinition;
 Handle g_SDKCallTranslateWeaponEntForClass;
 
 Address offs_CEconItemSchema_ItemList,
@@ -36,9 +38,8 @@ Address offs_CEconItemSchema_ItemList,
 public APLRes AskPluginLoad2(Handle self, bool late, char[] error, int maxlen) {
 	RegPluginLibrary("tf_econ_data");
 	
+	// item information
 	CreateNative("TF2Econ_IsValidItemDefinition", Native_IsValidItemDefinition);
-	
-	// defindex getters
 	CreateNative("TF2Econ_GetItemName", Native_GetItemName);
 	CreateNative("TF2Econ_GetLocalizedItemName", Native_GetLocalizedItemName);
 	CreateNative("TF2Econ_GetItemClassName", Native_GetItemClassName);
@@ -59,8 +60,15 @@ public APLRes AskPluginLoad2(Handle self, bool late, char[] error, int maxlen) {
 			Native_TranslateLoadoutSlotIndexToName);
 	CreateNative("TF2Econ_GetLoadoutSlotCount", Native_GetLoadoutSlotCount);
 	
+	// attribute information
+	CreateNative("TF2Econ_IsValidAttributeDefinition", Native_IsValidAttributeDefinition);
+	CreateNative("TF2Econ_IsAttributeHidden", Native_IsAttributeHidden);
+	CreateNative("TF2Econ_IsAttributeStoredAsInteger", Native_IsAttributeStoredAsInteger);
+	CreateNative("TF2Econ_GetAttributeClassName", Native_GetAttributeClassName);
+	
 	// low-level stuff
 	CreateNative("TF2Econ_GetItemDefinitionAddress", Native_GetItemDefinitionAddress);
+	CreateNative("TF2Econ_GetAttributeDefinitionAddress", Native_GetAttributeDefinitionAddress);
 	
 	// backwards-compatibile
 	CreateNative("TF2Econ_IsValidDefinitionIndex", Native_IsValidItemDefinition);
@@ -85,6 +93,13 @@ public void OnPluginStart() {
 	PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);
 	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);
 	g_SDKCallSchemaGetItemDefinition = EndPrepSDKCall();
+	
+	StartPrepSDKCall(SDKCall_Raw);
+	PrepSDKCall_SetFromConf(hGameConf, SDKConf_Signature,
+			"CEconItemSchema::GetAttributeDefinition()");
+	PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);
+	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);
+	g_SDKCallSchemaGetAttributeDefinition = EndPrepSDKCall();
 	
 	StartPrepSDKCall(SDKCall_Static);
 	PrepSDKCall_SetFromConf(hGameConf, SDKConf_Signature, "TranslateWeaponEntForClass()");
@@ -127,6 +142,11 @@ public void OnPluginStart() {
 			GameConfGetAddressOffset(hGameConf, "CEconItemSchema::m_nItemCount");
 	offs_CTFItemSchema_ItemSlotNames =
 			GameConfGetAddressOffset(hGameConf, "CTFItemSchema::m_ItemSlotNames");
+	
+	// offs_CEconItemAttributeDefinition_bHidden =
+	// 		GameConfGetAddressOffset(hGameConf, "CEconItemAttributeDefinition::m_bHidden");
+	// offs_CEconItemAttributeDefinition_bIsInteger =
+	// 		GameConfGetAddressOffset(hGameConf, "CEconItemAttributeDefinition::m_bIsInteger");
 	
 	delete hGameConf;
 	
@@ -206,6 +226,17 @@ bool ValidItemDefIndex(int defindex) {
 Address GetEconItemDefinition(int defindex) {
 	Address pSchema = GetEconItemSchema();
 	return pSchema? SDKCall(g_SDKCallSchemaGetItemDefinition, pSchema, defindex) : Address_Null;
+}
+
+public int Native_GetAttributeDefinitionAddress(Handle hPlugin, int nParams) {
+	int defindex = GetNativeCell(1);
+	return view_as<int>(GetEconAttributeDefinition(defindex));
+}
+
+Address GetEconAttributeDefinition(int defindex) {
+	Address pSchema = GetEconItemSchema();
+	return pSchema?
+			SDKCall(g_SDKCallSchemaGetAttributeDefinition, pSchema, defindex) : Address_Null;
 }
 
 Address GetEconItemSchema() {

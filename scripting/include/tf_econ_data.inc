@@ -93,12 +93,41 @@ native int TF2Econ_TranslateLoadoutSlotNameToIndex(const char[] slotName);
 native int TF2Econ_GetLoadoutSlotCount();
 
 /**
+ * Returns true if there is an attribute corresponding to the given attribute definition index.
+ */
+native bool TF2Econ_IsValidAttributeDefinition(int defindex);
+
+/**
+ * Returns true if the attribute is considered hidden (corresponds to the "hidden" key).
+ */
+native bool TF2Econ_IsAttributeHidden(int defindex);
+
+/** 
+ * Returns true if the attribute is stored as an integer (corresponds to the "stored_as_integer"
+ * key).
+ */
+native bool TF2Econ_IsAttributeStoredAsInteger(int defindex);
+
+/**
+ * 
+ */
+native bool TF2Econ_GetAttributeClassName(int defindex, char[] buffer, int maxlen);
+
+/**
  * Returns the address of the CEconItemDefinition for the item with the given definition index,
  * or Address_Null if not valid.
  * 
  * Here be dragons.
  */
 native Address TF2Econ_GetItemDefinitionAddress(int defindex);
+
+/**
+ * Returns the address of the CEconItemAttributeDefinition for the attribute with the given
+ * definition index, or Address_Null if not valid.
+ * 
+ * Here be dragons.
+ */
+native Address TF2Econ_GetAttributeDefinitionAddress(int defindex);
 
 /**
  * @deprecated Renamed native to TF2Econ_IsValidItemDefinition so there is a better distinction
