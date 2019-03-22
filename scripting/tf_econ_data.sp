@@ -13,7 +13,7 @@
 #include <stocksoup/handles>
 #include <stocksoup/memory>
 
-#define PLUGIN_VERSION "0.7.1"
+#define PLUGIN_VERSION "0.7.2"
 public Plugin myinfo = {
 	name = "[TF2] Econ Data",
 	author = "nosoop",
@@ -22,22 +22,16 @@ public Plugin myinfo = {
 	url = "https://github.com/nosoop/SM-TFEconData"
 }
 
+#include "tf_econ_data/loadout_slot.sp"
+#include "tf_econ_data/item_definition.sp"
+#include "tf_econ_data/keyvalues.sp"
+
 Handle g_SDKCallGetEconItemSchema;
 Handle g_SDKCallSchemaGetItemDefinition;
 Handle g_SDKCallTranslateWeaponEntForClass;
-Handle g_SDKCallGetKeyValuesString;
-Handle g_SDKCallGetKeyValuesFindKey;
 
-Address offs_CEconItemDefinition_pKeyValues,
-		offs_CEconItemDefinition_u8MinLevel,
-		offs_CEconItemDefinition_u8MaxLevel,
-		offs_CEconItemDefinition_pszLocalizedItemName,
-		offs_CEconItemDefinition_pszItemClassname,
-		offs_CEconItemDefinition_pszItemName,
-		offs_CEconItemDefinition_aiItemSlot,
-		offs_CEconItemSchema_ItemList,
-		offs_CEconItemSchema_nItemCount,
-		offs_CTFItemSchema_ItemSlotNames;
+Address offs_CEconItemSchema_ItemList,
+		offs_CEconItemSchema_nItemCount;
 
 public APLRes AskPluginLoad2(Handle self, bool late, char[] error, int maxlen) {
 	RegPluginLibrary("tf_econ_data");
@@ -140,122 +134,6 @@ public void OnPluginStart() {
 			"Version for TF2 Econ Data, to gauge popularity.", FCVAR_NOTIFY);
 }
 
-public int Native_GetItemName(Handle hPlugin, int nParams) {
-	int defindex = GetNativeCell(1);
-	int maxlen = GetNativeCell(3);
-	
-	char[] buffer = new char[maxlen];
-	bool bResult = LoadEconItemDefinitionString(defindex, offs_CEconItemDefinition_pszItemName,
-			buffer, maxlen);
-	
-	if (bResult) {
-		SetNativeString(2, buffer, maxlen, true);
-	}
-	return bResult;
-}
-
-public int Native_GetLocalizedItemName(Handle hPlugin, int nParams) {
-	int defindex = GetNativeCell(1);
-	int maxlen = GetNativeCell(3);
-	
-	char[] buffer = new char[maxlen];
-	bool bResult = LoadEconItemDefinitionString(defindex,
-			offs_CEconItemDefinition_pszLocalizedItemName, buffer, maxlen);
-	
-	if (bResult) {
-		SetNativeString(2, buffer, maxlen, true);
-	}
-	return bResult;
-}
-
-public int Native_GetItemClassName(Handle hPlugin, int nParams) {
-	int defindex = GetNativeCell(1);
-	int maxlen = GetNativeCell(3);
-	
-	char[] buffer = new char[maxlen];
-	bool bResult = LoadEconItemDefinitionString(defindex,
-			offs_CEconItemDefinition_pszItemClassname, buffer, maxlen);
-	
-	if (bResult) {
-		SetNativeString(2, buffer, maxlen, true);
-	}
-	return bResult;
-}
-
-public int Native_GetItemSlot(Handle hPlugin, int nParams) {
-	int defindex = GetNativeCell(1);
-	TFClassType playerClass = GetNativeCell(2);
-	return GetItemSlot(defindex, playerClass);
-}
-
-/**
- * Returns the slot an item can be used in by defindex, or -1 if invalid item or invalid class.
- */
-int GetItemSlot(int defindex, TFClassType playerClass) {
-	Address pItemDef = GetEconItemDefinition(defindex);
-	if (!pItemDef) {
-		return -1;
-	}
-	
-	return LoadFromAddress(pItemDef + offs_CEconItemDefinition_aiItemSlot +
-			view_as<Address>(view_as<int>(playerClass) * 4), NumberType_Int32);
-}
-
-public int Native_GetItemLevelRange(Handle hPlugin, int nParams) {
-	int defindex = GetNativeCell(1);
-	
-	int iMinLevel, iMaxLevel;
-	if (GetItemLevelRange(defindex, iMinLevel, iMaxLevel)) {
-		SetNativeCellRef(2, iMinLevel);
-		SetNativeCellRef(3, iMaxLevel);
-		return true;
-	}
-	return false;
-}
-
-bool GetItemLevelRange(int defindex, int &iMinLevel, int &iMaxLevel) {
-	Address pItemDef = GetEconItemDefinition(defindex);
-	if (!pItemDef) {
-		return false;
-	}
-	
-	iMinLevel = LoadFromAddress(pItemDef + offs_CEconItemDefinition_u8MinLevel,
-			NumberType_Int8);
-	iMaxLevel = LoadFromAddress(pItemDef + offs_CEconItemDefinition_u8MaxLevel,
-			NumberType_Int8);
-	return true;
-}
-
-public int Native_GetItemDefinitionString(Handle hPlugin, int nParams) {
-	int defindex = GetNativeCell(1);
-	int keylen;
-	GetNativeStringLength(2, keylen);
-	keylen++;
-	
-	char[] key = new char[keylen];
-	GetNativeString(2, key, keylen);
-	
-	int maxlen = GetNativeCell(4);
-	char[] buffer = new char[maxlen];
-	
-	GetNativeString(5, buffer, maxlen);
-	
-	Address pItemDef = GetEconItemDefinition(defindex);
-	if (pItemDef) {
-		Address pKeyValues = DereferencePointer(pItemDef + offs_CEconItemDefinition_pKeyValues);
-		if (KeyValuesPtrKeyExists(pKeyValues, key)) {
-			SDKCall(g_SDKCallGetKeyValuesString, pKeyValues, buffer, maxlen, key, buffer);
-		}
-	}
-	
-	SetNativeString(3, buffer, maxlen, true);
-}
-
-public int Native_IsValidItemDefinition(Handle hPlugin, int nParams) {
-	int defindex = GetNativeCell(1);
-	return ValidItemDefIndex(defindex);
-}
-
 public int Native_TranslateWeaponEntForClass(Handle hPlugin, int nParams) {
 	char weaponClass[64];
 	GetNativeString(1, weaponClass, sizeof(weaponClass));
@@ -267,70 +145,6 @@ public int Native_TranslateWeaponEntForClass(Handle hPlugin, int nParams) {
 		return true;
 	}
 	return false;
-}
-
-public int Native_TranslateLoadoutSlotNameToIndex(Handle hPlugin, int nParams) {
-	char slot[64];
-	GetNativeString(1, slot, sizeof(slot));
-	
-	int nItemSlots = GetLoadoutSlotCount();
-	for (int i = 0; i < nItemSlots; i++) {
-		char slotData[32];
-		if (TranslateLoadoutSlotIndexToName(i, slotData, sizeof(slotData))
-				&& StrEqual(slot, slotData, false)) {
-			return i;
-		}
-	}
-	return -1;
-}
-
-public int Native_TranslateLoadoutSlotIndexToName(Handle hPlugin, int nParams) {
-	int index = GetNativeCell(1);
-	int maxlen = GetNativeCell(3);
-	
-	char[] buffer = new char[maxlen];
-	if (TranslateLoadoutSlotIndexToName(index, buffer, maxlen)) {
-		SetNativeString(2, buffer, maxlen, true);
-		return true;
-	}
-	return false;
-}
-
-static bool TranslateLoadoutSlotIndexToName(int index, char[] buffer, int maxlen) {
-	Address pSchema = GetEconItemSchema();
-	if (!pSchema) {
-		return false;
-	}
-	
-	Address pItemSlotNames = pSchema + offs_CTFItemSchema_ItemSlotNames;
-	if (index < 0 || index >= GetLoadoutSlotCount()) {
-		return false;
-	}
-	
-	/**
-	 * CTFItemSchema::ItemSlotNames is a CUtlVector<char*>, so deref to get to the underlying
-	 * memory then do an array access
-	 */
-	Address pItemSlotData = DereferencePointer(pItemSlotNames);
-	Address pItemSlotEntry = DereferencePointer(pItemSlotData + view_as<Address>(0x04 * index));
-	
-	bool bNull;
-	LoadStringFromAddress(pItemSlotEntry, buffer, maxlen, bNull);
-	return !bNull && strlen(buffer);
-}
-
-public int Native_GetLoadoutSlotCount(Handle hPlugin, int nParams) {
-	return GetLoadoutSlotCount();
-}
-
-static int GetLoadoutSlotCount() {
-	Address pSchema = GetEconItemSchema();
-	if (!pSchema) {
-		return 0;
-	}
-	
-	return LoadFromAddress(pSchema + offs_CTFItemSchema_ItemSlotNames + view_as<Address>(0x0C),
-			NumberType_Int32);
 }
 
 public int Native_GetItemList(Handle hPlugin, int nParams) {
@@ -389,30 +203,12 @@ bool ValidItemDefIndex(int defindex) {
 	return !!GetEconItemDefinition(defindex);
 }
 
-static Address GetEconItemDefinition(int defindex) {
+Address GetEconItemDefinition(int defindex) {
 	Address pSchema = GetEconItemSchema();
 	return pSchema? SDKCall(g_SDKCallSchemaGetItemDefinition, pSchema, defindex) : Address_Null;
 }
 
-static bool LoadEconItemDefinitionString(int defindex, Address offset, char[] buffer,
-		int maxlen) {
-	Address pItemDef = GetEconItemDefinition(defindex);
-	if (!pItemDef) {
-		return false;
-	}
-	
-	LoadStringFromAddress(DereferencePointer(pItemDef + offset), buffer, maxlen);
-	return true;
-}
-
-static bool KeyValuesPtrKeyExists(Address pKeyValues, const char[] key) {
-	if (!pKeyValues) {
-		return false;
-	}
-	return !!SDKCall(g_SDKCallGetKeyValuesFindKey, pKeyValues, key, false);
-}
-
-static Address GetEconItemSchema() {
+Address GetEconItemSchema() {
 	return SDKCall(g_SDKCallGetEconItemSchema);
 }
 
@@ -427,5 +223,3 @@ static Address GameConfGetAddressOffset(Handle gamedata, const char[] key) {
 	}
 	return offs;
 }
-
-// note: in CEconItemDefinition, defindex is at 0x08
