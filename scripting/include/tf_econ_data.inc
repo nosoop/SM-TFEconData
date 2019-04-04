@@ -109,9 +109,23 @@ native bool TF2Econ_IsAttributeHidden(int defindex);
 native bool TF2Econ_IsAttributeStoredAsInteger(int defindex);
 
 /**
- * 
+ * Stores the attribute name in the given buffer and returns true if given a valid attribute
+ * definition, otherwise returns false.
+ */
+native bool TF2Econ_GetAttributeName(int defindex, char[] buffer, int maxlen);
+
+/**
+ * Stores the attribute class name in the given buffer and returns true if given a valid
+ * attribute definition, otherwise returns false.
  */
 native bool TF2Econ_GetAttributeClassName(int defindex, char[] buffer, int maxlen);
+
+/**
+ * Returns an arbiitrary string from an item attribute definition's KeyValues structure.
+ * You may use subkey notation ('/') to retrieve nested values.
+ */
+native void TF2Econ_GetAttributeDefinitionString(int defindex, const char[] key,
+		char[] buffer, int maxlen, const char[] defaultValue = "");
 
 /**
  * Returns the address of the CEconItemDefinition for the item with the given definition index,

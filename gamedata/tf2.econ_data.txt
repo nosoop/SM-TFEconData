@@ -94,6 +94,34 @@
 				"windows"	"512"
 			}
 			
+			"CEconItemAttributeDefinition::m_pKeyValues"
+			{
+				// set in CEconItemAttributeDefinition::BInitFromKV() after KeyValues::MakeCopy()
+				"linux"		"0"
+				"windows"	"0"
+			}
+			"CEconItemAttributeDefinition::m_bHidden"
+			{
+				"linux"		"12"
+				"windows"	"12"
+			}
+			"CEconItemAttributeDefinition::m_bIsInteger"
+			{
+				"linux"		"14"
+				"windows"	"14"
+			}
+			"CEconItemAttributeDefinition::m_pszAttributeName"
+			{
+				"linux"		"48"
+				"windows"	"48"
+			}
+			"CEconItemAttributeDefinition::m_pszAttributeClass"
+			{
+				"linux"		"52"
+				"windows"	"52"
+			}
+			
+			
 			"CEconItemSchema::m_ItemList"
 			{
 				// CUtlVector (?) with struct (int defindex, CEconItemDefinition*, int unknown)

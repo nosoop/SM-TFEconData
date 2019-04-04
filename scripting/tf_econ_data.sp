@@ -13,7 +13,7 @@
 #include <stocksoup/handles>
 #include <stocksoup/memory>
 
-#define PLUGIN_VERSION "0.8.0"
+#define PLUGIN_VERSION "0.8.1"
 public Plugin myinfo = {
 	name = "[TF2] Econ Data",
 	author = "nosoop",
@@ -64,7 +64,9 @@ public APLRes AskPluginLoad2(Handle self, bool late, char[] error, int maxlen) {
 	CreateNative("TF2Econ_IsValidAttributeDefinition", Native_IsValidAttributeDefinition);
 	CreateNative("TF2Econ_IsAttributeHidden", Native_IsAttributeHidden);
 	CreateNative("TF2Econ_IsAttributeStoredAsInteger", Native_IsAttributeStoredAsInteger);
+	CreateNative("TF2Econ_GetAttributeName", Native_GetAttributeName);
 	CreateNative("TF2Econ_GetAttributeClassName", Native_GetAttributeClassName);
+	CreateNative("TF2Econ_GetAttributeDefinitionString", Native_GetAttributeDefinitionString);
 	
 	// low-level stuff
 	CreateNative("TF2Econ_GetItemDefinitionAddress", Native_GetItemDefinitionAddress);
@@ -143,10 +145,16 @@ public void OnPluginStart() {
 	offs_CTFItemSchema_ItemSlotNames =
 			GameConfGetAddressOffset(hGameConf, "CTFItemSchema::m_ItemSlotNames");
 	
-	// offs_CEconItemAttributeDefinition_bHidden =
-	// 		GameConfGetAddressOffset(hGameConf, "CEconItemAttributeDefinition::m_bHidden");
-	// offs_CEconItemAttributeDefinition_bIsInteger =
-	// 		GameConfGetAddressOffset(hGameConf, "CEconItemAttributeDefinition::m_bIsInteger");
+	offs_CEconItemAttributeDefinition_pKeyValues =
+			GameConfGetAddressOffset(hGameConf, "CEconItemAttributeDefinition::m_pKeyValues");
+	offs_CEconItemAttributeDefinition_bHidden =
+			GameConfGetAddressOffset(hGameConf, "CEconItemAttributeDefinition::m_bHidden");
+	offs_CEconItemAttributeDefinition_bIsInteger =
+			GameConfGetAddressOffset(hGameConf, "CEconItemAttributeDefinition::m_bIsInteger");
+	offs_CEconItemAttributeDefinition_pszAttributeName = GameConfGetAddressOffset(hGameConf,
+			"CEconItemAttributeDefinition::m_pszAttributeName");
+	offs_CEconItemAttributeDefinition_pszAttributeClass = GameConfGetAddressOffset(hGameConf,
+			"CEconItemAttributeDefinition::m_pszAttributeClass");
 	
 	delete hGameConf;
 	
