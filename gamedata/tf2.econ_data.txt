@@ -66,6 +66,11 @@
 				"linux"		"18"
 				"windows"	"18"
 			}
+			"CEconItemDefinition::m_AttributeList"
+			{
+				"linux"		"28"
+				"windows"	"28"
+			}
 			"CEconItemDefinition::m_pszLocalizedItemName"
 			{
 				// set near x-ref "Test Item %d"

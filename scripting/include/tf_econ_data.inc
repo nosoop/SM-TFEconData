@@ -51,6 +51,15 @@ native int TF2Econ_GetItemSlot(int defindex, TFClassType playerClass);
 native bool TF2Econ_GetItemLevelRange(int defindex, int &iMinLevel, int &iMaxLevel);
 
 /**
+ * Returns an `ArrayList` containing attribute defindex / value pairs corresponding to the given
+ * item definition, or `null` if not a valid item definition.
+ * 
+ * This handle is owned by the calling plugin, so it should be `delete`d when not needed
+ * anymore.
+ */
+native ArrayList TF2Econ_GetItemStaticAttributes(int defindex);
+
+/**
  * Returns an arbiitrary string from an item definition's KeyValues structure.
  * You may use subkey notation ('/') to retrieve nested values.
  */
@@ -105,6 +114,10 @@ native bool TF2Econ_IsAttributeHidden(int defindex);
 /** 
  * Returns true if the attribute is stored as an integer (corresponds to the "stored_as_integer"
  * key).
+ * 
+ * Not sure when this is actually used -- certain attributes such as
+ * "mod max primary clip override" are flagged as true, but are float values when retrieved
+ * via `TF2Econ_GetItemStaticAttributes()`.
  */
 native bool TF2Econ_IsAttributeStoredAsInteger(int defindex);
 

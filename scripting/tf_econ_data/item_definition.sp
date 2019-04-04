@@ -1,6 +1,7 @@
 Address offs_CEconItemDefinition_pKeyValues,
 		offs_CEconItemDefinition_u8MinLevel,
 		offs_CEconItemDefinition_u8MaxLevel,
+		offs_CEconItemDefinition_AttributeList,
 		offs_CEconItemDefinition_pszLocalizedItemName,
 		offs_CEconItemDefinition_pszItemClassname,
 		offs_CEconItemDefinition_pszItemName;
@@ -90,6 +91,36 @@ bool GetItemLevelRange(int defindex, int &iMinLevel, int &iMaxLevel) {
 	iMaxLevel = LoadFromAddress(pItemDef + offs_CEconItemDefinition_u8MaxLevel,
 			NumberType_Int8);
 	return true;
+}
+
+public int Native_GetItemStaticAttributes(Handle hPlugin, int nParams) {
+	int defindex = GetNativeCell(1);
+	
+	Address pItemDef = GetEconItemDefinition(defindex);
+	if (!pItemDef) {
+		return view_as<int>(INVALID_HANDLE);
+	}
+	
+	// get size from CUtlVector
+	int nAttribs = LoadFromAddress(
+			pItemDef + offs_CEconItemDefinition_AttributeList + view_as<Address>(0x0C),
+			NumberType_Int32);
+	Address pAttribList = DereferencePointer(pItemDef + offs_CEconItemDefinition_AttributeList);
+	
+	// struct { attribute_defindex, value }
+	ArrayList attributeList = new ArrayList(2, nAttribs);
+	for (int i; i < nAttribs; i++) {
+		// TODO push attributes to list
+		Address pStaticAttrib = pAttribList + view_as<Address>(i * 0x08);
+		
+		int attrIndex = LoadFromAddress(pStaticAttrib, NumberType_Int16);
+		any attrValue = LoadFromAddress(pStaticAttrib + view_as<Address>(0x04),
+				NumberType_Int32);
+		
+		attributeList.Set(i, attrIndex, 0);
+		attributeList.Set(i, attrValue, 1);
+	}
+	return MoveHandle(attributeList, hPlugin);
 }
 
 public int Native_GetItemDefinitionString(Handle hPlugin, int nParams) {
