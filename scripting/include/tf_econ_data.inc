@@ -141,6 +141,13 @@ native void TF2Econ_GetAttributeDefinitionString(int defindex, const char[] key,
 		char[] buffer, int maxlen, const char[] defaultValue = "");
 
 /**
+ * Returns the address of the singleton CTFItemSchema (subclass of CEconItemSchema).
+ * 
+ * Here be dragons.
+ */
+native Address TF2Econ_GetItemSchemaAddress();
+
+/**
  * Returns the address of the CEconItemDefinition for the item with the given definition index,
  * or Address_Null if not valid.
  * 
