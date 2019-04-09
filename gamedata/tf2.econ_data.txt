@@ -28,6 +28,7 @@
 				"linux"				"@_ZN15CEconItemSchema28GetAttributeDefinitionByNameEPKc"
 				"windows"			"\x55\x8B\xEC\x83\xEC\x14\x53\x8B\x5D\x08\x56\x57\x8B\xF9\x85\xDB"
 			}
+			
 			"TranslateWeaponEntForClass()"
 			{
 				// get x-ref to structure containing string "saxxy"
@@ -49,6 +50,17 @@
 				"library"	"server"
 				"linux"		"@_ZN9KeyValues7FindKeyEPKcb"
 				"windows"	"\x55\x8B\xEC\x81\xEC\x04\x01\x00\x00\x56\x8B\x75\x08\x57"
+			}
+			
+			"CUtlRBTree<CEconItemQualityDefinition>::Find()"
+			{
+				// (the name listed above is shortened for readability, it's probably typedef'd to hell)
+				
+				// CEconItemSchema::BInitQualities() via x-ref unique string "Duplicate quality value (%d)"
+				// CUtlRBTree<...>::Find() is the second call in block at the start of iteration
+				"library"	"server"
+				"linux"		"@_ZNK10CUtlRBTreeIN7CUtlMapIi26CEconItemQualityDefinitioniPFbRKiS3_EE6Node_tEiNS6_8CKeyLessE10CUtlMemoryI15UtlRBTreeNode_tIS7_iEiEE4FindERKS7_"
+				"windows"	"\x55\x8B\xEC\x56\x57\x8B\xF9\x8B\x77\x10\x83\xFE\xFF\x74\x2A\x53\x8B\x47\x04\x8D\x1C\xF6"
 			}
 		}
 		
@@ -137,6 +149,16 @@
 				"windows"	"52"
 			}
 			
+			"CEconItemQualityDefinition::m_iValue"
+			{
+				"linux"		"0"
+				"windows"	"0"
+			}
+			"CEconItemQualityDefinition::m_pszName"
+			{
+				"linux"		"4"
+				"windows"	"4"
+			}
 			
 			"CEconItemSchema::m_ItemList"
 			{

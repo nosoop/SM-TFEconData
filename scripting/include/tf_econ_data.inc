@@ -147,6 +147,18 @@ native void TF2Econ_GetAttributeDefinitionString(int defindex, const char[] key,
 native int TF2Econ_TranslateAttributeNameToDefinitionIndex(const char[] name);
 
 /**
+ * Stores the quality name in the given buffer and returns true if given a valid quality value,
+ * otherwise returns false;
+ */
+native bool TF2Econ_GetQualityName(int quality, char[] buffer, int maxlen);
+
+/**
+ * Returns the quality value for a given name, or -1 if the name does not correspond to an item
+ * quality.
+ */
+native int TF2Econ_TranslateQualityNameToValue(const char[] name, bool caseSensitive = true);
+
+/**
  * Returns the address of the singleton CTFItemSchema (subclass of CEconItemSchema).
  * 
  * Here be dragons.

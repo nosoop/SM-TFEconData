@@ -13,7 +13,7 @@
 #include <stocksoup/handles>
 #include <stocksoup/memory>
 
-#define PLUGIN_VERSION "0.11.0"
+#define PLUGIN_VERSION "0.12.0"
 public Plugin myinfo = {
 	name = "[TF2] Econ Data",
 	author = "nosoop",
@@ -25,6 +25,7 @@ public Plugin myinfo = {
 #include "tf_econ_data/loadout_slot.sp"
 #include "tf_econ_data/item_definition.sp"
 #include "tf_econ_data/attribute_definition.sp"
+#include "tf_econ_data/quality_definition.sp"
 #include "tf_econ_data/keyvalues.sp"
 
 Handle g_SDKCallGetEconItemSchema;
@@ -71,6 +72,10 @@ public APLRes AskPluginLoad2(Handle self, bool late, char[] error, int maxlen) {
 	CreateNative("TF2Econ_GetAttributeDefinitionString", Native_GetAttributeDefinitionString);
 	CreateNative("TF2Econ_TranslateAttributeNameToDefinitionIndex",
 			Native_TranslateAttributeNameToDefinitionIndex);
+	
+	// quality information
+	CreateNative("TF2Econ_GetQualityName", Native_GetQualityName);
+	CreateNative("TF2Econ_TranslateQualityNameToValue", Native_TranslateQualityNameToValue);
 	
 	// low-level stuff
 	CreateNative("TF2Econ_GetItemSchemaAddress", Native_GetItemSchemaAddress);
@@ -136,6 +141,13 @@ public void OnPluginStart() {
 	PrepSDKCall_AddParameter(SDKType_Bool, SDKPass_Plain);
 	g_SDKCallGetKeyValuesFindKey = EndPrepSDKCall();
 	
+	StartPrepSDKCall(SDKCall_Raw);
+	PrepSDKCall_SetFromConf(hGameConf, SDKConf_Signature,
+			"CUtlRBTree<CEconItemQualityDefinition>::Find()");
+	PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);
+	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Pointer);
+	g_SDKCallRBTreeFindQualityDefinition = EndPrepSDKCall();
+	
 	offs_CEconItemDefinition_pKeyValues =
 			GameConfGetAddressOffset(hGameConf, "CEconItemDefinition::m_pKeyValues");
 	offs_CEconItemDefinition_u8MinLevel =
@@ -172,6 +184,11 @@ public void OnPluginStart() {
 			"CEconItemAttributeDefinition::m_pszAttributeName");
 	offs_CEconItemAttributeDefinition_pszAttributeClass = GameConfGetAddressOffset(hGameConf,
 			"CEconItemAttributeDefinition::m_pszAttributeClass");
+	
+	offs_CEconItemQualityDefinition_iValue =
+			GameConfGetAddressOffset(hGameConf, "CEconItemQualityDefinition::m_iValue");
+	offs_CEconItemQualityDefinition_pszName =
+			GameConfGetAddressOffset(hGameConf, "CEconItemQualityDefinition::m_pszName");
 	
 	delete hGameConf;
 	
