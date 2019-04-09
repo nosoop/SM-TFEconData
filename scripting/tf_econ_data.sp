@@ -13,7 +13,7 @@
 #include <stocksoup/handles>
 #include <stocksoup/memory>
 
-#define PLUGIN_VERSION "0.10.0"
+#define PLUGIN_VERSION "0.11.0"
 public Plugin myinfo = {
 	name = "[TF2] Econ Data",
 	author = "nosoop",
@@ -30,6 +30,7 @@ public Plugin myinfo = {
 Handle g_SDKCallGetEconItemSchema;
 Handle g_SDKCallSchemaGetItemDefinition;
 Handle g_SDKCallSchemaGetAttributeDefinition;
+Handle g_SDKCallSchemaGetAttributeDefinitionByName;
 Handle g_SDKCallTranslateWeaponEntForClass;
 
 Address offs_CEconItemSchema_ItemList,
@@ -68,6 +69,8 @@ public APLRes AskPluginLoad2(Handle self, bool late, char[] error, int maxlen) {
 	CreateNative("TF2Econ_GetAttributeName", Native_GetAttributeName);
 	CreateNative("TF2Econ_GetAttributeClassName", Native_GetAttributeClassName);
 	CreateNative("TF2Econ_GetAttributeDefinitionString", Native_GetAttributeDefinitionString);
+	CreateNative("TF2Econ_TranslateAttributeNameToDefinitionIndex",
+			Native_TranslateAttributeNameToDefinitionIndex);
 	
 	// low-level stuff
 	CreateNative("TF2Econ_GetItemSchemaAddress", Native_GetItemSchemaAddress);
@@ -104,6 +107,13 @@ public void OnPluginStart() {
 	PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);
 	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);
 	g_SDKCallSchemaGetAttributeDefinition = EndPrepSDKCall();
+	
+	StartPrepSDKCall(SDKCall_Raw);
+	PrepSDKCall_SetFromConf(hGameConf, SDKConf_Signature,
+			"CEconItemSchema::GetAttributeDefinitionByName()");
+	PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);
+	PrepSDKCall_AddParameter(SDKType_String, SDKPass_Pointer);
+	g_SDKCallSchemaGetAttributeDefinitionByName = EndPrepSDKCall();
 	
 	StartPrepSDKCall(SDKCall_Static);
 	PrepSDKCall_SetFromConf(hGameConf, SDKConf_Signature, "TranslateWeaponEntForClass()");
@@ -151,6 +161,9 @@ public void OnPluginStart() {
 	
 	offs_CEconItemAttributeDefinition_pKeyValues =
 			GameConfGetAddressOffset(hGameConf, "CEconItemAttributeDefinition::m_pKeyValues");
+	offs_CEconItemAttributeDefinition_iAttributeDefinitionIndex =
+			GameConfGetAddressOffset(hGameConf,
+			"CEconItemAttributeDefinition::m_iAttributeDefinitionIndex");
 	offs_CEconItemAttributeDefinition_bHidden =
 			GameConfGetAddressOffset(hGameConf, "CEconItemAttributeDefinition::m_bHidden");
 	offs_CEconItemAttributeDefinition_bIsInteger =
@@ -253,6 +266,28 @@ Address GetEconAttributeDefinition(int defindex) {
 	Address pSchema = GetEconItemSchema();
 	return pSchema?
 			SDKCall(g_SDKCallSchemaGetAttributeDefinition, pSchema, defindex) : Address_Null;
+}
+
+public int Native_TranslateAttributeNameToDefinitionIndex(Handle hPlugin, int nParams) {
+	int maxlen;
+	GetNativeStringLength(1, maxlen);
+	maxlen++;
+	char[] attrName = new char[maxlen];
+	GetNativeString(1, attrName, maxlen);
+	
+	Address pAttribute = GetEconAttributeDefinitionByName(attrName);
+	if (pAttribute) {
+		Address pOffs =
+				pAttribute + offs_CEconItemAttributeDefinition_iAttributeDefinitionIndex;
+		return LoadFromAddress(pOffs, NumberType_Int32);
+	}
+	return -1;
+}
+
+Address GetEconAttributeDefinitionByName(const char[] name) {
+	Address pSchema = GetEconItemSchema();
+	return pSchema?
+			SDKCall(g_SDKCallSchemaGetAttributeDefinitionByName, pSchema, name) : Address_Null;
 }
 
 Address GetEconItemSchema() {

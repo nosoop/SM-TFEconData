@@ -22,6 +22,12 @@
 				"linux"				"@_ZN15CEconItemSchema22GetAttributeDefinitionEi"
 				"windows"			"\x55\x8B\xEC\x83\xEC\x2A\x53\x56\x8B\xD9\x8D\x2A\x2A\x57"
 			}
+			"CEconItemSchema::GetAttributeDefinitionByName()"
+			{
+				"library"			"server"
+				"linux"				"@_ZN15CEconItemSchema28GetAttributeDefinitionByNameEPKc"
+				"windows"			"\x55\x8B\xEC\x83\xEC\x14\x53\x8B\x5D\x08\x56\x57\x8B\xF9\x85\xDB"
+			}
 			"TranslateWeaponEntForClass()"
 			{
 				// get x-ref to structure containing string "saxxy"
@@ -104,6 +110,11 @@
 				// set in CEconItemAttributeDefinition::BInitFromKV() after KeyValues::MakeCopy()
 				"linux"		"0"
 				"windows"	"0"
+			}
+			"CEconItemAttributeDefinition::m_iAttributeDefinitionIndex"
+			{
+				"linux"		"4"
+				"windows"	"4"
 			}
 			"CEconItemAttributeDefinition::m_bHidden"
 			{

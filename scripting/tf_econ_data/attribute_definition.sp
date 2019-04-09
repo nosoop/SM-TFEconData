@@ -1,4 +1,5 @@
 Address offs_CEconItemAttributeDefinition_pKeyValues,
+		offs_CEconItemAttributeDefinition_iAttributeDefinitionIndex,
 		offs_CEconItemAttributeDefinition_bHidden,
 		offs_CEconItemAttributeDefinition_bIsInteger,
 		offs_CEconItemAttributeDefinition_pszAttributeName,
