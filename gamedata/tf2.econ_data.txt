@@ -160,6 +160,13 @@
 				"windows"	"4"
 			}
 			
+			"CEconItemSchema::m_ItemQualities"
+			{
+				// CUtlRBTree<...>
+				// offset into `ebx` in CEconItemSchema::GetQualityDefinition() on linux
+				"linux"		"160"
+				"windows"	"160"
+			}
 			"CEconItemSchema::m_ItemList"
 			{
 				// CUtlVector (?) with struct (int defindex, CEconItemDefinition*, int unknown)

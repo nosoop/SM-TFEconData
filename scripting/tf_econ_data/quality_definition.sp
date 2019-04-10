@@ -69,20 +69,21 @@ Address GetEconQualityDefinition(int quality) {
 	lessFunc_t[3] = 0; // ???
 	lessFunc_t[4] = 0; // char*
 	
-	// CUtlRBTree<CEconItemQualityDefinition>::Find returns an array index (int)
-	int index = SDKCall(g_SDKCallRBTreeFindQualityDefinition, pSchema + view_as<Address>(0xA0),
-			lessFunc_t);
+	// CUtlRBTree<CEconItemQualityDefinition>::Find returns an offset into some data (int)
+	Address pItemQualityTree = pSchema + offs_CEconItemSchema_ItemQualities;
+	int index = SDKCall(g_SDKCallRBTreeFindQualityDefinition, pItemQualityTree, lessFunc_t);
 	
 	if (index == -1) {
 		return Address_Null;
 	}
 	
 	// g_schema.field_0xA0 is the address of the CUtlRBTree
+	// g_schema.field_0xA4 is some weird array access -- probably a key / value mapping?
 	// g_schema.field_0xA8 is the number of elements in the quality list
 	
-	// it looks like sizeof(CEconItemQualityDefinition) == 0x24
-	
-	return DereferencePointer(pSchema + view_as<Address>(0xA4))
+	// implementation based off of CEconItemSchema::GetQualityDefinition()
+	// it's going to absolutely suck if they change the implementation / remove the function
+	return DereferencePointer(pItemQualityTree + view_as<Address>(0x04))
 			+ view_as<Address>((index * 0x24) + 0x14);
 }
 

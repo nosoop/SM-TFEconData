@@ -13,7 +13,7 @@
 #include <stocksoup/handles>
 #include <stocksoup/memory>
 
-#define PLUGIN_VERSION "0.12.0"
+#define PLUGIN_VERSION "0.12.1"
 public Plugin myinfo = {
 	name = "[TF2] Econ Data",
 	author = "nosoop",
@@ -21,6 +21,10 @@ public Plugin myinfo = {
 	version = PLUGIN_VERSION,
 	url = "https://github.com/nosoop/SM-TFEconData"
 }
+
+Address offs_CEconItemSchema_ItemQualities,
+		offs_CEconItemSchema_ItemList,
+		offs_CEconItemSchema_nItemCount;
 
 #include "tf_econ_data/loadout_slot.sp"
 #include "tf_econ_data/item_definition.sp"
@@ -33,9 +37,6 @@ Handle g_SDKCallSchemaGetItemDefinition;
 Handle g_SDKCallSchemaGetAttributeDefinition;
 Handle g_SDKCallSchemaGetAttributeDefinitionByName;
 Handle g_SDKCallTranslateWeaponEntForClass;
-
-Address offs_CEconItemSchema_ItemList,
-		offs_CEconItemSchema_nItemCount;
 
 public APLRes AskPluginLoad2(Handle self, bool late, char[] error, int maxlen) {
 	RegPluginLibrary("tf_econ_data");
@@ -164,6 +165,9 @@ public void OnPluginStart() {
 			GameConfGetAddressOffset(hGameConf, "CEconItemDefinition::m_pszItemName");
 	offs_CEconItemDefinition_aiItemSlot =
 			GameConfGetAddressOffset(hGameConf, "CEconItemDefinition::m_aiItemSlot");
+	
+	offs_CEconItemSchema_ItemQualities =
+			GameConfGetAddressOffset(hGameConf, "CEconItemSchema::m_ItemQualities");
 	offs_CEconItemSchema_ItemList =
 			GameConfGetAddressOffset(hGameConf, "CEconItemSchema::m_ItemList");
 	offs_CEconItemSchema_nItemCount =
