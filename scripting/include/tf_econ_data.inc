@@ -167,6 +167,26 @@ native int TF2Econ_TranslateQualityNameToValue(const char[] name, bool caseSensi
 native ArrayList TF2Econ_GetQualityList();
 
 /**
+ * Stores the rarity name in the given buffer and returns true if given a valid rarity value,
+ * otherwise returns false;
+ */
+native bool TF2Econ_GetRarityName(int rarity, char[] buffer, int maxlen);
+
+/**
+ * Returns the rarity value for a given name, or -1 if the name does not correspond to an item
+ * rarity.
+ */
+native int TF2Econ_TranslateRarityNameToValue(const char[] name, bool caseSensitive = true);
+
+/**
+ * Returns an ArrayList containing all valid rarity values.
+ * 
+ * This handle is owned by the calling plugin, so it should be `delete`d when not needed
+ * anymore.
+ */
+native ArrayList TF2Econ_GetRarityList();
+
+/**
  * Returns the address of the singleton CTFItemSchema (subclass of CEconItemSchema).
  * 
  * Here be dragons.
@@ -188,6 +208,14 @@ native Address TF2Econ_GetItemDefinitionAddress(int defindex);
  * Here be dragons.
  */
 native Address TF2Econ_GetAttributeDefinitionAddress(int defindex);
+
+/**
+ * Returns the address of the CEconItemRarityDefinition for the rarity with the given value,
+ * or Address_Null if not valid.
+ * 
+ * You know the drill at this point.
+ */
+native Address TF2Econ_GetRarityDefinitionAddress(int rarity);
 
 /**
  * @deprecated Renamed native to TF2Econ_IsValidItemDefinition so there is a better distinction

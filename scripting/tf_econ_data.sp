@@ -13,7 +13,7 @@
 #include <stocksoup/handles>
 #include <stocksoup/memory>
 
-#define PLUGIN_VERSION "0.12.3"
+#define PLUGIN_VERSION "0.12.4"
 public Plugin myinfo = {
 	name = "[TF2] Econ Data",
 	author = "nosoop",
@@ -30,6 +30,7 @@ Address offs_CEconItemSchema_ItemQualities,
 #include "tf_econ_data/item_definition.sp"
 #include "tf_econ_data/attribute_definition.sp"
 #include "tf_econ_data/quality_definition.sp"
+#include "tf_econ_data/rarity_definition.sp"
 #include "tf_econ_data/keyvalues.sp"
 
 Handle g_SDKCallGetEconItemSchema;
@@ -79,10 +80,16 @@ public APLRes AskPluginLoad2(Handle self, bool late, char[] error, int maxlen) {
 	CreateNative("TF2Econ_TranslateQualityNameToValue", Native_TranslateQualityNameToValue);
 	CreateNative("TF2Econ_GetQualityList", Native_GetQualityList);
 	
+	// rarity information
+	CreateNative("TF2Econ_GetRarityName", Native_GetRarityName);
+	CreateNative("TF2Econ_TranslateRarityNameToValue", Native_TranslateRarityNameToValue);
+	CreateNative("TF2Econ_GetRarityList", Native_GetRarityList);
+	
 	// low-level stuff
 	CreateNative("TF2Econ_GetItemSchemaAddress", Native_GetItemSchemaAddress);
 	CreateNative("TF2Econ_GetItemDefinitionAddress", Native_GetItemDefinitionAddress);
 	CreateNative("TF2Econ_GetAttributeDefinitionAddress", Native_GetAttributeDefinitionAddress);
+	CreateNative("TF2Econ_GetRarityDefinitionAddress", Native_GetRarityDefinitionAddress);
 	
 	// backwards-compatibile
 	CreateNative("TF2Econ_IsValidDefinitionIndex", Native_IsValidItemDefinition);
