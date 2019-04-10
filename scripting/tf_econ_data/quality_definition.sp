@@ -12,13 +12,9 @@ public int Native_GetQualityName(Handle hPlugin, int nParams) {
 	int maxlen = GetNativeCell(3);
 	
 	char[] buffer = new char[maxlen];
-	bool bResult = LoadEconQualityDefinitionString(quality,
-			offs_CEconItemQualityDefinition_pszName, buffer, maxlen);
-	
-	if (bResult) {
-		SetNativeString(2, buffer, maxlen, true);
-	}
-	return bResult;
+	GetEconQualityName(pQualityDef, buffer, maxlen);
+	SetNativeString(2, buffer, maxlen, true);
+	return true;
 }
 
 public int Native_TranslateQualityNameToValue(Handle hPlugin, int nParams) {
@@ -31,39 +27,31 @@ public int Native_TranslateQualityNameToValue(Handle hPlugin, int nParams) {
 	char[] input = new char[maxlen];
 	GetNativeString(1, input, maxlen);
 	
-	ArrayList qualityPointerList = GetEconQualityPointerList();
-	if (!qualityPointerList) {
-		return -1;
-	}
-	
-	int result = -1;
-	for (int i; i < qualityPointerList.Length && result == -1; i++) {
+	int nQualityDefs = GetEconQualityDefinitionCount();
+	for (int i; i < nQualityDefs; i++) {
 		char buffer[32];
-		Address pQualityDef = qualityPointerList.Get(i);
+		Address pQualityDef = GetEconQualityDefinitionFromMemoryIndex(i);
 		Address pszName =
 				DereferencePointer(pQualityDef + offs_CEconItemQualityDefinition_pszName);
 		LoadStringFromAddress(pszName, buffer, sizeof(buffer));
 		if (StrEqual(input, buffer, caseSensitive)) {
-			result = GetEconQualityValue(pQualityDef);
+			return GetEconQualityValue(pQualityDef);
 		}
 	}
-	delete qualityPointerList;
-	
-	return result;
+	return -1;
 }
 
 public int Native_GetQualityList(Handle hPlugin, int nParams) {
-	ArrayList qualityPointerList = GetEconQualityPointerList();
-	if (!qualityPointerList) {
+	int nQualityDefs = GetEconQualityDefinitionCount();
+	if (!nQualityDefs) {
 		return view_as<int>(INVALID_HANDLE);
 	}
 	
 	ArrayList qualityValues = new ArrayList();
-	for (int i; i < qualityPointerList.Length; i++) {
-		Address pQualityDef = qualityPointerList.Get(i);
+	for (int i; i < nQualityDefs; i++) {
+		Address pQualityDef = GetEconQualityDefinitionFromMemoryIndex(i);
 		qualityValues.Push(GetEconQualityValue(pQualityDef));
 	}
-	delete qualityPointerList;
 	
 	return MoveHandleImmediate(qualityValues, hPlugin);
 }
@@ -75,46 +63,37 @@ Address GetEconQualityDefinition(int quality) {
 	 * 
 	 * For our sanity's sake, we'll just iterate over the underlying data array and accept the 
 	 * performance penalty.
-	 */ 
-	
-	ArrayList qualityPointerList = GetEconQualityPointerList();
-	if (!qualityPointerList) {
-		return Address_Null;
-	}
-	
-	Address result;
-	for (int i; i < qualityPointerList.Length && !result; i++) {
-		Address pQualityDef = qualityPointerList.Get(i);
+	 */
+	int nQualityDefs = GetEconQualityDefinitionCount();
+	for (int i; i < nQualityDefs; i++) {
+		Address pQualityDef = GetEconQualityDefinitionFromMemoryIndex(i);
 		if (quality == GetEconQualityValue(pQualityDef)) {
-			result = pQualityDef;
+			return pQualityDef;
 		}
 	}
-	delete qualityPointerList;
-	
-	return result;
+	return Address_Null;
 }
 
 /**
  * Returns the quality value of a given quality definition.
  */
 static int GetEconQualityValue(Address pQualityDef) {
-	return LoadFromAddress(pQualityDef + offs_CEconItemQualityDefinition_iValue,
-					NumberType_Int32);
+	return pQualityDef? LoadFromAddress(pQualityDef + offs_CEconItemQualityDefinition_iValue,
+					NumberType_Int32) : -1;
 }
 
 /**
- * Returns an ArrayList of CEconItemQualityDefinition addresses.
+ * Returns the quality name of a given quality definition.
  */
-static ArrayList GetEconQualityPointerList() {
-	if (!GetEconQualityDefinitionCount()) {
-		return null;
+static void GetEconQualityName(Address pQualityDef, char[] buffer, int maxlen) {
+	if (!pQualityDef) {
+		return;
 	}
 	
-	ArrayList result = new ArrayList();
-	for (int i; i < GetEconQualityDefinitionCount(); i++) {
-		result.Push(GetEconQualityDefinitionFromMemoryIndex(i));
-	}
-	return result;
+	LoadStringFromAddress(
+			DereferencePointer(pQualityDef + offs_CEconItemQualityDefinition_pszName),
+			buffer, maxlen);
+	return;
 }
 
 /**
@@ -164,15 +143,4 @@ static Address GetEconQualityDefinitionTree() {
 	
 	s_pItemQualityTree = pSchema + offs_CEconItemSchema_ItemQualities;
 	return s_pItemQualityTree;
-}
-
-static bool LoadEconQualityDefinitionString(int quality, Address offset, char[] buffer,
-		int maxlen) {
-	Address pQualityDef = GetEconQualityDefinition(quality);
-	if (!pQualityDef) {
-		return false;
-	}
-	
-	LoadStringFromAddress(DereferencePointer(pQualityDef + offset), buffer, maxlen);
-	return true;
 }

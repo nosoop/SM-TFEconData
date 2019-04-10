@@ -30,39 +30,29 @@ public int Native_TranslateRarityNameToValue(Handle hPlugin, int nParams) {
 	char[] input = new char[maxlen];
 	GetNativeString(1, input, maxlen);
 	
-	ArrayList rarityPointerList = GetEconRarityPointerList();
-	if (!rarityPointerList) {
-		return -1;
-	}
-	
-	int result = -1;
-	for (int i; i < rarityPointerList.Length && result == -1; i++) {
+	int nRarityCount = GetEconRarityDefinitionCount();
+	for (int i; i < nRarityCount; i++) {
 		char buffer[32];
-		Address pQualityDef = rarityPointerList.Get(i);
-		GetRarityName(pQualityDef, buffer, sizeof(buffer));
+		Address pRarityDef = GetEconRarityDefinitionFromMemoryIndex(i);
+		GetRarityName(pRarityDef, buffer, sizeof(buffer));
 		if (StrEqual(input, buffer, caseSensitive)) {
-			result = GetRarityValue(pQualityDef);
+			return GetRarityValue(pRarityDef);
 		}
 	}
-	delete rarityPointerList;
 	
-	return result;
+	return -1;
 }
 
 public int Native_GetRarityList(Handle hPlugin, int nParams) {
-	ArrayList rarityPointerList = GetEconRarityPointerList();
-	if (!rarityPointerList) {
-		return view_as<int>(INVALID_HANDLE);
+	ArrayList rarityValues = new ArrayList();
+	
+	int nRarityCount = GetEconRarityDefinitionCount();
+	for (int i; i < nRarityCount; i++) {
+		Address pRarityDef = GetEconRarityDefinitionFromMemoryIndex(i);
+		rarityValues.Push(GetRarityValue(pRarityDef));
 	}
 	
-	ArrayList qualityValues = new ArrayList();
-	for (int i; i < rarityPointerList.Length; i++) {
-		Address pRarityDef = rarityPointerList.Get(i);
-		qualityValues.Push(GetRarityValue(pRarityDef));
-	}
-	delete rarityPointerList;
-	
-	return MoveHandleImmediate(qualityValues, hPlugin);
+	return MoveHandleImmediate(rarityValues, hPlugin);
 }
 
 public int Native_GetRarityDefinitionAddress(Handle hPlugin, int nParams) {
@@ -71,21 +61,14 @@ public int Native_GetRarityDefinitionAddress(Handle hPlugin, int nParams) {
 }
 
 Address GetEconRarityDefinition(int rarity) {
-	ArrayList rarityPointerList = GetEconRarityPointerList();
-	if (!rarityPointerList) {
-		return Address_Null;
-	}
-	
-	Address result;
-	for (int i; i < rarityPointerList.Length && !result; i++) {
-		Address pRarityDef = rarityPointerList.Get(i);
+	int nRarityCount = GetEconRarityDefinitionCount();
+	for (int i; i < nRarityCount; i++) {
+		Address pRarityDef = GetEconRarityDefinitionFromMemoryIndex(i);
 		if (rarity == GetRarityValue(pRarityDef)) {
-			result = pRarityDef;
+			return pRarityDef;
 		}
 	}
-	delete rarityPointerList;
-	
-	return result;
+	return Address_Null;
 }
 
 static int GetRarityValue(Address pRarityDef) {
@@ -100,21 +83,6 @@ static void GetRarityName(Address pRarityDef, char[] buffer, int maxlen) {
 	LoadStringFromAddress(
 				DereferencePointer(pRarityDef + offs_CEconItemRarityDefinition_pszName),
 				buffer, maxlen);
-}
-
-/**
- * Returns an ArrayList of CEconItemRarityDefinition addresses.
- */
-static ArrayList GetEconRarityPointerList() {
-	if (!GetEconRarityDefinitionCount()) {
-		return null;
-	}
-	
-	ArrayList result = new ArrayList();
-	for (int i; i < GetEconRarityDefinitionCount(); i++) {
-		result.Push(GetEconRarityDefinitionFromMemoryIndex(i));
-	}
-	return result;
 }
 
 /**
