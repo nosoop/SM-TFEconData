@@ -159,6 +159,14 @@ native bool TF2Econ_GetQualityName(int quality, char[] buffer, int maxlen);
 native int TF2Econ_TranslateQualityNameToValue(const char[] name, bool caseSensitive = true);
 
 /**
+ * Returns an ArrayList containing all valid quality values.
+ * 
+ * This handle is owned by the calling plugin, so it should be `delete`d when not needed
+ * anymore.
+ */
+native ArrayList TF2Econ_GetQualityList();
+
+/**
  * Returns the address of the singleton CTFItemSchema (subclass of CEconItemSchema).
  * 
  * Here be dragons.

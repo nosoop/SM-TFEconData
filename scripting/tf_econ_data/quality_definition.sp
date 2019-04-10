@@ -43,7 +43,6 @@ public int Native_TranslateQualityNameToValue(Handle hPlugin, int nParams) {
 		Address pszName =
 				DereferencePointer(pQualityDef + offs_CEconItemQualityDefinition_pszName);
 		LoadStringFromAddress(pszName, buffer, sizeof(buffer));
-		
 		if (StrEqual(input, buffer, caseSensitive)) {
 			result = GetEconQualityValue(pQualityDef);
 		}
@@ -51,6 +50,22 @@ public int Native_TranslateQualityNameToValue(Handle hPlugin, int nParams) {
 	delete qualityPointerList;
 	
 	return result;
+}
+
+public int Native_GetQualityList(Handle hPlugin, int nParams) {
+	ArrayList qualityPointerList = GetEconQualityPointerList();
+	if (!qualityPointerList) {
+		return view_as<int>(INVALID_HANDLE);
+	}
+	
+	ArrayList qualityValues = new ArrayList();
+	for (int i; i < qualityPointerList.Length; i++) {
+		Address pQualityDef = qualityPointerList.Get(i);
+		qualityValues.Push(GetEconQualityValue(pQualityDef));
+	}
+	delete qualityPointerList;
+	
+	return MoveHandleImmediate(qualityValues, hPlugin);
 }
 
 Address GetEconQualityDefinition(int quality) {

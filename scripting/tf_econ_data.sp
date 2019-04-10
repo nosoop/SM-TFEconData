@@ -13,7 +13,7 @@
 #include <stocksoup/handles>
 #include <stocksoup/memory>
 
-#define PLUGIN_VERSION "0.12.2"
+#define PLUGIN_VERSION "0.12.3"
 public Plugin myinfo = {
 	name = "[TF2] Econ Data",
 	author = "nosoop",
@@ -77,6 +77,7 @@ public APLRes AskPluginLoad2(Handle self, bool late, char[] error, int maxlen) {
 	// quality information
 	CreateNative("TF2Econ_GetQualityName", Native_GetQualityName);
 	CreateNative("TF2Econ_TranslateQualityNameToValue", Native_TranslateQualityNameToValue);
+	CreateNative("TF2Econ_GetQualityList", Native_GetQualityList);
 	
 	// low-level stuff
 	CreateNative("TF2Econ_GetItemSchemaAddress", Native_GetItemSchemaAddress);
