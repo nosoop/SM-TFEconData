@@ -1,8 +1,6 @@
 Address offs_CEconItemQualityDefinition_iValue,
 		offs_CEconItemQualityDefinition_pszName;
 
-Handle g_SDKCallRBTreeFindQualityDefinition;
-
 public int Native_GetQualityName(Handle hPlugin, int nParams) {
 	int quality = GetNativeCell(1);
 	
@@ -33,47 +31,83 @@ public int Native_TranslateQualityNameToValue(Handle hPlugin, int nParams) {
 	char[] input = new char[maxlen];
 	GetNativeString(1, input, maxlen);
 	
-	Address pQualityDef;
-	int q;
-	while ((pQualityDef = GetEconQualityDefinition(q))) {
+	ArrayList qualityPointerList = GetEconQualityPointerList();
+	if (!qualityPointerList) {
+		return -1;
+	}
+	
+	int result = -1;
+	for (int i; i < qualityPointerList.Length && result == -1; i++) {
 		char buffer[32];
+		Address pQualityDef = qualityPointerList.Get(i);
 		Address pszName =
 				DereferencePointer(pQualityDef + offs_CEconItemQualityDefinition_pszName);
 		LoadStringFromAddress(pszName, buffer, sizeof(buffer));
 		
 		if (StrEqual(input, buffer, caseSensitive)) {
-			return LoadFromAddress(pQualityDef + offs_CEconItemQualityDefinition_iValue,
-					NumberType_Int32);
+			result = GetEconQualityValue(pQualityDef);
 		}
-		q++;
 	}
-	return -1;
+	delete qualityPointerList;
+	
+	return result;
 }
 
 Address GetEconQualityDefinition(int quality) {
-	Address pSchema = GetEconItemSchema();
-	if (!pSchema) {
+	/** 
+	 * Valve's implementation uses a lookup within a CUtlRBTree structure, which requires an
+	 * SDKCall.
+	 * 
+	 * For our sanity's sake, we'll just iterate over the underlying data array and accept the 
+	 * performance penalty.
+	 */ 
+	
+	ArrayList qualityPointerList = GetEconQualityPointerList();
+	if (!qualityPointerList) {
 		return Address_Null;
 	}
 	
-	/**
-	 * Questionable hack: we simulate a stack-allocated struct with an int[] in SP-land.
-	 * 
-	 * This is what `CEconItemSchema::GetQualityDefinition()` does on Linux; the function
-	 * doesn't exist on Windows so we're reimplementing it.
-	 */
-	any lessFunc_t[5];
-	lessFunc_t[0] = quality; // int
-	lessFunc_t[1] = 0x7FFFFFFF; // int
-	lessFunc_t[2] = 0; // char*
-	lessFunc_t[3] = 0; // ???
-	lessFunc_t[4] = 0; // char*
+	Address result;
+	for (int i; i < qualityPointerList.Length && !result; i++) {
+		Address pQualityDef = qualityPointerList.Get(i);
+		if (quality == GetEconQualityValue(pQualityDef)) {
+			result = pQualityDef;
+		}
+	}
+	delete qualityPointerList;
 	
-	// CUtlRBTree<CEconItemQualityDefinition>::Find returns an offset into some data (int)
-	Address pItemQualityTree = pSchema + offs_CEconItemSchema_ItemQualities;
-	int index = SDKCall(g_SDKCallRBTreeFindQualityDefinition, pItemQualityTree, lessFunc_t);
+	return result;
+}
+
+/**
+ * Returns the quality value of a given quality definition.
+ */
+static int GetEconQualityValue(Address pQualityDef) {
+	return LoadFromAddress(pQualityDef + offs_CEconItemQualityDefinition_iValue,
+					NumberType_Int32);
+}
+
+/**
+ * Returns an ArrayList of CEconItemQualityDefinition addresses.
+ */
+static ArrayList GetEconQualityPointerList() {
+	if (!GetEconQualityDefinitionCount()) {
+		return null;
+	}
 	
-	if (index == -1) {
+	ArrayList result = new ArrayList();
+	for (int i; i < GetEconQualityDefinitionCount(); i++) {
+		result.Push(GetEconQualityDefinitionFromMemoryIndex(i));
+	}
+	return result;
+}
+
+/**
+ * Returns the address of a CEconItemQualityDefinition based on an array index in the schema's
+ * internal CEconItemQualityDefinition array.
+ */
+static Address GetEconQualityDefinitionFromMemoryIndex(int index) {
+	if (index < 0 || index >= GetEconQualityDefinitionCount()) {
 		return Address_Null;
 	}
 	
@@ -83,8 +117,38 @@ Address GetEconQualityDefinition(int quality) {
 	
 	// implementation based off of CEconItemSchema::GetQualityDefinition()
 	// it's going to absolutely suck if they change the implementation / remove the function
-	return DereferencePointer(pItemQualityTree + view_as<Address>(0x04))
+	
+	/**
+	 * This array access can be checked against the call made to
+	 * CEconItemQualityDefinition::BInitFromKV() within CEconItemSchema::BInitQualities().
+	 */
+	return DereferencePointer(GetEconQualityDefinitionTree() + view_as<Address>(0x04))
 			+ view_as<Address>((index * 0x24) + 0x14);
+}
+
+/**
+ * Returns the number of items in the internal CEconItemQualityDefinition array.
+ */
+static int GetEconQualityDefinitionCount() {
+	Address pItemQualityTree = GetEconQualityDefinitionTree();
+	return pItemQualityTree?
+			LoadFromAddress(pItemQualityTree + view_as<Address>(0x08), NumberType_Int32) :
+			0;
+}
+
+static Address GetEconQualityDefinitionTree() {
+	static Address s_pItemQualityTree;
+	if (s_pItemQualityTree) {
+		return s_pItemQualityTree;
+	}
+	
+	Address pSchema = GetEconItemSchema();
+	if (!pSchema) {
+		return Address_Null;
+	}
+	
+	s_pItemQualityTree = pSchema + offs_CEconItemSchema_ItemQualities;
+	return s_pItemQualityTree;
 }
 
 static bool LoadEconQualityDefinitionString(int quality, Address offset, char[] buffer,
