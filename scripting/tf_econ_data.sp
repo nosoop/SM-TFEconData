@@ -13,7 +13,7 @@
 #include <stocksoup/handles>
 #include <stocksoup/memory>
 
-#define PLUGIN_VERSION "0.12.5"
+#define PLUGIN_VERSION "0.12.6"
 public Plugin myinfo = {
 	name = "[TF2] Econ Data",
 	author = "nosoop",
@@ -167,6 +167,10 @@ public void OnPluginStart() {
 	offs_CEconItemDefinition_aiItemSlot =
 			GameConfGetAddressOffset(hGameConf, "CEconItemDefinition::m_aiItemSlot");
 	
+	offs_CEconItemSchema_ItemRarities =
+			GameConfGetAddressOffset(hGameConf, "CEconItemSchema::m_ItemRarities");
+	offs_CEconItemSchema_iLastValidRarity =
+			GameConfGetAddressOffset(hGameConf, "CEconItemSchema::m_iLastValidRarity");
 	offs_CEconItemSchema_ItemQualities =
 			GameConfGetAddressOffset(hGameConf, "CEconItemSchema::m_ItemQualities");
 	offs_CEconItemSchema_ItemList =
@@ -185,15 +189,22 @@ public void OnPluginStart() {
 			GameConfGetAddressOffset(hGameConf, "CEconItemAttributeDefinition::m_bHidden");
 	offs_CEconItemAttributeDefinition_bIsInteger =
 			GameConfGetAddressOffset(hGameConf, "CEconItemAttributeDefinition::m_bIsInteger");
-	offs_CEconItemAttributeDefinition_pszAttributeName = GameConfGetAddressOffset(hGameConf,
+	offs_CEconItemAttributeDefinition_pszAttributeName =
+			GameConfGetAddressOffset(hGameConf,
 			"CEconItemAttributeDefinition::m_pszAttributeName");
-	offs_CEconItemAttributeDefinition_pszAttributeClass = GameConfGetAddressOffset(hGameConf,
+	offs_CEconItemAttributeDefinition_pszAttributeClass =
+			GameConfGetAddressOffset(hGameConf,
 			"CEconItemAttributeDefinition::m_pszAttributeClass");
 	
 	offs_CEconItemQualityDefinition_iValue =
 			GameConfGetAddressOffset(hGameConf, "CEconItemQualityDefinition::m_iValue");
 	offs_CEconItemQualityDefinition_pszName =
 			GameConfGetAddressOffset(hGameConf, "CEconItemQualityDefinition::m_pszName");
+	
+	offs_CEconItemRarityDefinition_iValue =
+			GameConfGetAddressOffset(hGameConf, "CEconItemRarityDefinition::m_iValue");
+	offs_CEconItemRarityDefinition_pszName =
+			GameConfGetAddressOffset(hGameConf, "CEconItemRarityDefinition::m_pszName");
 	
 	delete hGameConf;
 	

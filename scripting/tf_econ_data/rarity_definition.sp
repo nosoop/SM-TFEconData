@@ -1,8 +1,8 @@
-Address offs_CEconItemSchema_ItemRarities = view_as<Address>(0x7C);
-Address offs_CEconItemSchema_iLastValidRarity = view_as<Address>(0x98);
+Address offs_CEconItemSchema_ItemRarities;
+Address offs_CEconItemSchema_iLastValidRarity;
 
-Address offs_CEconItemRarityDefinition_iValue = view_as<Address>(0x00),
-		offs_CEconItemRarityDefinition_pszName = view_as<Address>(0x08);
+Address offs_CEconItemRarityDefinition_iValue,
+		offs_CEconItemRarityDefinition_pszName;
 
 public int Native_GetRarityName(Handle hPlugin, int nParams) {
 	int rarity = GetNativeCell(1);

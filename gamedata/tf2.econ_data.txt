@@ -149,6 +149,27 @@
 				"windows"	"4"
 			}
 			
+			"CEconItemRarityDefinition::m_iValue"
+			{
+				"linux"		"0"
+				"windows"	"0"
+			}
+			"CEconItemRarityDefinition::m_pszName"
+			{
+				"linux"		"8"
+				"windows"	"8"
+			}
+			
+			"CEconItemSchema::m_ItemRarities"
+			{
+				"linux"		"124"
+				"windows"	"124"
+			}
+			"CEconItemSchema::m_iLastValidRarity"
+			{
+				"linux"		"152"
+				"windows"	"152"
+			}
 			"CEconItemSchema::m_ItemQualities"
 			{
 				// CUtlRBTree<...>
