@@ -169,6 +169,10 @@ native ArrayList TF2Econ_GetQualityList();
 /**
  * Stores the rarity name in the given buffer and returns true if given a valid rarity value,
  * otherwise returns false;
+ * 
+ * Note:  Rarity names returned by this value correspond to the localized "weapon grade" names,
+ * but are completely different.  "Civilian Grade" corresponds to "common", "Freelance Grade" to
+ * "uncommon", and so on.
  */
 native bool TF2Econ_GetRarityName(int rarity, char[] buffer, int maxlen);
 
