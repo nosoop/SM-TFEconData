@@ -140,6 +140,7 @@
 			
 			"CEconItemQualityDefinition::m_iValue"
 			{
+				// refer to CEconItemQualityDefinition::BInitFromKV()
 				"linux"		"0"
 				"windows"	"0"
 			}
@@ -151,6 +152,7 @@
 			
 			"CEconItemRarityDefinition::m_iValue"
 			{
+				// refer to CEconItemRarityDefinition::BInitFromKV()
 				"linux"		"0"
 				"windows"	"0"
 			}
@@ -162,11 +164,13 @@
 			
 			"CEconItemSchema::m_ItemRarities"
 			{
+				// offset into `ebx` in CEconItemSchema::GetQualityDefinition() on linux
 				"linux"		"124"
 				"windows"	"124"
 			}
 			"CEconItemSchema::m_iLastValidRarity"
 			{
+				// offset into `ebx` inside second block within CEconItemSchema::GetRarityDefinition() on linux
 				"linux"		"152"
 				"windows"	"152"
 			}
