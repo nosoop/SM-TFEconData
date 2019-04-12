@@ -13,7 +13,7 @@
 #include <stocksoup/handles>
 #include <stocksoup/memory>
 
-#define PLUGIN_VERSION "0.13.0"
+#define PLUGIN_VERSION "0.14.0"
 public Plugin myinfo = {
 	name = "[TF2] Econ Data",
 	author = "nosoop",
@@ -28,6 +28,7 @@ Address offs_CEconItemSchema_ItemQualities,
 
 #include "tf_econ_data/loadout_slot.sp"
 #include "tf_econ_data/item_definition.sp"
+#include "tf_econ_data/equip_regions.sp"
 #include "tf_econ_data/attribute_definition.sp"
 #include "tf_econ_data/quality_definition.sp"
 #include "tf_econ_data/rarity_definition.sp"
@@ -86,6 +87,10 @@ public APLRes AskPluginLoad2(Handle self, bool late, char[] error, int maxlen) {
 	CreateNative("TF2Econ_GetRarityName", Native_GetRarityName);
 	CreateNative("TF2Econ_TranslateRarityNameToValue", Native_TranslateRarityNameToValue);
 	CreateNative("TF2Econ_GetRarityList", Native_GetRarityList);
+	
+	// equip region information
+	CreateNative("TF2Econ_GetEquipRegionGroups", Native_GetEquipRegionGroups);
+	CreateNative("TF2Econ_GetEquipRegionMask", Native_GetEquipRegionMask);
 	
 	// low-level stuff
 	CreateNative("TF2Econ_GetItemSchemaAddress", Native_GetItemSchemaAddress);
@@ -184,6 +189,8 @@ public void OnPluginStart() {
 			GameConfGetAddressOffset(hGameConf, "CEconItemSchema::m_ItemList");
 	offs_CEconItemSchema_nItemCount =
 			GameConfGetAddressOffset(hGameConf, "CEconItemSchema::m_nItemCount");
+	offs_CEconItemSchema_EquipRegions =
+			GameConfGetAddressOffset(hGameConf, "CEconItemSchema::m_EquipRegions");
 	offs_CTFItemSchema_ItemSlotNames =
 			GameConfGetAddressOffset(hGameConf, "CTFItemSchema::m_ItemSlotNames");
 	

@@ -205,6 +205,18 @@ native int TF2Econ_TranslateRarityNameToValue(const char[] name, bool caseSensit
 native ArrayList TF2Econ_GetRarityList();
 
 /**
+ * Returns a StringMap containing all valid equip region names mapped to their equip region
+ * group indices.
+ */
+native StringMap TF2Econ_GetEquipRegionGroups();
+
+/**
+ * Returns true if the given equip region name is valid, storing its equip region mask in the
+ * given by-ref``mask` argument.
+ */
+native bool TF2Econ_GetEquipRegionMask(const char[] equipRegion, int &mask);
+
+/**
  * Returns the address of the singleton CTFItemSchema (subclass of CEconItemSchema).
  * 
  * Here be dragons.

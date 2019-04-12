@@ -205,6 +205,12 @@
 				"linux"		"252"
 				"windows"	"252"
 			}
+			"CEconItemSchema::m_EquipRegions"
+			{
+				// the smaller of the two offsets in CEconItemSchema::GetEquipRegionIndexByName()
+				"linux"		"968"
+				"windows"	"968"
+			}
 			
 			"CTFItemSchema::m_ItemSlotNames"
 			{
