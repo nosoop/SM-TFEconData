@@ -45,6 +45,20 @@ native bool TF2Econ_GetItemClassName(int defindex, char[] buffer, int maxlen);
 native int TF2Econ_GetItemSlot(int defindex, TFClassType playerClass);
 
 /**
+ * Returns the given item's equipment region mask.  This mask can be and-tested with another
+ * mask to determine if items conflict.
+ */
+native int TF2Econ_GetItemEquipRegionMask(int defindex);
+
+/**
+ * Returns the given item's equipment region groups as a bitfield.
+ * 
+ * Internally, this is called an EquipRegionBitMask, but for the sake of clarity it's been
+ * renamed in this library to specify equip region groups.
+ */
+native int TF2Econ_GetItemEquipRegionGroupBits(int defindex);
+
+/**
  * Stores the minimum and maximum item level range in the given cell references and
  * returns true for a valid item definition, otherwise returns false.
  */

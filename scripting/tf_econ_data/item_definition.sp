@@ -4,7 +4,9 @@ Address offs_CEconItemDefinition_pKeyValues,
 		offs_CEconItemDefinition_AttributeList,
 		offs_CEconItemDefinition_pszLocalizedItemName,
 		offs_CEconItemDefinition_pszItemClassname,
-		offs_CEconItemDefinition_pszItemName;
+		offs_CEconItemDefinition_pszItemName,
+		offs_CEconItemDefinition_bitsEquipRegionGroups,
+		offs_CEconItemDefinition_bitsEquipRegionConflicts;
 Address offs_CEconItemDefinition_aiItemSlot;
 
 public int Native_GetItemName(Handle hPlugin, int nParams) {
@@ -66,6 +68,30 @@ int GetItemSlot(int defindex, TFClassType playerClass) {
 	
 	return LoadFromAddress(pItemDef + offs_CEconItemDefinition_aiItemSlot +
 			view_as<Address>(view_as<int>(playerClass) * 4), NumberType_Int32);
+}
+
+public int Native_GetItemEquipRegionMask(Handle hPlugin, int nParams) {
+	int defindex = GetNativeCell(1);
+	Address pItemDef = GetEconItemDefinition(defindex);
+	
+	if (!pItemDef) {
+		ThrowNativeError(1, "Item definition index %d is not valid", defindex);
+	}
+	
+	return LoadFromAddress(
+			pItemDef + offs_CEconItemDefinition_bitsEquipRegionConflicts, NumberType_Int32);
+}
+
+public int Native_GetItemEquipRegionGroupBits(Handle hPlugin, int nParams) {
+	int defindex = GetNativeCell(1);
+	Address pItemDef = GetEconItemDefinition(defindex);
+	
+	if (!pItemDef) {
+		ThrowNativeError(1, "Item definition index %d is not valid", defindex);
+	}
+	
+	return LoadFromAddress(
+			pItemDef + offs_CEconItemDefinition_bitsEquipRegionGroups, NumberType_Int32);
 }
 
 public int Native_GetItemLevelRange(Handle hPlugin, int nParams) {

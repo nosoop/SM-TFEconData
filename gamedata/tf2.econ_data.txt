@@ -95,6 +95,16 @@
 				"linux"		"220"
 				"windows"	"220"
 			}
+			"CEconItemDefinition::m_bitsEquipRegionGroups"
+			{
+				"linux"		"304"
+				"windows"	"304"
+			}
+			"CEconItemDefinition::m_bitsEquipRegionConflicts"
+			{
+				"linux"		"308"
+				"windows"	"308"
+			}
 			
 			// wait, shoot, this is CTFItemDefinition -- rename this once the next revision is out?
 			"CEconItemDefinition::m_aiItemSlot"
