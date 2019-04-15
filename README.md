@@ -16,6 +16,13 @@ name, level range, and item slot.
 * Translate an entity classname for the appropriate player class (making spawned multiclass
 weapons work correctly).  Technically, this is just handled as a call to the game's function,
 but it saves you effort from adding / maintaining the `SDKCall` boilerplate yourself.
+* Get a slot name by index or translate slot indices (retrieved from item definitions) to names.
+* Read attributes and attribute properties.
+* Read quality and rarity names / values.
+* Access item equip regions and their equip region overlap masks, so you can determine if two
+wearable items are overlapping.  Also access equip region names / group indices.
+* Natively access item definition / attribute definition / schema pointers for when you need to
+do something outside of the library's limitations.
 
 ## Example
 
