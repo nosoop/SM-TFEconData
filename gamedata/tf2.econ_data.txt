@@ -6,24 +6,30 @@
 		{
 			"GEconItemSchema()"
 			{
+				// taken straight from tf2attributes
 				"library"	"server"
 				"linux"		"@_Z15GEconItemSchemav"
 				"windows"	"\xE8\x2A\x2A\x2A\x2A\x83\xC0\x04\xC3"
 			}
 			"CEconItemSchema::GetItemDefinition()"
 			{
+				// taken straight from tf2attributes
+				// called in branch before unique x-ref "Item definition index %d in achievement reward %s was not found"
 				"library"	"server"
 				"linux"		"@_ZN15CEconItemSchema17GetItemDefinitionEi"
 				"windows"	"\x55\x8B\xEC\x56\x8B\xF1\x8D\x45\x08\x57\x50\x8D\x8E\x2A\x2A\x2A\x2A\xE8\x2A\x2A\x2A\x2A\x85\xC0"
 			}
 			"CEconItemSchema::GetAttributeDefinition()"
 			{
+				// taken straight from tf2attributes
+				// called at some point after unique x-ref to "static_attrs"
 				"library"			"server"
 				"linux"				"@_ZN15CEconItemSchema22GetAttributeDefinitionEi"
 				"windows"			"\x55\x8B\xEC\x83\xEC\x2A\x53\x56\x8B\xD9\x8D\x2A\x2A\x57"
 			}
 			"CEconItemSchema::GetAttributeDefinitionByName()"
 			{
+				// taken straight from tf2attributes
 				"library"			"server"
 				"linux"				"@_ZN15CEconItemSchema28GetAttributeDefinitionByNameEPKc"
 				"windows"			"\x55\x8B\xEC\x83\xEC\x14\x53\x8B\x5D\x08\x56\x57\x8B\xF9\x85\xDB"
