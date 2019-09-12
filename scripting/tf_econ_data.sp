@@ -13,7 +13,7 @@
 #include <stocksoup/handles>
 #include <stocksoup/memory>
 
-#define PLUGIN_VERSION "0.14.0"
+#define PLUGIN_VERSION "0.15.0"
 public Plugin myinfo = {
 	name = "[TF2] Econ Data",
 	author = "nosoop",
@@ -26,6 +26,7 @@ Address offs_CEconItemSchema_ItemQualities,
 		offs_CEconItemSchema_ItemList,
 		offs_CEconItemSchema_nItemCount;
 
+#include "tf_econ_data/attached_particle_systems.sp"
 #include "tf_econ_data/loadout_slot.sp"
 #include "tf_econ_data/item_definition.sp"
 #include "tf_econ_data/equip_regions.sp"
@@ -92,11 +93,17 @@ public APLRes AskPluginLoad2(Handle self, bool late, char[] error, int maxlen) {
 	CreateNative("TF2Econ_GetEquipRegionGroups", Native_GetEquipRegionGroups);
 	CreateNative("TF2Econ_GetEquipRegionMask", Native_GetEquipRegionMask);
 	
+	// particle attribute information
+	CreateNative("TF2Econ_GetParticleAttributeSystemName",
+			Native_GetParticleAttributeSystemName);
+	CreateNative("TF2Econ_GetParticleAttributeList", Native_GetParticleAttributeList);
+	
 	// low-level stuff
 	CreateNative("TF2Econ_GetItemSchemaAddress", Native_GetItemSchemaAddress);
 	CreateNative("TF2Econ_GetItemDefinitionAddress", Native_GetItemDefinitionAddress);
 	CreateNative("TF2Econ_GetAttributeDefinitionAddress", Native_GetAttributeDefinitionAddress);
 	CreateNative("TF2Econ_GetRarityDefinitionAddress", Native_GetRarityDefinitionAddress);
+	CreateNative("TF2Econ_GetParticleAttributeAddress", Native_GetParticleAttributeAddress);
 	
 	// backwards-compatibile
 	CreateNative("TF2Econ_IsValidDefinitionIndex", Native_IsValidItemDefinition);
@@ -191,6 +198,8 @@ public void OnPluginStart() {
 			GameConfGetAddressOffset(hGameConf, "CEconItemSchema::m_nItemCount");
 	offs_CEconItemSchema_EquipRegions =
 			GameConfGetAddressOffset(hGameConf, "CEconItemSchema::m_EquipRegions");
+	offs_CEconItemSchema_ParticleSystemTree =
+			GameConfGetAddressOffset(hGameConf, "CEconItemSchema::m_ParticleSystemTree");
 	offs_CTFItemSchema_ItemSlotNames =
 			GameConfGetAddressOffset(hGameConf, "CTFItemSchema::m_ItemSlotNames");
 	
@@ -219,6 +228,13 @@ public void OnPluginStart() {
 			GameConfGetAddressOffset(hGameConf, "CEconItemRarityDefinition::m_iValue");
 	offs_CEconItemRarityDefinition_pszName =
 			GameConfGetAddressOffset(hGameConf, "CEconItemRarityDefinition::m_pszName");
+	
+	offs_attachedparticlesystem_pszParticleSystem =
+			GameConfGetAddressOffset(hGameConf,
+			"attachedparticlesystem_t::m_pszParticleSystem");
+	offs_attachedparticlesystem_iAttributeValue =
+			GameConfGetAddressOffset(hGameConf,
+			"attachedparticlesystem_t::m_iAttributeValue");
 	
 	delete hGameConf;
 	

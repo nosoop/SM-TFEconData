@@ -217,6 +217,17 @@ native StringMap TF2Econ_GetEquipRegionGroups();
 native bool TF2Econ_GetEquipRegionMask(const char[] equipRegion, int &mask);
 
 /**
+ * Stores the "system" name for the given particle attribute index in the given buffer.
+ * Returns true if the index corresponds to a particle, false otherwise.
+ */
+native bool TF2Econ_GetParticleAttributeSystemName(int index, char[] buffer, int maxlen);
+
+/**
+ * Returns an ArrayList containing all valid particle attribute values.
+ */
+native ArrayList TF2Econ_GetParticleAttributeList();
+
+/**
  * Returns the address of the singleton CTFItemSchema (subclass of CEconItemSchema).
  * 
  * Here be dragons.
@@ -246,6 +257,12 @@ native Address TF2Econ_GetAttributeDefinitionAddress(int defindex);
  * You know the drill at this point.
  */
 native Address TF2Econ_GetRarityDefinitionAddress(int rarity);
+
+/**
+ * Returns the address of the attachedparticlesystem_t for the system corresponding to the given
+ * index, or Address_Null if not valid.
+ */
+native Address TF2Econ_GetParticleAttributeAddress(int index);
 
 /**
  * @deprecated Renamed native to TF2Econ_IsValidItemDefinition so there is a better distinction

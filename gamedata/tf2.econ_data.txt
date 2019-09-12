@@ -217,6 +217,14 @@
 				"linux"		"968"
 				"windows"	"968"
 			}
+			"CEconItemSchema::m_ParticleSystemTree"
+			{
+				// a CUtlRBTree instance
+				// the underlying map's ::Insert function is accessed close to the end of ::BInitAttributeControlledParticleSystems()
+				// subtract by 4 to get the offset of the CUtlRBTree itself
+				"linux"		"876"
+				"windows"	"876"
+			}
 			
 			"CTFItemSchema::m_ItemSlotNames"
 			{
@@ -224,6 +232,18 @@
 				// on Windows, "misc" is a unique subroutine x-ref
 				"linux"		"1432"
 				"windows"	"1432"
+			}
+			
+			// attachedparticlesystem_t is initialized in CEconItemSchema::BInitAttributeControlledParticleSystems()
+			"attachedparticlesystem_t::m_pszParticleSystem"
+			{
+				"linux"		"12"
+				"windows"	"12"
+			}
+			"attachedparticlesystem_t::m_iAttributeValue"
+			{
+				"linux"		"24"
+				"windows"	"24"
 			}
 		}
 	}
