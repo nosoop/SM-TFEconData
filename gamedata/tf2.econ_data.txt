@@ -225,6 +225,24 @@
 				"linux"		"876"
 				"windows"	"876"
 			}
+			"CEconItemSchema::m_CosmeticUnusualEffectList"
+			{
+				// a CUtlVector, referenced in CEconItemSchema::BInitAttributeControlledParticleSystems()
+				"linux"		"908"
+				"windows"	"908"
+			}
+			"CEconItemSchema::m_WeaponUnusualEffectList"
+			{
+				// a CUtlVector, referenced in CEconItemSchema::BInitAttributeControlledParticleSystems()
+				"linux"		"928"
+				"windows"	"928"
+			}
+			"CEconItemSchema::m_TauntUnusualEffectList"
+			{
+				// a CUtlVector, referenced in CEconItemSchema::BInitAttributeControlledParticleSystems()
+				"linux"		"948"
+				"windows"	"948"
+			}
 			
 			"CTFItemSchema::m_ItemSlotNames"
 			{

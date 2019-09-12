@@ -12,6 +12,16 @@
 #define __tf_econ_data_included
 
 /**
+ * Value for TF2Econ_GetParticleAttributeList to look up the items in a specific list.
+ */
+enum TFEconParticleSet {
+	ParticleSet_All,
+	ParticleSet_CosmeticUnusualEffects,
+	ParticleSet_WeaponUnusualEffects,
+	ParticleSet_TauntUnusualEffects
+};
+
+/**
  * Callback for `TF2Econ_GetItemList`.  Return `true` if the specified item definition index
  * should be added to the returned `ArrayList`.
  */
@@ -223,9 +233,14 @@ native bool TF2Econ_GetEquipRegionMask(const char[] equipRegion, int &mask);
 native bool TF2Econ_GetParticleAttributeSystemName(int index, char[] buffer, int maxlen);
 
 /**
- * Returns an ArrayList containing all valid particle attribute values.
+ * Returns an ArrayList containing all particle attribute values, or just those in a particular
+ * set (currently valid sets are for cosmetic, taunt, or weapon effects).  Particle effects in
+ * the "other_particles" and "killstreak_eyeglows" categories are only available in "all" set.
+ * 
+ * Throws an error if the given TFEconParticleSet value is not valid.
  */
-native ArrayList TF2Econ_GetParticleAttributeList();
+native ArrayList TF2Econ_GetParticleAttributeList(
+		TFEconParticleSet particleSet = ParticleSet_All);
 
 /**
  * Returns the address of the singleton CTFItemSchema (subclass of CEconItemSchema).

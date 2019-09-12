@@ -1,4 +1,7 @@
-Address offs_CEconItemSchema_ParticleSystemTree;
+Address offs_CEconItemSchema_ParticleSystemTree,
+		offs_CEconItemSchema_CosmeticUnusualEffectList,
+		offs_CEconItemSchema_WeaponUnusualEffectList,
+		offs_CEconItemSchema_TauntUnusualEffectList;
 
 // known members of attachedparticlesystem_t
 Address offs_attachedparticlesystem_pszParticleSystem,
@@ -11,19 +14,73 @@ enum TreeElement {
 	Tree_Parent
 };
 
+// particle sets -- these must remain synced to the ones in tf_econ_data.inc
+// and must only be appended to maintain compatibility
+enum TFEconParticleSet {
+	ParticleSet_All,
+	ParticleSet_CosmeticUnusualEffects,
+	ParticleSet_WeaponUnusualEffects,
+	ParticleSet_TauntUnusualEffects
+};
+
 #define ATTACHED_PARTICLE_SYSTEM_STRUCT_SIZE 0x40
 
 public int Native_GetParticleAttributeList(Handle hPlugin, int nParams) {
-	return MoveHandleImmediate(GetParticleAttributeList(), hPlugin);
+	TFEconParticleSet particleSet = GetNativeCell(1);
+	if (particleSet < ParticleSet_All || particleSet >= TFEconParticleSet) {
+		ThrowNativeError(1, "Invalid particle list %d", particleSet);
+	}
+	
+	return MoveHandleImmediate(GetParticleAttributeList(particleSet), hPlugin);
 }
 
-static ArrayList GetParticleAttributeList() {
+static ArrayList GetParticleAttributeList(TFEconParticleSet particleSet) {
+	if (particleSet == ParticleSet_All) {
+		// read all particles from CUtlRBTree
+		ArrayList list = new ArrayList();
+		for (int i = GetFirstParticleSystem(); i != 0xFFFF; i = GetNextParticleSystem(i)) {
+			Address pParticleSystemEntry = GetAttachedParticleSystemEntry(i);
+			list.Push(GetParticleSystemPtrAttributeValue(pParticleSystemEntry));
+		}
+		return list;
+	}
+	
+	Address pParticleVector = GetParticleListAddress(particleSet);
+	if (!pParticleVector) {
+		// we should've caught this in Native_GetParticleAttributeList
+		return null;
+	}
+	
+	int nParticles = LoadFromAddress(
+			pParticleVector + view_as<Address>(0x0C), NumberType_Int32);
+	Address pParticleData = DereferencePointer(GetParticleListAddress(particleSet));
+	
 	ArrayList list = new ArrayList();
-	for (int i = GetFirstParticleSystem(); i != 0xFFFF; i = GetNextParticleSystem(i)) {
-		Address pParticleSystemEntry = GetAttachedParticleSystemEntry(i);
-		list.Push(GetParticleSystemPtrAttributeValue(pParticleSystemEntry));
+	for (int i; i < nParticles; i++) {
+		Address pParticleID = pParticleData + view_as<Address>(i * 0x04);
+		int value = LoadFromAddress(pParticleID, NumberType_Int32);
+		list.Push(value);
 	}
 	return list;
+}
+
+/**
+ * Returns the address to a CUtlVector containing the given particles, or Address_Null if not
+ * a valid particle set.
+ */
+static Address GetParticleListAddress(TFEconParticleSet particleSet) {
+	switch (particleSet) {
+		case ParticleSet_CosmeticUnusualEffects: {
+			return GetEconItemSchema() + offs_CEconItemSchema_CosmeticUnusualEffectList;
+		}
+		case ParticleSet_WeaponUnusualEffects: {
+			return GetEconItemSchema() + offs_CEconItemSchema_WeaponUnusualEffectList;
+		}
+		case ParticleSet_TauntUnusualEffects: {
+			return GetEconItemSchema() + offs_CEconItemSchema_TauntUnusualEffectList;
+		}
+	}
+	return Address_Null;
 }
 
 public int Native_GetParticleAttributeSystemName(Handle hPlugin, int nParams) {

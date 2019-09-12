@@ -13,7 +13,7 @@
 #include <stocksoup/handles>
 #include <stocksoup/memory>
 
-#define PLUGIN_VERSION "0.15.0"
+#define PLUGIN_VERSION "0.15.1"
 public Plugin myinfo = {
 	name = "[TF2] Econ Data",
 	author = "nosoop",
@@ -200,6 +200,14 @@ public void OnPluginStart() {
 			GameConfGetAddressOffset(hGameConf, "CEconItemSchema::m_EquipRegions");
 	offs_CEconItemSchema_ParticleSystemTree =
 			GameConfGetAddressOffset(hGameConf, "CEconItemSchema::m_ParticleSystemTree");
+	
+	offs_CEconItemSchema_CosmeticUnusualEffectList =
+			GameConfGetAddressOffset(hGameConf, "CEconItemSchema::m_CosmeticUnusualEffectList");
+	offs_CEconItemSchema_WeaponUnusualEffectList =
+			GameConfGetAddressOffset(hGameConf, "CEconItemSchema::m_WeaponUnusualEffectList");
+	offs_CEconItemSchema_TauntUnusualEffectList =
+			GameConfGetAddressOffset(hGameConf, "CEconItemSchema::m_TauntUnusualEffectList");
+	
 	offs_CTFItemSchema_ItemSlotNames =
 			GameConfGetAddressOffset(hGameConf, "CTFItemSchema::m_ItemSlotNames");
 	
