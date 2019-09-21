@@ -31,6 +31,7 @@ Address offs_CEconItemSchema_ItemQualities,
 #include "tf_econ_data/item_definition.sp"
 #include "tf_econ_data/equip_regions.sp"
 #include "tf_econ_data/attribute_definition.sp"
+#include "tf_econ_data/paintkit_definition.sp"
 #include "tf_econ_data/quality_definition.sp"
 #include "tf_econ_data/rarity_definition.sp"
 #include "tf_econ_data/keyvalues.sp"
@@ -40,6 +41,8 @@ Handle g_SDKCallSchemaGetItemDefinition;
 Handle g_SDKCallSchemaGetAttributeDefinition;
 Handle g_SDKCallSchemaGetAttributeDefinitionByName;
 Handle g_SDKCallTranslateWeaponEntForClass;
+Handle g_SDKCallGetProtoDefManager;
+Handle g_SDKCallGetProtoDefIndex;
 
 public APLRes AskPluginLoad2(Handle self, bool late, char[] error, int maxlen) {
 	RegPluginLibrary("tf_econ_data");
@@ -98,12 +101,17 @@ public APLRes AskPluginLoad2(Handle self, bool late, char[] error, int maxlen) {
 			Native_GetParticleAttributeSystemName);
 	CreateNative("TF2Econ_GetParticleAttributeList", Native_GetParticleAttributeList);
 	
+	// paintkit / weapon skin information
+	CreateNative("TF2Econ_GetPaintKitDefinitionList", Native_GetPaintKitList);
+	
 	// low-level stuff
 	CreateNative("TF2Econ_GetItemSchemaAddress", Native_GetItemSchemaAddress);
+	CreateNative("TF2Econ_GetProtoDefManagerAddress", Native_GetProtoDefManagerAddress);
 	CreateNative("TF2Econ_GetItemDefinitionAddress", Native_GetItemDefinitionAddress);
 	CreateNative("TF2Econ_GetAttributeDefinitionAddress", Native_GetAttributeDefinitionAddress);
 	CreateNative("TF2Econ_GetRarityDefinitionAddress", Native_GetRarityDefinitionAddress);
 	CreateNative("TF2Econ_GetParticleAttributeAddress", Native_GetParticleAttributeAddress);
+	CreateNative("TF2Econ_GetPaintKitDefinitionAddress", Native_GetPaintKitDefinitionAddress);
 	
 	// backwards-compatibile
 	CreateNative("TF2Econ_IsValidDefinitionIndex", Native_IsValidItemDefinition);
@@ -163,6 +171,16 @@ public void OnPluginStart() {
 	PrepSDKCall_AddParameter(SDKType_String, SDKPass_Pointer);
 	PrepSDKCall_AddParameter(SDKType_Bool, SDKPass_Plain);
 	g_SDKCallGetKeyValuesFindKey = EndPrepSDKCall();
+	
+	StartPrepSDKCall(SDKCall_Static);
+	PrepSDKCall_SetFromConf(hGameConf, SDKConf_Signature, "GetProtoScriptObjDefManager()");
+	PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);
+	g_SDKCallGetProtoDefManager = EndPrepSDKCall();
+	
+	StartPrepSDKCall(SDKCall_Raw);
+	PrepSDKCall_SetFromConf(hGameConf, SDKConf_Signature, "IProtoBufScriptObjectDefinition::GetDefIndex()");
+	PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);
+	g_SDKCallGetProtoDefIndex = EndPrepSDKCall();
 	
 	offs_CEconItemDefinition_pKeyValues =
 			GameConfGetAddressOffset(hGameConf, "CEconItemDefinition::m_pKeyValues");
@@ -243,6 +261,10 @@ public void OnPluginStart() {
 	offs_attachedparticlesystem_iAttributeValue =
 			GameConfGetAddressOffset(hGameConf,
 			"attachedparticlesystem_t::m_iAttributeValue");
+	
+	offs_CProtoBufScriptObjectDefinitionManager_PaintList =
+			GameConfGetAddressOffset(hGameConf,
+			"CProtoBufScriptObjectDefinitionManager::m_PaintList");
 	
 	delete hGameConf;
 	
@@ -363,6 +385,18 @@ Address GetEconAttributeDefinitionByName(const char[] name) {
 
 Address GetEconItemSchema() {
 	return SDKCall(g_SDKCallGetEconItemSchema);
+}
+
+Address GetProtoScriptObjDefManager() {
+	return SDKCall(g_SDKCallGetProtoDefManager);
+}
+
+public int Native_GetProtoDefManagerAddress(Handle hPlugin, int nParams) {
+	return view_as<int>(GetProtoScriptObjDefManager());
+}
+
+int GetProtoDefIndex(Address pProtoDefinition) {
+	return SDKCall(g_SDKCallGetProtoDefIndex, pProtoDefinition);
 }
 
 static bool TranslateWeaponEntForClass(char[] buffer, int maxlen, TFClassType playerClass) {

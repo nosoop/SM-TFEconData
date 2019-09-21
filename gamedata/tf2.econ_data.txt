@@ -57,6 +57,24 @@
 				"linux"		"@_ZN9KeyValues7FindKeyEPKcb"
 				"windows"	"\x55\x8B\xEC\x81\xEC\x04\x01\x00\x00\x56\x8B\x75\x08\x57"
 			}
+			
+			"GetProtoScriptObjDefManager()"
+			{
+				// start from CQuestDefinition::BPostDataLoaded() with xref "Invalid loaner item name %s in %d: %s"
+				// first call in third block of first loop in function (contains `sizeof(CProtoBufScriptObjectDefinitionManager)`)
+				// the windows signature here wildcards the size and checks for the subsequent "call" opcode
+				"library"	"server"
+				"linux"		"@_Z27GetProtoScriptObjDefManagerv"
+				"windows"	"\xA1\x2A\x2A\x2A\x2A\x85\xC0\x75\x2A\x68\x2A\x2A\x2A\x2A\xE8"
+			}
+			"IProtoBufScriptObjectDefinition::GetDefIndex()"
+			{
+				// called before xref "Tracking objective: %d\n" in CQuestItemTracker::Spew()
+				// offset into header is hardcoded on windows (last 0x24 byte)
+				"library"	"server"
+				"linux"		"@_ZNK31IProtoBufScriptObjectDefinition11GetDefIndexEv"
+				"windows"	"\x80\x79\x06\x00\x8B\x01\x74\x2A\xFF\x50\x04\x50\xE8\x2A\x2A\x2A\x2A\x83\xC4\x04\x8B\x40\x24"
+			}
 		}
 		
 		"Offsets"
@@ -262,6 +280,14 @@
 			{
 				"linux"		"24"
 				"windows"	"24"
+			}
+			
+			"CProtoBufScriptObjectDefinitionManager::m_PaintList"
+			{
+				// some sort of struct of size 0x10 with a CPaintKitDefinition* at 0x0C
+				// offset in block before CPaintKitDefinition::CanApplyToItem() call in CTFItemDefinition::GetValidPaintkits()
+				"linux"		"268"
+				"windows"	"268"
 			}
 		}
 	}

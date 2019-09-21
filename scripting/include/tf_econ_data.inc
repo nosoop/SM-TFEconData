@@ -243,11 +243,27 @@ native ArrayList TF2Econ_GetParticleAttributeList(
 		TFEconParticleSet particleSet = ParticleSet_All);
 
 /**
+ * Returns an ArrayList containing all valid paint kit protodef indices.  `delete` when
+ * unneeded.
+ * 
+ * This includes paint kits that are only applied to weapons, but does not include unused paint
+ * kits (as defined in resource/tf_proto_obj_defs_english.txt and other languages)
+ */
+native ArrayList TF2Econ_GetPaintKitDefinitionList();
+
+/**
  * Returns the address of the singleton CTFItemSchema (subclass of CEconItemSchema).
  * 
  * Here be dragons.
  */
 native Address TF2Econ_GetItemSchemaAddress();
+
+/**
+ * Returns the address of the singleton CProtoBufScriptObjectDefinitionManager.
+ * 
+ * Here be dragons.
+ */
+native Address TF2Econ_GetProtoDefManagerAddress();
 
 /**
  * Returns the address of the CEconItemDefinition for the item with the given definition index,
@@ -278,6 +294,12 @@ native Address TF2Econ_GetRarityDefinitionAddress(int rarity);
  * index, or Address_Null if not valid.
  */
 native Address TF2Econ_GetParticleAttributeAddress(int index);
+
+/**
+ * Returns the address of the CPaintKitDefinition for the paintkit with the given protodef
+ * index, or Address_Null if not valid.
+ */
+native Address TF2Econ_GetPaintKitDefinitionAddress(int protoDefIndex);
 
 /**
  * @deprecated Renamed native to TF2Econ_IsValidItemDefinition so there is a better distinction
