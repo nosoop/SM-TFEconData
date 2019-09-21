@@ -97,6 +97,12 @@
 				"linux"		"18"
 				"windows"	"18"
 			}
+			"CEconItemDefinition::m_si8ItemRarity"
+			{
+				// byte read in IEconItemInterface::GetRarity()
+				"linux"		"21"
+				"windows"	"21"
+			}
 			"CEconItemDefinition::m_AttributeList"
 			{
 				"linux"		"28"

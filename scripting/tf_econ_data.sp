@@ -13,7 +13,7 @@
 #include <stocksoup/handles>
 #include <stocksoup/memory>
 
-#define PLUGIN_VERSION "0.16.0"
+#define PLUGIN_VERSION "0.16.1"
 public Plugin myinfo = {
 	name = "[TF2] Econ Data",
 	author = "nosoop",
@@ -56,6 +56,7 @@ public APLRes AskPluginLoad2(Handle self, bool late, char[] error, int maxlen) {
 	CreateNative("TF2Econ_GetItemEquipRegionMask", Native_GetItemEquipRegionMask);
 	CreateNative("TF2Econ_GetItemEquipRegionGroupBits", Native_GetItemEquipRegionGroupBits);
 	CreateNative("TF2Econ_GetItemLevelRange", Native_GetItemLevelRange);
+	CreateNative("TF2Econ_GetItemRarity", Native_GetItemRarity);
 	CreateNative("TF2Econ_GetItemStaticAttributes", Native_GetItemStaticAttributes);
 	CreateNative("TF2Econ_GetItemDefinitionString", Native_GetItemDefinitionString);
 	
@@ -188,6 +189,8 @@ public void OnPluginStart() {
 			GameConfGetAddressOffset(hGameConf, "CEconItemDefinition::m_u8MinLevel");
 	offs_CEconItemDefinition_u8MaxLevel =
 			GameConfGetAddressOffset(hGameConf, "CEconItemDefinition::m_u8MaxLevel");
+	offs_CEconItemDefinition_si8ItemRarity =
+			GameConfGetAddressOffset(hGameConf, "CEconItemDefinition::m_si8ItemRarity");
 	offs_CEconItemDefinition_AttributeList =
 			GameConfGetAddressOffset(hGameConf, "CEconItemDefinition::m_AttributeList");
 	offs_CEconItemDefinition_pszLocalizedItemName =
