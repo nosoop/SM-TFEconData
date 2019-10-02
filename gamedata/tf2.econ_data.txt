@@ -127,11 +127,15 @@
 			}
 			"CEconItemDefinition::m_bitsEquipRegionGroups"
 			{
+				// result of CEconItemSchema::GetEquipRegionBitMaskByName() call
+				// or'd after CEconItemSchema::GetEquipRegionBitMaskByName() call in ::BInitFromKV
 				"linux"		"304"
 				"windows"	"304"
 			}
 			"CEconItemDefinition::m_bitsEquipRegionConflicts"
 			{
+				// result of CEconItemSchema::GetEquipRegionMaskByName() call
+				// or'd after CEconItemSchema::GetEquipRegionBitMaskByName() call in ::BInitFromKV
 				"linux"		"308"
 				"windows"	"308"
 			}
@@ -204,13 +208,13 @@
 			
 			"CEconItemSchema::m_ItemRarities"
 			{
-				// offset into `ebx` in CEconItemSchema::GetQualityDefinition() on linux
+				// offset into `ebx` in CEconItemSchema::GetRarityDefinition() on linux
 				"linux"		"124"
 				"windows"	"124"
 			}
 			"CEconItemSchema::m_iLastValidRarity"
 			{
-				// offset into `ebx` inside second block within CEconItemSchema::GetRarityDefinition() on linux
+				// offset into `ecx` inside second block within CEconItemSchema::GetRarityDefinitionByMapIndex() on linux
 				"linux"		"152"
 				"windows"	"152"
 			}
