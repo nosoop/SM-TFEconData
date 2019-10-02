@@ -75,6 +75,11 @@ native int TF2Econ_GetItemEquipRegionGroupBits(int defindex);
 native bool TF2Econ_GetItemLevelRange(int defindex, int &iMinLevel, int &iMaxLevel);
 
 /**
+ * Returns the given item's statically defined quality.
+ */
+native int TF2Econ_GetItemQuality(int defindex);
+
+/**
  * Returns the given item's rarity, or -1 if the item does not have a statically defined rarity.
  */
 native int TF2Econ_GetItemRarity(int defindex);

@@ -97,6 +97,11 @@
 				"linux"		"18"
 				"windows"	"18"
 			}
+			"CEconItemDefinition::m_u8ItemQuality"
+			{
+				"linux"		"19"
+				"windows"	"19"
+			}
 			"CEconItemDefinition::m_si8ItemRarity"
 			{
 				// byte read in IEconItemInterface::GetRarity()
