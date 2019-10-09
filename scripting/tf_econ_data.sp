@@ -180,7 +180,8 @@ public void OnPluginStart() {
 	g_SDKCallGetProtoDefManager = EndPrepSDKCall();
 	
 	StartPrepSDKCall(SDKCall_Raw);
-	PrepSDKCall_SetFromConf(hGameConf, SDKConf_Signature, "IProtoBufScriptObjectDefinition::GetDefIndex()");
+	PrepSDKCall_SetFromConf(hGameConf, SDKConf_Signature,
+			"IProtoBufScriptObjectDefinition::GetDefIndex()");
 	PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);
 	g_SDKCallGetProtoDefIndex = EndPrepSDKCall();
 	
