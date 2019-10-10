@@ -204,6 +204,7 @@ public int Native_GetItemDefinitionString(Handle hPlugin, int nParams) {
 	}
 	
 	SetNativeString(3, buffer, maxlen, true);
+	return !!buffer[0];
 }
 
 public int Native_IsValidItemDefinition(Handle hPlugin, int nParams) {

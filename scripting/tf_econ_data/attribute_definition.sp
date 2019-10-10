@@ -87,6 +87,7 @@ public int Native_GetAttributeDefinitionString(Handle hPlugin, int nParams) {
 	}
 	
 	SetNativeString(3, buffer, maxlen, true);
+	return !!buffer[0];
 }
 
 bool IsValidAttributeDefinition(int defindex) {

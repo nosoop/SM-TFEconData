@@ -96,8 +96,10 @@ native ArrayList TF2Econ_GetItemStaticAttributes(int defindex);
 /**
  * Returns an arbiitrary string from an item definition's KeyValues structure.
  * You may use subkey notation ('/') to retrieve nested values.
+ * 
+ * Returns true if the output buffer is not empty.
  */
-native void TF2Econ_GetItemDefinitionString(int defindex, const char[] key,
+native bool TF2Econ_GetItemDefinitionString(int defindex, const char[] key,
 		char[] buffer, int maxlen, const char[] defaultValue = "");
 
 /**
@@ -170,8 +172,10 @@ native bool TF2Econ_GetAttributeClassName(int defindex, char[] buffer, int maxle
 /**
  * Returns an arbiitrary string from an item attribute definition's KeyValues structure.
  * You may use subkey notation ('/') to retrieve nested values.
+ * 
+ * Returns true if the output buffer is not empty.
  */
-native void TF2Econ_GetAttributeDefinitionString(int defindex, const char[] key,
+native bool TF2Econ_GetAttributeDefinitionString(int defindex, const char[] key,
 		char[] buffer, int maxlen, const char[] defaultValue = "");
 
 /**
