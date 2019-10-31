@@ -12,6 +12,17 @@
 #define __tf_econ_data_included
 
 /**
+ * Item definition index for the special "default" item entry, which is returned by the game's
+ * CEconItemSchema::GetItemDefinition() if the given item definition does not exist.
+ * 
+ * Not a valid item, but points to a valid item definition, so this does return information when
+ * `TF2Econ_Get*` functions are called on it.
+ */
+enum {
+	TF_ITEMDEF_DEFAULT = -1,
+};
+
+/**
  * Value for TF2Econ_GetParticleAttributeList to look up the items in a specific list.
  */
 enum TFEconParticleSet {
@@ -29,6 +40,7 @@ typedef ItemFilterCriteria = function bool(int defindex, any data);
 
 /**
  * Returns true if there is an item corresponding to the given item definition index.
+ * TF_ITEMDEF_DEFAULT returns false here.
  */
 native bool TF2Econ_IsValidItemDefinition(int defindex);
 
@@ -281,7 +293,8 @@ native Address TF2Econ_GetProtoDefManagerAddress();
 
 /**
  * Returns the address of the CEconItemDefinition for the item with the given definition index,
- * or Address_Null if not valid.
+ * or Address_Null if not valid.  The special "default" item definition is returned iff
+ * TF_ITEMDEF_DEFAULT is used as the defindex.
  * 
  * Here be dragons.
  */

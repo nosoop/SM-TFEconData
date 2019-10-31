@@ -13,7 +13,7 @@
 #include <stocksoup/handles>
 #include <stocksoup/memory>
 
-#define PLUGIN_VERSION "0.16.3"
+#define PLUGIN_VERSION "0.16.4"
 public Plugin myinfo = {
 	name = "[TF2] Econ Data",
 	author = "nosoop",
@@ -35,6 +35,8 @@ Address offs_CEconItemSchema_ItemQualities,
 #include "tf_econ_data/quality_definition.sp"
 #include "tf_econ_data/rarity_definition.sp"
 #include "tf_econ_data/keyvalues.sp"
+
+#define TF_ITEMDEF_DEFAULT -1
 
 Handle g_SDKCallGetEconItemSchema;
 Handle g_SDKCallSchemaGetItemDefinition;
@@ -349,12 +351,32 @@ public int Native_GetItemDefinitionAddress(Handle hPlugin, int nParams) {
 }
 
 bool ValidItemDefIndex(int defindex) {
-	return !!GetEconItemDefinition(defindex);
+	// special case: return false on TF_ITEMDEF_DEFAULT
+	return defindex != TF_ITEMDEF_DEFAULT && !!GetEconItemDefinition(defindex);
 }
 
 Address GetEconItemDefinition(int defindex) {
 	Address pSchema = GetEconItemSchema();
-	return pSchema? SDKCall(g_SDKCallSchemaGetItemDefinition, pSchema, defindex) : Address_Null;
+	if (!pSchema) {
+		return Address_Null;
+	}
+	
+	Address pItemDefinition = SDKCall(g_SDKCallSchemaGetItemDefinition, pSchema, defindex);
+	
+	// special case: return default item definition on TF_ITEMDEF_DEFAULT (-1)
+	// otherwise return a valid definition iff not the default
+	if (defindex == TF_ITEMDEF_DEFAULT || pItemDefinition != GetEconDefaultItemDefinition()) {
+		return pItemDefinition;
+	}
+	return Address_Null;
+}
+
+static Address GetEconDefaultItemDefinition() {
+	static Address s_pDefaultItemDefinition;
+	if (!s_pDefaultItemDefinition) {
+		s_pDefaultItemDefinition = GetEconItemDefinition(TF_ITEMDEF_DEFAULT);
+	}
+	return s_pDefaultItemDefinition;
 }
 
 public int Native_GetAttributeDefinitionAddress(Handle hPlugin, int nParams) {
