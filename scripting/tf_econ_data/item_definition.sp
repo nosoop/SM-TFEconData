@@ -83,7 +83,7 @@ public int Native_GetItemClassName(Handle hPlugin, int nParams) {
  */
 public int Native_GetItemSlot(Handle hPlugin, int nParams) {
 	int defindex = GetNativeCell(1);
-	TFClassType playerClass = GetNativeCell(2);
+	int playerClass = GetNativeCell(2);
 	
 	Address pItemDef = GetEconItemDefinition(defindex);
 	if (!pItemDef) {
@@ -91,7 +91,7 @@ public int Native_GetItemSlot(Handle hPlugin, int nParams) {
 	}
 	
 	return LoadFromAddress(pItemDef + offs_CEconItemDefinition_aiItemSlot +
-			view_as<Address>(view_as<int>(playerClass) * 4), NumberType_Int32);
+			view_as<Address>(playerClass * 4), NumberType_Int32);
 }
 
 /**

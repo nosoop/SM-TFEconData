@@ -6,14 +6,14 @@
 #pragma semicolon 1
 #include <sourcemod>
 
-#include <tf2_stocks>
+#include <sdktools>
 
 #pragma newdecls required
 
 #include <stocksoup/handles>
 #include <stocksoup/memory>
 
-#define PLUGIN_VERSION "0.16.4"
+#define PLUGIN_VERSION "0.16.5"
 public Plugin myinfo = {
 	name = "[TF2] Econ Data",
 	author = "nosoop",
@@ -285,7 +285,7 @@ public int Native_TranslateWeaponEntForClass(Handle hPlugin, int nParams) {
 	char weaponClass[64];
 	GetNativeString(1, weaponClass, sizeof(weaponClass));
 	int maxlen = GetNativeCell(2);
-	TFClassType playerClass = GetNativeCell(3);
+	int playerClass = GetNativeCell(3);
 	
 	if (TranslateWeaponEntForClass(weaponClass, maxlen, playerClass)) {
 		SetNativeString(1, weaponClass, maxlen, true);
@@ -428,7 +428,7 @@ int GetProtoDefIndex(Address pProtoDefinition) {
 	return SDKCall(g_SDKCallGetProtoDefIndex, pProtoDefinition);
 }
 
-static bool TranslateWeaponEntForClass(char[] buffer, int maxlen, TFClassType playerClass) {
+static bool TranslateWeaponEntForClass(char[] buffer, int maxlen, int playerClass) {
 	return SDKCall(g_SDKCallTranslateWeaponEntForClass, buffer, maxlen, buffer, playerClass);
 }
 
