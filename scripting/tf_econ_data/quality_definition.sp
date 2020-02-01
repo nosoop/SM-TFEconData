@@ -1,6 +1,12 @@
 Address offs_CEconItemQualityDefinition_iValue,
 		offs_CEconItemQualityDefinition_pszName;
 
+/**
+ * native bool(int quality, char[] buffer, int maxlen);
+ * 
+ * Stores the name of the quality value into the provided buffer, returning whether or not it
+ * exists.
+ */
 public int Native_GetQualityName(Handle hPlugin, int nParams) {
 	int quality = GetNativeCell(1);
 	
@@ -17,7 +23,14 @@ public int Native_GetQualityName(Handle hPlugin, int nParams) {
 	return true;
 }
 
+/**
+ * native int(const char[] name, bool caseSensitive = true);
+ * 
+ * Checks if any of the quality definitions match the given name, returning the quality value
+ * if found, else -1.
+ */
 public int Native_TranslateQualityNameToValue(Handle hPlugin, int nParams) {
+	// TODO always disable case-sensitivity, pretty sure nobody wants to make a distinction.
 	bool caseSensitive = GetNativeCell(2);
 	
 	int maxlen;
@@ -41,6 +54,11 @@ public int Native_TranslateQualityNameToValue(Handle hPlugin, int nParams) {
 	return -1;
 }
 
+/**
+ * native ArrayList<cell_t>(void);
+ * 
+ * Returns a list containing valid quality values.
+ */
 public int Native_GetQualityList(Handle hPlugin, int nParams) {
 	int nQualityDefs = GetEconQualityDefinitionCount();
 	if (!nQualityDefs) {

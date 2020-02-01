@@ -30,6 +30,7 @@
 			"CEconItemSchema::GetAttributeDefinitionByName()"
 			{
 				// taken straight from tf2attributes
+				// has unique x-ref string "CEconItemSchema::GetAttributeDefinitionByName", even on Windows
 				"library"			"server"
 				"linux"				"@_ZN15CEconItemSchema28GetAttributeDefinitionByNameEPKc"
 				"windows"			"\x55\x8B\xEC\x83\xEC\x14\x53\x8B\x5D\x08\x56\x57\x8B\xF9\x85\xDB"
@@ -127,6 +128,7 @@
 			}
 			"CEconItemDefinition::m_pszItemName"
 			{
+				// offset before call to strcmp/V_stricmp in CEconItemSchema::GetItemDefinitionByName()
 				"linux"		"220"
 				"windows"	"220"
 			}
@@ -261,6 +263,8 @@
 			"CEconItemSchema::m_CosmeticUnusualEffectList"
 			{
 				// a CUtlVector, referenced in CEconItemSchema::BInitAttributeControlledParticleSystems()
+				// we specify the offsets of all three lists in case any offset changes independently
+				// (e.g., Valve adds a new list in between one of the others, for some weird reason)
 				"linux"		"908"
 				"windows"	"908"
 			}

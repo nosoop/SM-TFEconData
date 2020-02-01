@@ -1,7 +1,12 @@
+/**
+ * Natives for accessing the item schema's equip region data.
+ */
+
+// offset into CEconItemSchema
 Address offs_CEconItemSchema_EquipRegions;
 
 /**
- * I'm not going to bother putting these in gamedata for now.
+ * I'm not going to bother putting these in gamedata for now.  It's a struct.
  */
 Address offs_CEconItemSchema_EquipRegion_pszName = view_as<Address>(0x00),
 		offs_CEconItemSchema_EquipRegion_iGroup = view_as<Address>(0x04),
@@ -9,6 +14,11 @@ Address offs_CEconItemSchema_EquipRegion_pszName = view_as<Address>(0x00),
 
 int sizeof_EquipRegion = 0x0C;
 
+/**
+ * native StringMap<int>();
+ * 
+ * Returns a mapping of group name to group index.
+ */
 public int Native_GetEquipRegionGroups(Handle hPlugin, int nParams) {
 	Address pSchema = GetEconItemSchema();
 	if (!pSchema) {
@@ -36,11 +46,15 @@ public int Native_GetEquipRegionGroups(Handle hPlugin, int nParams) {
 				NumberType_Int32);
 		
 		equipRegionMap.SetValue(equipRegion, group);
-		
 	}
 	return MoveHandle(equipRegionMap, hPlugin);
 }
 
+/**
+ * native bool(const char[] name, int &mask);
+ * 
+ * Returns a bitset of groups the given group-by-name conflicts with.
+ */
 public int Native_GetEquipRegionMask(Handle hPlugin, int nParams) {
 	Address pSchema = GetEconItemSchema();
 	if (!pSchema) {

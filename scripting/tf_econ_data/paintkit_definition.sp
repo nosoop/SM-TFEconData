@@ -45,7 +45,7 @@ static Address GetPaintKitArrayEntry(int index) {
 	Address pPaintKitData = DereferencePointer(GetProtoScriptObjDefManager()
 			+ offs_CProtoBufScriptObjectDefinitionManager_PaintList);
 	
-	// array is some sort of struct size 0x10, paintkit ptr is at offset 0x0C
+	// array is some sort of struct size 0x10, CPaintKitDefinition* is at offset 0x0C
 	Address pPaintKitEntry = pPaintKitData + view_as<Address>(index * 0x10);
 	
 	// tested in GetValidPaintKits() to be non-zero

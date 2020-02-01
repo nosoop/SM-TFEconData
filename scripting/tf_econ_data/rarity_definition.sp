@@ -4,6 +4,12 @@ Address offs_CEconItemSchema_iLastValidRarity;
 Address offs_CEconItemRarityDefinition_iValue,
 		offs_CEconItemRarityDefinition_pszName;
 
+/**
+ * native bool(int rarity, char[] buffer, int maxlen);
+ * 
+ * Stores the name of the provided rarity value into the given buffer, returning whether or not
+ * it exists.
+ */
 public int Native_GetRarityName(Handle hPlugin, int nParams) {
 	int rarity = GetNativeCell(1);
 	
@@ -20,7 +26,14 @@ public int Native_GetRarityName(Handle hPlugin, int nParams) {
 	return true;
 }
 
+/**
+ * native int(const char[] name, bool caseSensitive = true);
+ * 
+ * Checks if any of the rarity definitions match the given name, returning the rarity value
+ * if found, else -1.
+ */
 public int Native_TranslateRarityNameToValue(Handle hPlugin, int nParams) {
+	// TODO always disable case-sensitivity, same as quality
 	bool caseSensitive = GetNativeCell(2);
 	
 	int maxlen;
@@ -43,6 +56,11 @@ public int Native_TranslateRarityNameToValue(Handle hPlugin, int nParams) {
 	return -1;
 }
 
+/**
+ * native ArrayList<cell_t>(void);
+ * 
+ * Returns a list containing valid rarity values.
+ */
 public int Native_GetRarityList(Handle hPlugin, int nParams) {
 	ArrayList rarityValues = new ArrayList();
 	
@@ -55,6 +73,9 @@ public int Native_GetRarityList(Handle hPlugin, int nParams) {
 	return MoveHandleImmediate(rarityValues, hPlugin);
 }
 
+/**
+ * native Address<CEconItemRarityDefinition>(int index);
+ */
 public int Native_GetRarityDefinitionAddress(Handle hPlugin, int nParams) {
 	int value = GetNativeCell(1);
 	return view_as<int>(GetEconRarityDefinition(value));

@@ -25,6 +25,11 @@ enum TFEconParticleSet {
 
 #define ATTACHED_PARTICLE_SYSTEM_STRUCT_SIZE 0x40
 
+/**
+ * native ArrayList<int>(TFEconParticleSet particleSet);
+ * 
+ * Returns a list of particle indices included in the given particle set.
+ */
 public int Native_GetParticleAttributeList(Handle hPlugin, int nParams) {
 	TFEconParticleSet particleSet = GetNativeCell(1);
 	if (particleSet < ParticleSet_All || particleSet >= TFEconParticleSet) {
@@ -83,6 +88,11 @@ static Address GetParticleListAddress(TFEconParticleSet particleSet) {
 	return Address_Null;
 }
 
+/**
+ * native bool(int index, char[] buffer, int maxlen);
+ * 
+ * Returns true if a particle system index exists, storing the name in the given buffer.
+ */
 public int Native_GetParticleAttributeSystemName(Handle hPlugin, int nParams) {
 	int attrValue = GetNativeCell(1);
 	Address pParticleSystemEntry = FindParticleSystemByAttributeValue(attrValue);
@@ -105,6 +115,12 @@ public int Native_GetParticleAttributeSystemName(Handle hPlugin, int nParams) {
 	return false;
 }
 
+/**
+ * native Address(int index);
+ * 
+ * Returns an attachedparticlesystem_t struct corresponding to the particle index, or
+ * Address_Null if invalid.
+ */
 public int Native_GetParticleAttributeAddress(Handle hPlugin, int nParams) {
 	int attrValue = GetNativeCell(1);
 	return view_as<int>(FindParticleSystemByAttributeValue(attrValue));

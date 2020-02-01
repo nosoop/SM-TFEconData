@@ -1,3 +1,7 @@
+/**
+ * Natives / functions for accessing CEconItemDefinition / CTFItemDefinition properties.
+ */
+
 Address offs_CEconItemDefinition_pKeyValues,
 		offs_CEconItemDefinition_u8MinLevel,
 		offs_CEconItemDefinition_u8MaxLevel,
@@ -11,6 +15,13 @@ Address offs_CEconItemDefinition_pKeyValues,
 		offs_CEconItemDefinition_bitsEquipRegionConflicts;
 Address offs_CEconItemDefinition_aiItemSlot;
 
+// in CEconItemDefinition, defindex is at 0x08 (we never use this information though)
+
+/**
+ * native bool(int itemdef, char[] buffer, int maxlen);
+ * 
+ * Stores the internal item name into the buffer.  Returns true if the item definition exists.
+ */
 public int Native_GetItemName(Handle hPlugin, int nParams) {
 	int defindex = GetNativeCell(1);
 	int maxlen = GetNativeCell(3);
@@ -25,6 +36,12 @@ public int Native_GetItemName(Handle hPlugin, int nParams) {
 	return bResult;
 }
 
+/**
+ * native bool(int itemdef, char[] buffer, int maxlen);
+ * 
+ * Stores the item's localization token into the buffer.  Returns true if the item definition
+ * exists.
+ */
 public int Native_GetLocalizedItemName(Handle hPlugin, int nParams) {
 	int defindex = GetNativeCell(1);
 	int maxlen = GetNativeCell(3);
@@ -39,6 +56,11 @@ public int Native_GetLocalizedItemName(Handle hPlugin, int nParams) {
 	return bResult;
 }
 
+/**
+ * native bool(int itemdef, char[] buffer, int maxlen);
+ * 
+ * Stores the item class name into the buffer.  Returns true if the item definition exists.
+ */
 public int Native_GetItemClassName(Handle hPlugin, int nParams) {
 	int defindex = GetNativeCell(1);
 	int maxlen = GetNativeCell(3);
@@ -53,16 +75,16 @@ public int Native_GetItemClassName(Handle hPlugin, int nParams) {
 	return bResult;
 }
 
+/**
+ * native int(int itemdef, TFClassType playerClass);
+ * 
+ * Stores the item loadout slot for the given class.  Returns -1 if the item definition does 
+ * not exist or if the item is not valid for the given player class.
+ */
 public int Native_GetItemSlot(Handle hPlugin, int nParams) {
 	int defindex = GetNativeCell(1);
 	TFClassType playerClass = GetNativeCell(2);
-	return GetItemSlot(defindex, playerClass);
-}
-
-/**
- * Returns the slot an item can be used in by defindex, or -1 if invalid item or invalid class.
- */
-int GetItemSlot(int defindex, TFClassType playerClass) {
+	
 	Address pItemDef = GetEconItemDefinition(defindex);
 	if (!pItemDef) {
 		return -1;
@@ -72,6 +94,12 @@ int GetItemSlot(int defindex, TFClassType playerClass) {
 			view_as<Address>(view_as<int>(playerClass) * 4), NumberType_Int32);
 }
 
+/**
+ * native int(int itemdef);
+ * 
+ * Returns a bitset indicating group conflicts (that is, item cannot be worn with an item with
+ * that bit set).
+ */
 public int Native_GetItemEquipRegionMask(Handle hPlugin, int nParams) {
 	int defindex = GetNativeCell(1);
 	Address pItemDef = GetEconItemDefinition(defindex);
@@ -84,6 +112,11 @@ public int Native_GetItemEquipRegionMask(Handle hPlugin, int nParams) {
 			pItemDef + offs_CEconItemDefinition_bitsEquipRegionConflicts, NumberType_Int32);
 }
 
+/**
+ * native int(int itemdef);
+ * 
+ * Returns a bitset indicating item group membership.
+ */
 public int Native_GetItemEquipRegionGroupBits(Handle hPlugin, int nParams) {
 	int defindex = GetNativeCell(1);
 	Address pItemDef = GetEconItemDefinition(defindex);
@@ -96,18 +129,35 @@ public int Native_GetItemEquipRegionGroupBits(Handle hPlugin, int nParams) {
 			pItemDef + offs_CEconItemDefinition_bitsEquipRegionGroups, NumberType_Int32);
 }
 
+/**
+ * native bool(int itemdef, int &min, int &max);
+ * 
+ * Returns true on a valid item, populating `min` and `max` with the item's min / max level
+ * range.
+ */
 public int Native_GetItemLevelRange(Handle hPlugin, int nParams) {
 	int defindex = GetNativeCell(1);
 	
-	int iMinLevel, iMaxLevel;
-	if (GetItemLevelRange(defindex, iMinLevel, iMaxLevel)) {
-		SetNativeCellRef(2, iMinLevel);
-		SetNativeCellRef(3, iMaxLevel);
-		return true;
+	Address pItemDef = GetEconItemDefinition(defindex);
+	if (!pItemDef) {
+		return false;
 	}
-	return false;
+	
+	int iMinLevel = LoadFromAddress(pItemDef + offs_CEconItemDefinition_u8MinLevel,
+			NumberType_Int8);
+	int iMaxLevel = LoadFromAddress(pItemDef + offs_CEconItemDefinition_u8MaxLevel,
+			NumberType_Int8);
+	
+	SetNativeCellRef(2, iMinLevel);
+	SetNativeCellRef(3, iMaxLevel);
+	return true;
 }
 
+/**
+ * native int(int itemdef);
+ * 
+ * Returns the item's given item quality.  Throws if the item is not valid.
+ */
 public int Native_GetItemQuality(Handle hPlugin, int nParams) {
 	int defindex = GetNativeCell(1);
 	Address pItemDef = GetEconItemDefinition(defindex);
@@ -123,6 +173,11 @@ public int Native_GetItemQuality(Handle hPlugin, int nParams) {
 	return (quality >> 7)? 0xFFFFFF00 | quality : quality;
 }
 
+/**
+ * native int(int itemdef);
+ * 
+ * Returns the item's given item rarity.  Throws if the item is not valid.
+ */
 public int Native_GetItemRarity(Handle hPlugin, int nParams) {
 	int defindex = GetNativeCell(1);
 	Address pItemDef = GetEconItemDefinition(defindex);
@@ -138,19 +193,11 @@ public int Native_GetItemRarity(Handle hPlugin, int nParams) {
 	return (rarity >> 7)? 0xFFFFFF00 | rarity : rarity;
 }
 
-bool GetItemLevelRange(int defindex, int &iMinLevel, int &iMaxLevel) {
-	Address pItemDef = GetEconItemDefinition(defindex);
-	if (!pItemDef) {
-		return false;
-	}
-	
-	iMinLevel = LoadFromAddress(pItemDef + offs_CEconItemDefinition_u8MinLevel,
-			NumberType_Int8);
-	iMaxLevel = LoadFromAddress(pItemDef + offs_CEconItemDefinition_u8MaxLevel,
-			NumberType_Int8);
-	return true;
-}
-
+/**
+ * native ArrayList<int, any>(int itemdef);
+ * 
+ * Returns an ArrayList containing the item's static attribute index / value pairs.
+ */
 public int Native_GetItemStaticAttributes(Handle hPlugin, int nParams) {
 	int defindex = GetNativeCell(1);
 	
@@ -181,6 +228,12 @@ public int Native_GetItemStaticAttributes(Handle hPlugin, int nParams) {
 	return MoveHandle(attributeList, hPlugin);
 }
 
+/**
+ * native bool(int itemdef, const char[] key, char[] buffer, int maxlen);
+ * 
+ * Looks up the key in the item definition's KeyValues instance.  Returns true if the buffer is
+ * not empty after the process.
+ */
 public int Native_GetItemDefinitionString(Handle hPlugin, int nParams) {
 	int defindex = GetNativeCell(1);
 	int keylen;
@@ -207,11 +260,19 @@ public int Native_GetItemDefinitionString(Handle hPlugin, int nParams) {
 	return !!buffer[0];
 }
 
+/**
+ * native bool(int itemdef);
+ * 
+ * Returns true if the given item definition corresponds to an item.
+ */
 public int Native_IsValidItemDefinition(Handle hPlugin, int nParams) {
 	int defindex = GetNativeCell(1);
 	return ValidItemDefIndex(defindex);
 }
 
+/**
+ * Reads the `char*` at the given item definition offset.
+ */
 static bool LoadEconItemDefinitionString(int defindex, Address offset, char[] buffer,
 		int maxlen) {
 	Address pItemDef = GetEconItemDefinition(defindex);
@@ -222,5 +283,3 @@ static bool LoadEconItemDefinitionString(int defindex, Address offset, char[] bu
 	LoadStringFromAddress(DereferencePointer(pItemDef + offset), buffer, maxlen);
 	return true;
 }
-
-// note: in CEconItemDefinition, defindex is at 0x08

@@ -5,12 +5,13 @@ Address offs_CEconItemAttributeDefinition_pKeyValues,
 		offs_CEconItemAttributeDefinition_pszAttributeName,
 		offs_CEconItemAttributeDefinition_pszAttributeClass;
 
+/**
+ * native bool(int attrdef);
+ * 
+ * Returns true if the given attribute is marked as hidden.
+ */
 public int Native_IsAttributeHidden(Handle hPlugin, int nParams) {
 	int defindex = GetNativeCell(1);
-	return IsAttributeHidden(defindex);
-}
-
-bool IsAttributeHidden(int defindex) {
 	Address pAttributeDef = GetEconAttributeDefinition(defindex);
 	if (!pAttributeDef) {
 		return false;
@@ -20,12 +21,13 @@ bool IsAttributeHidden(int defindex) {
 			NumberType_Int8);
 }
 
+/**
+ * native bool(int attrdef);
+ * 
+ * Returns true if the given attribute is marked as stored as an integer.
+ */
 public int Native_IsAttributeStoredAsInteger(Handle hPlugin, int nParams) {
 	int defindex = GetNativeCell(1);
-	return IsAttributeStoredAsInteger(defindex);
-}
-
-bool IsAttributeStoredAsInteger(int defindex) {
 	Address pAttributeDef = GetEconAttributeDefinition(defindex);
 	if (!pAttributeDef) {
 		return false;
@@ -35,6 +37,11 @@ bool IsAttributeStoredAsInteger(int defindex) {
 			NumberType_Int8);
 }
 
+/**
+ * bool(int attrdef, char[] buffer, int maxlen);
+ *
+ * Returns true if the given attribute definition is valid, storing its name into the buffer.
+ */
 public int Native_GetAttributeName(Handle hPlugin, int nParams) {
 	int defindex = GetNativeCell(1);
 	int maxlen = GetNativeCell(3);
@@ -49,6 +56,12 @@ public int Native_GetAttributeName(Handle hPlugin, int nParams) {
 	return bResult;
 }
 
+/**
+ * bool(int attrdef, char[] buffer, int maxlen);
+ *
+ * Returns true if the given attribute definition is valid, storing its attribute class name
+ * into the buffer.
+ */
 public int Native_GetAttributeClassName(Handle hPlugin, int nParams) {
 	int defindex = GetNativeCell(1);
 	int maxlen = GetNativeCell(3);
@@ -63,6 +76,12 @@ public int Native_GetAttributeClassName(Handle hPlugin, int nParams) {
 	return bResult;
 }
 
+/**
+ * bool(int attrdef, const char[] key, char[] buffer, int maxlen, const char[] defaultVal = "");
+ *
+ * Retrieves the `key` entry from the attribute's KeyValues struct and returns true if the
+ * given output buffer is not empty.  If `defaultVal` is set, it is copied to the output buffer.
+ */
 public int Native_GetAttributeDefinitionString(Handle hPlugin, int nParams) {
 	int defindex = GetNativeCell(1);
 	int keylen;
@@ -94,6 +113,11 @@ bool IsValidAttributeDefinition(int defindex) {
 	return !!GetEconAttributeDefinition(defindex);
 }
 
+/**
+ * bool(int attrdef);
+ * 
+ * Returns true if the given identifier corresponds to an attribute definition.
+ */
 public int Native_IsValidAttributeDefinition(Handle hPlugin, int nParams) {
 	int defindex = GetNativeCell(1);
 	return IsValidAttributeDefinition(defindex);
