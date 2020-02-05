@@ -15,6 +15,8 @@ Address offs_CEconItemDefinition_pKeyValues,
 		offs_CEconItemDefinition_bitsEquipRegionConflicts;
 Address offs_CEconItemDefinition_aiItemSlot;
 
+Address sizeof_static_attrib_t;
+
 // in CEconItemDefinition, defindex is at 0x08 (we never use this information though)
 
 /**
@@ -212,11 +214,11 @@ public int Native_GetItemStaticAttributes(Handle hPlugin, int nParams) {
 			NumberType_Int32);
 	Address pAttribList = DereferencePointer(pItemDef + offs_CEconItemDefinition_AttributeList);
 	
-	// struct { attribute_defindex, value }
+	// struct { attribute_defindex, value } // (TF2)
 	ArrayList attributeList = new ArrayList(2, nAttribs);
 	for (int i; i < nAttribs; i++) {
-		// TODO push attributes to list
-		Address pStaticAttrib = pAttribList + view_as<Address>(i * 0x08);
+		Address pStaticAttrib = pAttribList
+				+ view_as<Address>(i * view_as<int>(sizeof_static_attrib_t));
 		
 		int attrIndex = LoadFromAddress(pStaticAttrib, NumberType_Int16);
 		any attrValue = LoadFromAddress(pStaticAttrib + view_as<Address>(0x04),

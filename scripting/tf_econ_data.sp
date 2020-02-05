@@ -13,7 +13,7 @@
 #include <stocksoup/handles>
 #include <stocksoup/memory>
 
-#define PLUGIN_VERSION "0.16.5"
+#define PLUGIN_VERSION "0.16.6"
 public Plugin myinfo = {
 	name = "[TF2] Econ Data",
 	author = "nosoop",
@@ -274,6 +274,8 @@ public void OnPluginStart() {
 	offs_CProtoBufScriptObjectDefinitionManager_PaintList =
 			GameConfGetAddressOffset(hGameConf,
 			"CProtoBufScriptObjectDefinitionManager::m_PaintList");
+	
+	sizeof_static_attrib_t = GameConfGetAddressOffset(hGameConf, "sizeof(static_attrib_t)");
 	
 	delete hGameConf;
 	

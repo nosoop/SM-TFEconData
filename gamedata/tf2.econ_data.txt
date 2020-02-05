@@ -308,6 +308,13 @@
 				"linux"		"268"
 				"windows"	"268"
 			}
+			
+			"sizeof(static_attrib_t)"
+			{
+				// used for iterating over the attribute list
+				"linux"		"8"
+				"windows"	"8"
+			}
 		}
 	}
 }
