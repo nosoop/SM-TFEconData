@@ -1,0 +1,170 @@
+"Games"
+{
+	"csgo"
+	{
+		"Signatures"
+		{
+			"GEconItemSchema()"
+			{
+				// second call after x-ref "bullets alt"
+				// there are two copies of this function (GetItemSchema() and GEconItemSchema()), so you can't makesig this -- mask out the offset to the ItemSystem() call within the function
+				"library"	"server"
+				"linux"		"\x55\x89\xE5\x83\xEC\x08\xE8\x2A\x2A\x2A\x2A\xC9\x83\xC0\x04\xC3"
+			}
+			"CEconItemSchema::GetItemDefinition()"
+			{
+				// called in second branch before unique x-ref "Item definition index %d in achievement reward %s was not found"
+				"library"	"server"
+				"linux"		"\x55\x89\xE5\x57\x56\x53\x83\xEC\x10\x0F\xB6\x55\x10"
+			}
+			"CEconItemSchema::GetAttributeDefinition()"
+			{
+				// there are two copies of this function, plus a similar one for CEconItemSchema::GetGraffitiTintDefinitionByID()
+				// the member offset in ::GraffitiTintDefinitionByID() is above 0x0300, so we'll mask out just the lowest byte
+				"library"	"server"
+				"linux"		"\x55\x31\xC0\x89\xE5\x8B\x55\x0C\x8B\x4D\x08\x85\xD2\x78\x11\x3B\x91\x2A\x01\x00\x00"
+			}
+			"CEconItemSchema::GetAttributeDefinitionByName()"
+			{
+				// has unique x-ref string "CEconItemSchema::GetAttributeDefinitionByName", even on Windows
+				"library"	"server"
+				"linux"		"\x55\x89\xE5\x57\x56\x53\x83\xEC\x3C\x8B\x0D\x2A\x2A\x2A\x2A\x8B\x75\x08\x85\xC9"
+			}
+			
+			"KeyValues::GetString()"
+			{
+				// contains two x-refs to "%lld"
+				"library"	"server"
+				"linux"		"\x55\x89\xE5\x81\xEC\x88\x02\x00\x00\x89\x75\xF8"
+			}
+			"KeyValues::FindKey()"
+			{
+				// first call in KeyValues::GetString()
+				"library"	"server"
+				"linux"		"\x55\x89\xE5\x57\x56\x53\x83\xEC\x4C\x8B\x7D\x08\x0F\xB6\x45\x10"
+			}
+			
+			"CEconItemSchema::GetItemDefinitionByName()"
+			{
+				// vcall in second block after unique x-ref "store_bundle"
+				// called directly in block after unique x-ref "unlisted_items_default_to"
+				// this is used to get the offset of the CUtlVector that holds the definition addresses
+				"library"	"server'
+				"linux"		"\x55\x31\xD2\x89\xE5\x57\x56\x53\x83\xEC\x2C\x8B\x45\x08"
+			}
+		}
+		"Offsets"
+		{
+			"CEconItemDefinition::m_pKeyValues"
+			{
+				// in CEconItemDefinition::BInitFromKV() via unique x-ref "loadondemand"
+				"linux"		"4"
+				"windows"	"4"
+			}
+			"CEconItemDefinition::m_u8MinLevel"
+			{
+				"linux"		"40"
+				"windows"	"40"
+			}
+			"CEconItemDefinition::m_u8MaxLevel"
+			{
+				"linux"		"41"
+				"windows"	"41"
+			}
+			"CEconItemDefinition::m_u8ItemQuality"
+			{
+				"linux"		"43"
+				"windows"	"43"
+			}
+			"CEconItemDefinition::m_si8ItemRarity"
+			{
+				"linux"		"42"
+				"windows"	"42"
+			}
+			"CEconItemDefinition::m_AttributeList"
+			{
+				"linux"		"48"
+				"windows"	"48"
+			}
+			"CEconItemDefinition::m_pszLocalizedItemName"
+			{
+				// set near x-ref "Test Item %d"
+				"linux"		"76"
+				"windows"	"76"
+			}
+			"CEconItemDefinition::m_pszItemClassname"
+			{
+				// x-ref "item_class" in CEconItemDefinition::BInitFromKV()
+				"linux"		"432"
+				"windows"	"432"
+			}
+			"CEconItemDefinition::m_pszItemName"
+			{
+				"linux"		"444"
+				"windows"	"444"
+			}
+			
+			// has the same layout as TF but there is an extra member at 0x00 size 0x04
+			"CEconItemAttributeDefinition::m_pKeyValues"
+			{
+				// set in CEconItemAttributeDefinition::BInitFromKV() after KeyValues::MakeCopy()
+				// CEconItemAttributeDefinition::BInitFromKV() contains unique xref "force_output_description"
+				"linux"		"4"
+				"windows"	"4"
+			}
+			"CEconItemAttributeDefinition::m_iAttributeDefinitionIndex"
+			{
+				"linux"		"8"
+				"windows"	"8"
+			}
+			"CEconItemAttributeDefinition::m_bHidden"
+			{
+				"linux"		"16"
+				"windows"	"16"
+			}
+			"CEconItemAttributeDefinition::m_bIsInteger"
+			{
+				"linux"		"18"
+				"windows"	"18"
+			}
+			"CEconItemAttributeDefinition::m_pszAttributeName"
+			{
+				"linux"		"52"
+				"windows"	"52"
+			}
+			"CEconItemAttributeDefinition::m_pszAttributeClass"
+			{
+				"linux"		"56"
+				"windows"	"56"
+			}
+			
+			"CEconItemSchema::m_ItemList"
+			{
+				// CUtlVector (?) with struct (int defindex, CEconItemDefinition*, int unknown)
+				// in CEconItemSchema::GetItemDefinitionByName(), dereferenced inside loop
+				"linux"		"208"
+				"windows"	"208"
+			}
+			"CEconItemSchema::m_nItemCount"
+			{
+				// in CEconItemSchema::GetItemDefinitionByName(), in the second block
+				// this doesn't line up with the usual CUtlVector struct /shrug
+				"linux"		"228"
+				"windows"	"228"
+			}
+			
+			"CCStrike15ItemSchema::m_ItemSlotNames"
+			{
+				// offset in block after semi-unique xref "item_sub_position"
+				"linux"		"1916"
+				"windows"	"1916"
+			}
+			
+			"sizeof(static_attrib_t)"
+			{
+				"linux"		"12"
+				"windows"	"12"
+			}
+		}
+	}
+}
