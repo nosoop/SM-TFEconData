@@ -40,6 +40,7 @@ Address offs_CEconItemSchema_ItemQualities,
 #define TF_ITEMDEF_DEFAULT -1
 
 Handle g_SDKCallGetEconItemSchema;
+Handle g_SDKCallItemSystem;
 Handle g_SDKCallSchemaGetItemDefinition;
 Handle g_SDKCallSchemaGetAttributeDefinitionByName;
 // Handle g_SDKCallTranslateWeaponEntForClass;
@@ -92,6 +93,17 @@ public void OnPluginStart() {
 	PrepSDKCall_SetFromConf(hGameConf, SDKConf_Signature, "GEconItemSchema()");
 	PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);
 	g_SDKCallGetEconItemSchema = EndPrepSDKCall();
+	
+	if (!g_SDKCallGetEconItemSchema) {
+		StartPrepSDKCall(SDKCall_Static);
+		PrepSDKCall_SetFromConf(hGameConf, SDKConf_Signature, "ItemSystem()");
+		PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);
+		g_SDKCallItemSystem = EndPrepSDKCall();
+		
+		if (!g_SDKCallItemSystem) {
+			SetFailState("Could not set up GEconItemSchema() or ItemSystem() calls.");
+		}
+	}
 	
 	StartPrepSDKCall(SDKCall_Raw);
 	PrepSDKCall_SetFromConf(hGameConf, SDKConf_Signature,
@@ -320,7 +332,14 @@ Address GetEconAttributeDefinitionByName(const char[] name) {
 }
 
 Address GetEconItemSchema() {
-	return SDKCall(g_SDKCallGetEconItemSchema);
+	if (g_SDKCallGetEconItemSchema) {
+		return SDKCall(g_SDKCallGetEconItemSchema);
+	}
+	if (g_SDKCallItemSystem) {
+		Address pItemSystem = SDKCall(g_SDKCallItemSystem);
+		return pItemSystem? pItemSystem + view_as<Address>(4) : Address_Null;
+	}
+	return Address_Null;
 }
 
 Address GetProtoScriptObjDefManager() {

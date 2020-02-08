@@ -11,11 +11,21 @@
 				"library"	"server"
 				"linux"		"\x55\x89\xE5\x83\xEC\x08\xE8\x2A\x2A\x2A\x2A\xC9\x83\xC0\x04\xC3"
 			}
+			"ItemSystem()"
+			{
+				// windows inlines GEconItemSchema() in CS:GO, what a surprise
+				// CEconItemSchema is 0x04 within ItemSystem, which isn't inlined, so just handle that plugin-side
+				"library"	"server"
+				
+				// called immediately after "inaccuracy stand alt"
+				"windows"	"\xA1\x2A\x2A\x2A\x2A\x85\xC0\x75\x2A\xA1\x2A\x2A\x2A\x2A\x56"
+			}
 			"CEconItemSchema::GetItemDefinition()"
 			{
-				// called in second branch before unique x-ref "Item definition index %d in achievement reward %s was not found"
+				// called at the start of the loop containing xref "Item definition index %d in achievement reward %s was not found"
 				"library"	"server"
 				"linux"		"\x55\x89\xE5\x57\x56\x53\x83\xEC\x10\x0F\xB6\x55\x10"
+				"windows"	"\x55\x8B\xEC\x83\xEC\x10\x56\x8B\xF1\x89\x75\xF4"
 			}
 			"CEconItemSchema::GetAttributeDefinition()"
 			{
@@ -23,12 +33,19 @@
 				// the member offset in ::GraffitiTintDefinitionByID() is above 0x0300, so we'll mask out just the lowest byte
 				"library"	"server"
 				"linux"		"\x55\x31\xC0\x89\xE5\x8B\x55\x0C\x8B\x4D\x08\x85\xD2\x78\x11\x3B\x91\x2A\x01\x00\x00"
+				
+				// on windows
+				// xref "CEconItem::BAddToMessage::std::string" to get to CEconItem::BAddToMessage(std::string*)
+				// middle of the three calls in the inner block to get to CEconItem::SerializeToProtoBufItem()
+				// realize that it's inlined on Windows and swear a bunch
+				// CUtlVector at 0x120 in GEconItemSchema(), do bounds checks to make sure it's valid else return null
 			}
 			"CEconItemSchema::GetAttributeDefinitionByName()"
 			{
 				// has unique x-ref string "CEconItemSchema::GetAttributeDefinitionByName", even on Windows
 				"library"	"server"
 				"linux"		"\x55\x89\xE5\x57\x56\x53\x83\xEC\x3C\x8B\x0D\x2A\x2A\x2A\x2A\x8B\x75\x08\x85\xC9"
+				"windows"	"\x55\x8B\xEC\x53\x56\x57\x8B\xF9\x8B\x0D\x2A\x2A\x2A\x2A\x8B\x99\x0C\x10\x00\x00"
 			}
 			
 			"KeyValues::GetString()"
@@ -36,20 +53,23 @@
 				// contains two x-refs to "%lld"
 				"library"	"server"
 				"linux"		"\x55\x89\xE5\x81\xEC\x88\x02\x00\x00\x89\x75\xF8"
+				"windows"	"\x55\x8B\xEC\x83\xE4\xC0\x81\xEC\x74\x02\x00\x00"
 			}
 			"KeyValues::FindKey()"
 			{
 				// first call in KeyValues::GetString()
 				"library"	"server"
 				"linux"		"\x55\x89\xE5\x57\x56\x53\x83\xEC\x4C\x8B\x7D\x08\x0F\xB6\x45\x10"
+				"windows"	"\x55\x8B\xEC\x83\xEC\x1C\x53\x8B\xD9\x85\xDB"
 			}
 			
 			"CEconItemSchema::GetItemDefinitionByName()"
 			{
 				// vcall in second block after unique x-ref "store_bundle"
 				// called directly in block after unique x-ref "unlisted_items_default_to"
-				// this is used to get the offset of the CUtlVector that holds the definition addresses
-				"library"	"server'
+				// this is used to get the offset of CEconItemSchema::m_ItemList
+				// the plugin doesn't use this gamedata, this is just for reference
+				"library"	"server"
 				"linux"		"\x55\x31\xD2\x89\xE5\x57\x56\x53\x83\xEC\x2C\x8B\x45\x08"
 			}
 		}
