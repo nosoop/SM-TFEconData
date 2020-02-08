@@ -24,7 +24,8 @@ public Plugin myinfo = {
 
 Address offs_CEconItemSchema_ItemQualities,
 		offs_CEconItemSchema_ItemList,
-		offs_CEconItemSchema_nItemCount;
+		offs_CEconItemSchema_nItemCount,
+		offs_CEconItemSchema_AttributeList;
 
 #include "tf_econ_data/attached_particle_systems.sp"
 #include "tf_econ_data/loadout_slot.sp"
@@ -40,7 +41,6 @@ Address offs_CEconItemSchema_ItemQualities,
 
 Handle g_SDKCallGetEconItemSchema;
 Handle g_SDKCallSchemaGetItemDefinition;
-Handle g_SDKCallSchemaGetAttributeDefinition;
 Handle g_SDKCallSchemaGetAttributeDefinitionByName;
 // Handle g_SDKCallTranslateWeaponEntForClass;
 Handle g_SDKCallGetProtoDefManager;
@@ -102,13 +102,6 @@ public void OnPluginStart() {
 	
 	StartPrepSDKCall(SDKCall_Raw);
 	PrepSDKCall_SetFromConf(hGameConf, SDKConf_Signature,
-			"CEconItemSchema::GetAttributeDefinition()");
-	PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);
-	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);
-	g_SDKCallSchemaGetAttributeDefinition = EndPrepSDKCall();
-	
-	StartPrepSDKCall(SDKCall_Raw);
-	PrepSDKCall_SetFromConf(hGameConf, SDKConf_Signature,
 			"CEconItemSchema::GetAttributeDefinitionByName()");
 	PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);
 	PrepSDKCall_AddParameter(SDKType_String, SDKPass_Pointer);
@@ -161,6 +154,8 @@ public void OnPluginStart() {
 			// GameConfGetAddressOffset(hGameConf, "CEconItemSchema::m_EquipRegions");
 	// offs_CEconItemSchema_ParticleSystemTree =
 			// GameConfGetAddressOffset(hGameConf, "CEconItemSchema::m_ParticleSystemTree");
+	offs_CEconItemSchema_AttributeList =
+			GameConfGetAddressOffset(hGameConf, "CEconItemSchema::m_AttributeList");
 	
 	offs_CTFItemSchema_ItemSlotNames =
 			GameConfGetAddressOffset(hGameConf, "CCStrike15ItemSchema::m_ItemSlotNames");
@@ -284,9 +279,22 @@ public int Native_GetAttributeDefinitionAddress(Handle hPlugin, int nParams) {
 }
 
 Address GetEconAttributeDefinition(int defindex) {
+	// NOTE: CS:GO has their attribute list where indices are directly mapped within CUtlVector
+	// TF2 does not do this (they also store CEconItemAttributeDefinition directly)
+	// so don't merge into TF2 branch
 	Address pSchema = GetEconItemSchema();
-	return pSchema?
-			SDKCall(g_SDKCallSchemaGetAttributeDefinition, pSchema, defindex) : Address_Null;
+	if (!pSchema) {
+		return Address_Null;
+	}
+	
+	int nAttributes = LoadFromAddress(
+			pSchema + offs_CEconItemSchema_AttributeList + view_as<Address>(0x0C),
+			NumberType_Int32);
+	if (defindex >= nAttributes) {
+		return Address_Null;
+	}
+	Address pAttributeData = DereferencePointer(pSchema + offs_CEconItemSchema_AttributeList);
+	return DereferencePointer(pAttributeData + view_as<Address>(0x04 * defindex));
 }
 
 public int Native_TranslateAttributeNameToDefinitionIndex(Handle hPlugin, int nParams) {

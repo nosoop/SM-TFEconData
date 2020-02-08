@@ -152,6 +152,13 @@
 				"linux"		"228"
 				"windows"	"228"
 			}
+			"CEconItemSchema::m_AttributeList"
+			{
+				// CUtlVector<CEconItemDefinition*> (CS:GO)
+				// iterated over in CEconItemSchema::GetAttributeDefinitionByName()
+				"linux"		"284"
+				"windows"	"284"
+			}
 			
 			"CCStrike15ItemSchema::m_ItemSlotNames"
 			{
