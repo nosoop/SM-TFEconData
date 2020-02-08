@@ -110,6 +110,7 @@ public void OnPluginStart() {
 			"CEconItemSchema::GetItemDefinition()");
 	PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);
 	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);
+	PrepSDKCall_AddParameter(SDKType_Bool, SDKPass_Plain);
 	g_SDKCallSchemaGetItemDefinition = EndPrepSDKCall();
 	
 	StartPrepSDKCall(SDKCall_Raw);
@@ -267,7 +268,7 @@ Address GetEconItemDefinition(int defindex) {
 		return Address_Null;
 	}
 	
-	Address pItemDefinition = SDKCall(g_SDKCallSchemaGetItemDefinition, pSchema, defindex);
+	Address pItemDefinition = SDKCall(g_SDKCallSchemaGetItemDefinition, pSchema, defindex, false);
 	
 	// special case: return default item definition on TF_ITEMDEF_DEFAULT (-1)
 	// otherwise return a valid definition iff not the default
@@ -292,7 +293,7 @@ public int Native_GetAttributeDefinitionAddress(Handle hPlugin, int nParams) {
 
 Address GetEconAttributeDefinition(int defindex) {
 	// NOTE: CS:GO has their attribute list where indices are directly mapped within CUtlVector
-	// TF2 does not do this (they also store CEconItemAttributeDefinition directly)
+	// TF2 does not do this (they also instead store CEconItemAttributeDefinition directly)
 	// so don't merge into TF2 branch
 	Address pSchema = GetEconItemSchema();
 	if (!pSchema) {
