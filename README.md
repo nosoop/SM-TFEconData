@@ -1,5 +1,7 @@
 # TF2 Econ Data
 
+[:coffee: fund my caffeine addiction :coffee:](https://buymeacoff.ee/nosoop)
+
 A library to get TF2 item data from game memory, intended as a successor to TF2ItemsInfo and
 TF2IDB.  No more parsing the schema file and maintaining your own structure for plugin support.
 
