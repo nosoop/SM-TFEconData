@@ -61,8 +61,12 @@ native bool TF2Econ_GetLocalizedItemName(int itemdef, char[] name, int maxlen);
 native bool TF2Econ_GetItemClassName(int itemdef, char[] buffer, int maxlen);
 
 /**
- * Returns the item's weapon slot for the given class, or -1 if the item definition or
- * item / class combination is not valid.
+ * Returns the item's loadout slot for the given class, or -1 if the item definition or
+ * item / class combination is not valid.  This is *not* the same value as the weapon slot used
+ * in SourceMod's GetPlayerWeaponSlot native; not all values match.
+ * 
+ * More information about this distinction is available here:
+ * https://github.com/nosoop/SM-TFEconData/wiki/Porting-TF2IDB-and-TF2II-plugins-to-TFEconData#notes-about-loadout-slots
  */
 native int TF2Econ_GetItemSlot(int itemdef, TFClassType playerClass);
 
@@ -99,6 +103,8 @@ native int TF2Econ_GetItemRarity(int itemdef);
 /**
  * Returns an `ArrayList` containing attribute defindex / value pairs corresponding to the given
  * item definition, or `null` if not a valid item definition.
+ * 
+ * The value is a raw 32-bit value which may represent an int, float, or pointer.
  * 
  * This handle is owned by the calling plugin, so it should be `delete`d when not needed
  * anymore.
@@ -263,7 +269,9 @@ native bool TF2Econ_GetParticleAttributeSystemName(int particleIndex, char[] buf
  * set (currently valid sets are for cosmetic, taunt, or weapon effects).  Particle effects in
  * the "other_particles" and "killstreak_eyeglows" categories are only available in "all" set.
  * 
- * Throws an error if the given TFEconParticleSet value is not valid.
+ * Throws an error if the given TFEconParticleSet value is not recognized.
+ * 
+ * Handle is owned by the calling plugin.
  */
 native ArrayList TF2Econ_GetParticleAttributeList(
 		TFEconParticleSet particleSet = ParticleSet_All);
@@ -273,7 +281,9 @@ native ArrayList TF2Econ_GetParticleAttributeList(
  * unneeded.
  * 
  * This includes paint kits that are only applied to weapons, but does not include unused paint
- * kits (as defined in resource/tf_proto_obj_defs_english.txt and other languages)
+ * kits (as defined in resource/tf_proto_obj_defs_english.txt and other languages).
+ * 
+ * Handle is owned by the calling plugin.
  */
 native ArrayList TF2Econ_GetPaintKitDefinitionList();
 
