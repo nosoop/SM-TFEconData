@@ -68,7 +68,7 @@ native bool TF2Econ_GetItemClassName(int itemdef, char[] buffer, int maxlen);
  * More information about this distinction is available here:
  * https://github.com/nosoop/SM-TFEconData/wiki/Porting-TF2IDB-and-TF2II-plugins-to-TFEconData#notes-about-loadout-slots
  */
-native int TF2Econ_GetItemSlot(int itemdef, TFClassType playerClass);
+native int TF2Econ_GetItemLoadoutSlot(int itemdef, TFClassType playerClass);
 
 /**
  * Returns the given item's equipment region mask.  This mask can be and-tested with another
@@ -346,6 +346,15 @@ native Address TF2Econ_GetPaintKitDefinitionAddress(int protoDefIndex);
  */
 #pragma deprecated Use TF2Econ_IsValidItemDefinition instead
 native bool TF2Econ_IsValidDefinitionIndex(int itemdef);
+
+/**
+ * @deprecated Renamed native to TF2Econ_GetItemLoadoutSlot to remove the confusion on weapon
+ * and loadout slots.
+ * 
+ * This native will still be present for backwards compatibility.
+ */
+#pragma deprecated Use TF2Econ_GetItemLoadoutSlot instead
+native int TF2Econ_GetItemSlot(int itemdef, TFClassType playerClass);
 
 public SharedPlugin __pl_tf_econ_data = {
 	name = "tf_econ_data",

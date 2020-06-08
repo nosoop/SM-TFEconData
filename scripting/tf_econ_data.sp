@@ -13,7 +13,7 @@
 #include <stocksoup/handles>
 #include <stocksoup/memory>
 
-#define PLUGIN_VERSION "0.16.6"
+#define PLUGIN_VERSION "0.16.7"
 public Plugin myinfo = {
 	name = "[TF2] Econ Data",
 	author = "nosoop",
@@ -54,7 +54,7 @@ public APLRes AskPluginLoad2(Handle self, bool late, char[] error, int maxlen) {
 	CreateNative("TF2Econ_GetItemName", Native_GetItemName);
 	CreateNative("TF2Econ_GetLocalizedItemName", Native_GetLocalizedItemName);
 	CreateNative("TF2Econ_GetItemClassName", Native_GetItemClassName);
-	CreateNative("TF2Econ_GetItemSlot", Native_GetItemSlot);
+	CreateNative("TF2Econ_GetItemLoadoutSlot", Native_GetItemSlot);
 	CreateNative("TF2Econ_GetItemEquipRegionMask", Native_GetItemEquipRegionMask);
 	CreateNative("TF2Econ_GetItemEquipRegionGroupBits", Native_GetItemEquipRegionGroupBits);
 	CreateNative("TF2Econ_GetItemLevelRange", Native_GetItemLevelRange);
@@ -119,6 +119,7 @@ public APLRes AskPluginLoad2(Handle self, bool late, char[] error, int maxlen) {
 	
 	// backwards-compatibile
 	CreateNative("TF2Econ_IsValidDefinitionIndex", Native_IsValidItemDefinition);
+	CreateNative("TF2Econ_GetItemSlot", Native_GetItemSlot);
 	
 	return APLRes_Success;
 }
