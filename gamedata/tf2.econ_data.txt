@@ -147,12 +147,24 @@
 				"windows"	"308"
 			}
 			
-			// wait, shoot, this is CTFItemDefinition -- rename this once the next revision is out?
-			"CEconItemDefinition::m_aiItemSlot"
+			"CTFItemDefinition::m_iDefaultItemSlot"
+			{
+				"linux"		"400"
+				"windows"	"400"
+			}
+			"CTFItemDefinition::m_aiItemSlot"
 			{
 				// array mapping class indices to item slots (-1 if not valid for class)
 				// x-ref "used_by_classes" in CTFItemDefinition::BInitFromKV()
 				// offset in second-to-last block before loop
+				"linux"		"512"
+				"windows"	"512"
+			}
+			
+			// DEPRECATED: this is present as a transitional period for backwards compatibility.
+			// this will be removed at some point
+			"CEconItemDefinition::m_aiItemSlot"
+			{
 				"linux"		"512"
 				"windows"	"512"
 			}

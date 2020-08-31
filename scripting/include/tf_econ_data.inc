@@ -71,6 +71,11 @@ native bool TF2Econ_GetItemClassName(int itemdef, char[] buffer, int maxlen);
 native int TF2Econ_GetItemLoadoutSlot(int itemdef, TFClassType playerClass);
 
 /**
+ * Returns the item's default loadout slot.
+ */
+native int TF2Econ_GetItemDefaultLoadoutSlot(int itemdef);
+
+/**
  * Returns the given item's equipment region mask.  This mask can be and-tested with another
  * mask to determine if items conflict.
  */

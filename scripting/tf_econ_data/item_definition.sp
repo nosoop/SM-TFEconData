@@ -13,7 +13,8 @@ Address offs_CEconItemDefinition_pKeyValues,
 		offs_CEconItemDefinition_pszItemName,
 		offs_CEconItemDefinition_bitsEquipRegionGroups,
 		offs_CEconItemDefinition_bitsEquipRegionConflicts;
-Address offs_CEconItemDefinition_aiItemSlot;
+Address offs_CEconItemDefinition_aiItemSlot,
+		offs_CTFItemDefinition_iDefaultItemSlot;
 
 Address sizeof_static_attrib_t;
 
@@ -94,6 +95,21 @@ public int Native_GetItemSlot(Handle hPlugin, int nParams) {
 	
 	return LoadFromAddress(pItemDef + offs_CEconItemDefinition_aiItemSlot +
 			view_as<Address>(playerClass * 4), NumberType_Int32);
+}
+
+/**
+ * native int();
+ * 
+ * Returns the default assigned item loadout slot, or -1 if the item definition does not exist.
+ */
+public int Native_GetItemDefaultSlot(Handle hPlugin, int nParams) {
+	int defindex = GetNativeCell(1);
+	Address pItemDef = GetEconItemDefinition(defindex);
+	if (!pItemDef) {
+		return -1;
+	}
+	return LoadFromAddress(pItemDef + offs_CTFItemDefinition_iDefaultItemSlot,
+			NumberType_Int32);
 }
 
 /**

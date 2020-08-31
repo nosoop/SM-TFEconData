@@ -13,7 +13,7 @@
 #include <stocksoup/handles>
 #include <stocksoup/memory>
 
-#define PLUGIN_VERSION "0.16.7"
+#define PLUGIN_VERSION "0.17.0"
 public Plugin myinfo = {
 	name = "[TF2] Econ Data",
 	author = "nosoop",
@@ -55,6 +55,7 @@ public APLRes AskPluginLoad2(Handle self, bool late, char[] error, int maxlen) {
 	CreateNative("TF2Econ_GetLocalizedItemName", Native_GetLocalizedItemName);
 	CreateNative("TF2Econ_GetItemClassName", Native_GetItemClassName);
 	CreateNative("TF2Econ_GetItemLoadoutSlot", Native_GetItemSlot);
+	CreateNative("TF2Econ_GetItemDefaultLoadoutSlot", Native_GetItemDefaultSlot);
 	CreateNative("TF2Econ_GetItemEquipRegionMask", Native_GetItemEquipRegionMask);
 	CreateNative("TF2Econ_GetItemEquipRegionGroupBits", Native_GetItemEquipRegionGroupBits);
 	CreateNative("TF2Econ_GetItemLevelRange", Native_GetItemLevelRange);
@@ -211,8 +212,11 @@ public void OnPluginStart() {
 	offs_CEconItemDefinition_bitsEquipRegionConflicts =
 			GameConfGetAddressOffset(hGameConf,
 			"CEconItemDefinition::m_bitsEquipRegionConflicts");
+	
+	offs_CTFItemDefinition_iDefaultItemSlot =
+			GameConfGetAddressOffset(hGameConf, "CTFItemDefinition::m_iDefaultItemSlot");
 	offs_CEconItemDefinition_aiItemSlot =
-			GameConfGetAddressOffset(hGameConf, "CEconItemDefinition::m_aiItemSlot");
+			GameConfGetAddressOffset(hGameConf, "CTFItemDefinition::m_aiItemSlot");
 	
 	offs_CEconItemSchema_ItemRarities =
 			GameConfGetAddressOffset(hGameConf, "CEconItemSchema::m_ItemRarities");
