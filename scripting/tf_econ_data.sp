@@ -13,7 +13,7 @@
 #include <stocksoup/handles>
 #include <stocksoup/memory>
 
-#define PLUGIN_VERSION "0.17.0"
+#define PLUGIN_VERSION "0.17.1"
 public Plugin myinfo = {
 	name = "[TF2] Econ Data",
 	author = "nosoop",
@@ -408,7 +408,7 @@ public int Native_TranslateAttributeNameToDefinitionIndex(Handle hPlugin, int nP
 	if (pAttribute) {
 		Address pOffs =
 				pAttribute + offs_CEconItemAttributeDefinition_iAttributeDefinitionIndex;
-		return LoadFromAddress(pOffs, NumberType_Int32);
+		return LoadFromAddress(pOffs, NumberType_Int16);
 	}
 	return -1;
 }
