@@ -49,7 +49,7 @@
 				// contains semi-unique x-ref "%lld" (in the windows version there's two refs to it in the function)
 				"library"	"server"
 				"linux"		"@_ZN9KeyValues9GetStringEPKcS1_"
-				"windows"	"\x55\x8B\xEC\x81\xEC\x40\x02\x00\x00"
+				"windows"	"\x55\x8B\xEC\x81\xEC\x40\x02\x00\x00\x53\x8B\x5D\x08"
 			}
 			"KeyValues::FindKey()"
 			{
