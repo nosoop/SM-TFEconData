@@ -117,7 +117,7 @@ native int TF2Econ_GetItemRarity(int itemdef);
 native ArrayList TF2Econ_GetItemStaticAttributes(int itemdef);
 
 /**
- * Returns an arbiitrary string from an item definition's KeyValues structure.
+ * Returns an arbitrary string from an item definition's KeyValues structure.
  * You may use subkey notation ('/') to retrieve nested values.
  * 
  * Returns true if the output buffer is not empty.
