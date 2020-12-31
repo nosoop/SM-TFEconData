@@ -1,0 +1,65 @@
+# Builds when a release is published.
+name: Build Workflow
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  run:
+    name: Build Release Package
+    runs-on: ubuntu-20.04
+
+    steps:
+    - uses: actions/checkout@v1
+      with:
+        submodules: true
+
+    - name: Setup SourcePawn Compiler
+      uses: rumblefrog/setup-sp@v1.2.1
+      with:
+        version: "1.10.x"
+        no-spcomp-proxy: true
+
+    - name: Setup Ninja Build
+      uses: ashutoshvarma/setup-ninja@master
+      with:
+        version: 1.10.0
+
+    - name: Build Files
+      run: |
+        python3 configure.py
+        ninja
+
+    - name: Upload Include
+      id: upload-release-include
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ github.event.release.upload_url }}
+        asset_path: ./build/scripting/include/tf_econ_data.inc
+        asset_name: tf_econ_data.inc
+        asset_content_type: text/plain
+
+    - name: Upload Plugin
+      id: upload-release-plugin
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ github.event.release.upload_url }}
+        asset_path: ./build/plugins/tf_econ_data.smx
+        asset_name: tf_econ_data.smx
+        asset_content_type: application/octet-stream
+
+    - name: Upload Game Config
+      id: upload-release-gamedata
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ github.event.release.upload_url }}
+        asset_path: ./build/gamedata/tf2.econ_data.txt
+        asset_name: tf2.econ_data.txt
+        asset_content_type: text/plain
