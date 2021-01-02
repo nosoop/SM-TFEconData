@@ -1,9 +1,4 @@
-Address offs_CEconItemAttributeDefinition_pKeyValues,
-		offs_CEconItemAttributeDefinition_iAttributeDefinitionIndex,
-		offs_CEconItemAttributeDefinition_bHidden,
-		offs_CEconItemAttributeDefinition_bIsInteger,
-		offs_CEconItemAttributeDefinition_pszAttributeName,
-		offs_CEconItemAttributeDefinition_pszAttributeClass;
+#include <classdefs/econ_item_attribute_definition.sp>
 
 /**
  * native bool(int attrdef);
@@ -12,13 +7,8 @@ Address offs_CEconItemAttributeDefinition_pKeyValues,
  */
 public int Native_IsAttributeHidden(Handle hPlugin, int nParams) {
 	int defindex = GetNativeCell(1);
-	Address pAttributeDef = GetEconAttributeDefinition(defindex);
-	if (!pAttributeDef) {
-		return false;
-	}
-	
-	return !!LoadFromAddress(pAttributeDef + offs_CEconItemAttributeDefinition_bHidden,
-			NumberType_Int8);
+	CEconItemAttributeDefinition pAttributeDef = GetEconAttributeDefinition(defindex);
+	return pAttributeDef? pAttributeDef.m_bHidden : false;
 }
 
 /**
@@ -28,13 +18,8 @@ public int Native_IsAttributeHidden(Handle hPlugin, int nParams) {
  */
 public int Native_IsAttributeStoredAsInteger(Handle hPlugin, int nParams) {
 	int defindex = GetNativeCell(1);
-	Address pAttributeDef = GetEconAttributeDefinition(defindex);
-	if (!pAttributeDef) {
-		return false;
-	}
-	
-	return !!LoadFromAddress(pAttributeDef + offs_CEconItemAttributeDefinition_bIsInteger,
-			NumberType_Int8);
+	CEconItemAttributeDefinition pAttributeDef = GetEconAttributeDefinition(defindex);
+	return pAttributeDef? pAttributeDef.m_bIsInteger : false;
 }
 
 /**
@@ -44,16 +29,17 @@ public int Native_IsAttributeStoredAsInteger(Handle hPlugin, int nParams) {
  */
 public int Native_GetAttributeName(Handle hPlugin, int nParams) {
 	int defindex = GetNativeCell(1);
+	CEconItemAttributeDefinition pAttributeDef = GetEconAttributeDefinition(defindex);
+	if (!pAttributeDef) {
+		return false;
+	}
+	
 	int maxlen = GetNativeCell(3);
 	
 	char[] buffer = new char[maxlen];
-	bool bResult = LoadEconAttributeDefinitionString(defindex,
-			offs_CEconItemAttributeDefinition_pszAttributeName, buffer, maxlen);
-	
-	if (bResult) {
-		SetNativeString(2, buffer, maxlen, true);
-	}
-	return bResult;
+	LoadStringFromAddress(pAttributeDef.m_szAttributeName, buffer, maxlen);
+	SetNativeString(2, buffer, maxlen, true);
+	return true;
 }
 
 /**
@@ -64,16 +50,17 @@ public int Native_GetAttributeName(Handle hPlugin, int nParams) {
  */
 public int Native_GetAttributeClassName(Handle hPlugin, int nParams) {
 	int defindex = GetNativeCell(1);
+	CEconItemAttributeDefinition pAttributeDef = GetEconAttributeDefinition(defindex);
+	if (!pAttributeDef) {
+		return false;
+	}
+	
 	int maxlen = GetNativeCell(3);
 	
 	char[] buffer = new char[maxlen];
-	bool bResult = LoadEconAttributeDefinitionString(defindex,
-			offs_CEconItemAttributeDefinition_pszAttributeClass, buffer, maxlen);
-	
-	if (bResult) {
-		SetNativeString(2, buffer, maxlen, true);
-	}
-	return bResult;
+	LoadStringFromAddress(pAttributeDef.m_szAttributeClass, buffer, maxlen);
+	SetNativeString(2, buffer, maxlen, true);
+	return true;
 }
 
 /**
@@ -96,13 +83,9 @@ public int Native_GetAttributeDefinitionString(Handle hPlugin, int nParams) {
 	
 	GetNativeString(5, buffer, maxlen);
 	
-	Address pItemDef = GetEconAttributeDefinition(defindex);
-	if (pItemDef) {
-		Address pKeyValues = DereferencePointer(
-				pItemDef + offs_CEconItemAttributeDefinition_pKeyValues);
-		if (KeyValuesPtrKeyExists(pKeyValues, key)) {
-			KeyValuesPtrGetString(pKeyValues, key, buffer, maxlen, buffer);
-		}
+	CEconItemAttributeDefinition pItemDef = GetEconAttributeDefinition(defindex);
+	if (pItemDef && KeyValuesPtrKeyExists(pItemDef.m_pKeyValues, key)) {
+		KeyValuesPtrGetString(pItemDef.m_pKeyValues, key, buffer, maxlen, buffer);
 	}
 	
 	SetNativeString(3, buffer, maxlen, true);
@@ -122,18 +105,3 @@ public int Native_IsValidAttributeDefinition(Handle hPlugin, int nParams) {
 	int defindex = GetNativeCell(1);
 	return IsValidAttributeDefinition(defindex);
 }
-
-static bool LoadEconAttributeDefinitionString(int defindex, Address offset, char[] buffer,
-		int maxlen) {
-	Address pAttributeDef = GetEconAttributeDefinition(defindex);
-	if (!pAttributeDef) {
-		return false;
-	}
-	
-	LoadStringFromAddress(DereferencePointer(pAttributeDef + offset), buffer, maxlen);
-	return true;
-}
-
-// layout of CEconItemAttributeDefinition
-// 0x00 = KeyValues* m_pKeyValues
-// 0x04 = int m_iAttributeDefinitionIndex

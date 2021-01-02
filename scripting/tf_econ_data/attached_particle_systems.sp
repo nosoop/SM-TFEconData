@@ -1,11 +1,4 @@
-Address offs_CEconItemSchema_ParticleSystemTree,
-		offs_CEconItemSchema_CosmeticUnusualEffectList,
-		offs_CEconItemSchema_WeaponUnusualEffectList,
-		offs_CEconItemSchema_TauntUnusualEffectList;
-
-// known members of attachedparticlesystem_t
-Address offs_attachedparticlesystem_pszParticleSystem,
-		offs_attachedparticlesystem_iAttributeValue;
+#include <classdefs/particle_system.sp>
 
 // enum values for tree elements -- these should be moved when we have more CUtlRBTree accessors
 enum TreeElement {
@@ -22,8 +15,6 @@ enum TFEconParticleSet {
 	ParticleSet_WeaponUnusualEffects,
 	ParticleSet_TauntUnusualEffects
 };
-
-#define ATTACHED_PARTICLE_SYSTEM_STRUCT_SIZE 0x40
 
 /**
  * native ArrayList<int>(TFEconParticleSet particleSet);
@@ -76,13 +67,13 @@ static ArrayList GetParticleAttributeList(TFEconParticleSet particleSet) {
 static Address GetParticleListAddress(TFEconParticleSet particleSet) {
 	switch (particleSet) {
 		case ParticleSet_CosmeticUnusualEffects: {
-			return GetEconItemSchema() + offs_CEconItemSchema_CosmeticUnusualEffectList;
+			return GetEconItemSchema().m_CosmeticUnusualEffectList;
 		}
 		case ParticleSet_WeaponUnusualEffects: {
-			return GetEconItemSchema() + offs_CEconItemSchema_WeaponUnusualEffectList;
+			return GetEconItemSchema().m_WeaponUnusualEffectList;
 		}
 		case ParticleSet_TauntUnusualEffects: {
-			return GetEconItemSchema() + offs_CEconItemSchema_TauntUnusualEffectList;
+			return GetEconItemSchema().m_TauntUnusualEffectList;
 		}
 	}
 	return Address_Null;
@@ -95,7 +86,7 @@ static Address GetParticleListAddress(TFEconParticleSet particleSet) {
  */
 public int Native_GetParticleAttributeSystemName(Handle hPlugin, int nParams) {
 	int attrValue = GetNativeCell(1);
-	Address pParticleSystemEntry = FindParticleSystemByAttributeValue(attrValue);
+	AttachedParticleSystem_t pParticleSystemEntry = FindParticleSystemByAttributeValue(attrValue);
 	if (!pParticleSystemEntry) {
 		return false;
 	}
@@ -103,10 +94,7 @@ public int Native_GetParticleAttributeSystemName(Handle hPlugin, int nParams) {
 	int maxlen = GetNativeCell(3);
 	
 	char[] buffer = new char[maxlen];
-	
-	Address pParticleName = DereferencePointer(
-			pParticleSystemEntry + offs_attachedparticlesystem_pszParticleSystem);
-	LoadStringFromAddress(pParticleName, buffer, maxlen);
+	LoadStringFromAddress(pParticleSystemEntry.m_szParticleSystem, buffer, maxlen);
 	
 	if (strlen(buffer)) {
 		SetNativeString(2, buffer, maxlen, true);
@@ -126,16 +114,16 @@ public int Native_GetParticleAttributeAddress(Handle hPlugin, int nParams) {
 	return view_as<int>(FindParticleSystemByAttributeValue(attrValue));
 }
 
-static Address FindParticleSystemByAttributeValue(int attributeValue) {
+static AttachedParticleSystem_t FindParticleSystemByAttributeValue(int attributeValue) {
 	for (int i = GetFirstParticleSystem(); i != 0xFFFF; i = GetNextParticleSystem(i)) {
 		Address pParticleSystemEntry = GetAttachedParticleSystemEntry(i);
 		
 		int particleIndex = GetParticleSystemPtrAttributeValue(pParticleSystemEntry);
 		if (particleIndex == attributeValue) {
-			return pParticleSystemEntry;
+			return AttachedParticleSystem_t.FromAddress(pParticleSystemEntry);
 		}
 	}
-	return Address_Null;
+	return AttachedParticleSystem_t.FromAddress(Address_Null);
 }
 
 /**
@@ -215,9 +203,9 @@ static Address GetAttachedParticleSystemEntry(int index) {
 		Address pParticleSystemTree = GetParticleSystemTree();
 		s_pParticleData = DereferencePointer(pParticleSystemTree + view_as<Address>(0x08));
 	}
-	return s_pParticleData + view_as<Address>(index * ATTACHED_PARTICLE_SYSTEM_STRUCT_SIZE);
+	return s_pParticleData + view_as<Address>(index * AttachedParticleSystem_t.GetClassSize());
 }
 
 static Address GetParticleSystemTree() {
-	return GetEconItemSchema() + offs_CEconItemSchema_ParticleSystemTree;
+	return GetEconItemSchema().m_ParticleSystemTree;
 }

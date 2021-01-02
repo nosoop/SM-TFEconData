@@ -1,0 +1,13 @@
+classname = "CEconItemRarityDefinition"
+
+[properties.m_iValue]
+type = "int"
+size = "NumberType_Int32"
+offset = "offs_CEconItemRarityDefinition_iValue"
+declvar = true
+
+[properties.m_szName]
+type = "Address"
+size = "NumberType_Int32"
+offset = "offs_CEconItemRarityDefinition_pszName"
+declvar = true

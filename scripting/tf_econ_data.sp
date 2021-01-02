@@ -22,9 +22,7 @@ public Plugin myinfo = {
 	url = "https://github.com/nosoop/SM-TFEconData"
 }
 
-Address offs_CEconItemSchema_ItemQualities,
-		offs_CEconItemSchema_ItemList,
-		offs_CEconItemSchema_nItemCount;
+#include <classdefs/econ_item_schema.sp>
 
 #include "tf_econ_data/attached_particle_systems.sp"
 #include "tf_econ_data/loadout_slot.sp"
@@ -305,7 +303,7 @@ public int Native_GetItemList(Handle hPlugin, int nParams) {
 	Function func = GetNativeFunction(1);
 	any data = GetNativeCell(2);
 	
-	Address pSchema = GetEconItemSchema();
+	CEconItemSchema pSchema = GetEconItemSchema();
 	if (!pSchema) {
 		return 0;
 	}
@@ -315,11 +313,8 @@ public int Native_GetItemList(Handle hPlugin, int nParams) {
 	// CEconItemSchema.field_0xE8 is a CUtlVector of some struct size 0x0C
 	// (int defindex, CEconItemDefinition*, int m_Unknown)
 	
-	int nItemDefs = LoadFromAddress(pSchema + offs_CEconItemSchema_nItemCount,
-			NumberType_Int32);
-	for (int i = 0; i < nItemDefs; i++) {
-		Address entry = DereferencePointer(pSchema + offs_CEconItemSchema_ItemList)
-				+ view_as<Address>(i * 0x0C);
+	for (int i = 0, nItemDefs = pSchema.m_nItemCount; i < nItemDefs; i++) {
+		Address entry = DereferencePointer(pSchema.m_ItemList) + view_as<Address>(i * 0x0C);
 		
 		// I have no idea how this check works but it's also in
 		// CEconItemSchema::GetItemDefinitionByName
@@ -362,24 +357,25 @@ bool ValidItemDefIndex(int defindex) {
 	return defindex != TF_ITEMDEF_DEFAULT && !!GetEconItemDefinition(defindex);
 }
 
-Address GetEconItemDefinition(int defindex) {
-	Address pSchema = GetEconItemSchema();
+CEconItemDefinition GetEconItemDefinition(int defindex) {
+	CEconItemSchema pSchema = GetEconItemSchema();
 	if (!pSchema) {
-		return Address_Null;
+		return CEconItemDefinition.FromAddress(Address_Null);
 	}
 	
-	Address pItemDefinition = SDKCall(g_SDKCallSchemaGetItemDefinition, pSchema, defindex);
+	CEconItemDefinition pItemDefinition = CEconItemDefinition.FromAddress(
+			SDKCall(g_SDKCallSchemaGetItemDefinition, pSchema, defindex));
 	
 	// special case: return default item definition on TF_ITEMDEF_DEFAULT (-1)
 	// otherwise return a valid definition iff not the default
 	if (defindex == TF_ITEMDEF_DEFAULT || pItemDefinition != GetEconDefaultItemDefinition()) {
 		return pItemDefinition;
 	}
-	return Address_Null;
+	return CEconItemDefinition.FromAddress(Address_Null);
 }
 
-static Address GetEconDefaultItemDefinition() {
-	static Address s_pDefaultItemDefinition;
+static CEconItemDefinition GetEconDefaultItemDefinition() {
+	static CEconItemDefinition s_pDefaultItemDefinition;
 	if (!s_pDefaultItemDefinition) {
 		s_pDefaultItemDefinition = GetEconItemDefinition(TF_ITEMDEF_DEFAULT);
 	}
@@ -391,10 +387,10 @@ public int Native_GetAttributeDefinitionAddress(Handle hPlugin, int nParams) {
 	return view_as<int>(GetEconAttributeDefinition(defindex));
 }
 
-Address GetEconAttributeDefinition(int defindex) {
-	Address pSchema = GetEconItemSchema();
-	return pSchema?
-			SDKCall(g_SDKCallSchemaGetAttributeDefinition, pSchema, defindex) : Address_Null;
+CEconItemAttributeDefinition GetEconAttributeDefinition(int defindex) {
+	CEconItemSchema pSchema = GetEconItemSchema();
+	return CEconItemAttributeDefinition.FromAddress(pSchema?
+			SDKCall(g_SDKCallSchemaGetAttributeDefinition, pSchema, defindex) : Address_Null);
 }
 
 public int Native_TranslateAttributeNameToDefinitionIndex(Handle hPlugin, int nParams) {
@@ -414,13 +410,13 @@ public int Native_TranslateAttributeNameToDefinitionIndex(Handle hPlugin, int nP
 }
 
 Address GetEconAttributeDefinitionByName(const char[] name) {
-	Address pSchema = GetEconItemSchema();
+	CEconItemSchema pSchema = GetEconItemSchema();
 	return pSchema?
 			SDKCall(g_SDKCallSchemaGetAttributeDefinitionByName, pSchema, name) : Address_Null;
 }
 
-Address GetEconItemSchema() {
-	return SDKCall(g_SDKCallGetEconItemSchema);
+CEconItemSchema GetEconItemSchema() {
+	return CEconItemSchema.FromAddress(SDKCall(g_SDKCallGetEconItemSchema));
 }
 
 Address GetProtoScriptObjDefManager() {

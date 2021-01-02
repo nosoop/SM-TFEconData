@@ -1,5 +1,4 @@
-Address offs_CEconItemQualityDefinition_iValue,
-		offs_CEconItemQualityDefinition_pszName;
+#include <classdefs/econ_item_quality_definition.sp>
 
 /**
  * native bool(int quality, char[] buffer, int maxlen);
@@ -10,7 +9,7 @@ Address offs_CEconItemQualityDefinition_iValue,
 public int Native_GetQualityName(Handle hPlugin, int nParams) {
 	int quality = GetNativeCell(1);
 	
-	Address pQualityDef = GetEconQualityDefinition(quality);
+	CEconItemQualityDefinition pQualityDef = GetEconQualityDefinition(quality);
 	if (!pQualityDef) {
 		return false;
 	}
@@ -43,10 +42,8 @@ public int Native_TranslateQualityNameToValue(Handle hPlugin, int nParams) {
 	int nQualityDefs = GetEconQualityDefinitionCount();
 	for (int i; i < nQualityDefs; i++) {
 		char buffer[32];
-		Address pQualityDef = GetEconQualityDefinitionFromMemoryIndex(i);
-		Address pszName =
-				DereferencePointer(pQualityDef + offs_CEconItemQualityDefinition_pszName);
-		LoadStringFromAddress(pszName, buffer, sizeof(buffer));
+		CEconItemQualityDefinition pQualityDef = GetEconQualityDefinitionFromMemoryIndex(i);
+		LoadStringFromAddress(pQualityDef.m_szName, buffer, sizeof(buffer));
 		if (StrEqual(input, buffer, caseSensitive)) {
 			return GetEconQualityValue(pQualityDef);
 		}
@@ -67,14 +64,14 @@ public int Native_GetQualityList(Handle hPlugin, int nParams) {
 	
 	ArrayList qualityValues = new ArrayList();
 	for (int i; i < nQualityDefs; i++) {
-		Address pQualityDef = GetEconQualityDefinitionFromMemoryIndex(i);
+		CEconItemQualityDefinition pQualityDef = GetEconQualityDefinitionFromMemoryIndex(i);
 		qualityValues.Push(GetEconQualityValue(pQualityDef));
 	}
 	
 	return MoveHandleImmediate(qualityValues, hPlugin);
 }
 
-Address GetEconQualityDefinition(int quality) {
+CEconItemQualityDefinition GetEconQualityDefinition(int quality) {
 	/** 
 	 * Valve's implementation uses a lookup within a CUtlRBTree structure, which requires an
 	 * SDKCall.
@@ -84,43 +81,39 @@ Address GetEconQualityDefinition(int quality) {
 	 */
 	int nQualityDefs = GetEconQualityDefinitionCount();
 	for (int i; i < nQualityDefs; i++) {
-		Address pQualityDef = GetEconQualityDefinitionFromMemoryIndex(i);
+		CEconItemQualityDefinition pQualityDef = GetEconQualityDefinitionFromMemoryIndex(i);
 		if (quality == GetEconQualityValue(pQualityDef)) {
 			return pQualityDef;
 		}
 	}
-	return Address_Null;
+	return CEconItemQualityDefinition.FromAddress(Address_Null);
 }
 
 /**
  * Returns the quality value of a given quality definition.
  */
-static int GetEconQualityValue(Address pQualityDef) {
-	return pQualityDef? LoadFromAddress(pQualityDef + offs_CEconItemQualityDefinition_iValue,
-					NumberType_Int32) : -1;
+static int GetEconQualityValue(CEconItemQualityDefinition pQualityDef) {
+	return pQualityDef? pQualityDef.m_iValue : -1;
 }
 
 /**
  * Returns the quality name of a given quality definition.
  */
-static void GetEconQualityName(Address pQualityDef, char[] buffer, int maxlen) {
+static void GetEconQualityName(CEconItemQualityDefinition pQualityDef, char[] buffer,
+		int maxlen) {
 	if (!pQualityDef) {
 		return;
 	}
-	
-	LoadStringFromAddress(
-			DereferencePointer(pQualityDef + offs_CEconItemQualityDefinition_pszName),
-			buffer, maxlen);
-	return;
+	LoadStringFromAddress(DereferencePointer(pQualityDef.m_szName), buffer, maxlen);
 }
 
 /**
  * Returns the address of a CEconItemQualityDefinition based on an array index in the schema's
  * internal CEconItemQualityDefinition array.
  */
-static Address GetEconQualityDefinitionFromMemoryIndex(int index) {
+static CEconItemQualityDefinition GetEconQualityDefinitionFromMemoryIndex(int index) {
 	if (index < 0 || index >= GetEconQualityDefinitionCount()) {
-		return Address_Null;
+		return CEconItemQualityDefinition.FromAddress(Address_Null);
 	}
 	
 	// g_schema.field_0xA0 is the address of the CUtlRBTree
@@ -134,8 +127,9 @@ static Address GetEconQualityDefinitionFromMemoryIndex(int index) {
 	 * This array access can be checked against the call made to
 	 * CEconItemQualityDefinition::BInitFromKV() within CEconItemSchema::BInitQualities().
 	 */
-	return DereferencePointer(GetEconQualityDefinitionTree() + view_as<Address>(0x04))
-			+ view_as<Address>((index * 0x24) + 0x14);
+	return CEconItemQualityDefinition.FromAddress(
+			DereferencePointer(GetEconQualityDefinitionTree() + view_as<Address>(0x04))
+			+ view_as<Address>((index * 0x24) + 0x14));
 }
 
 /**
@@ -154,11 +148,11 @@ static Address GetEconQualityDefinitionTree() {
 		return s_pItemQualityTree;
 	}
 	
-	Address pSchema = GetEconItemSchema();
+	CEconItemSchema pSchema = GetEconItemSchema();
 	if (!pSchema) {
 		return Address_Null;
 	}
 	
-	s_pItemQualityTree = pSchema + offs_CEconItemSchema_ItemQualities;
+	s_pItemQualityTree = pSchema.m_ItemQualities;
 	return s_pItemQualityTree;
 }

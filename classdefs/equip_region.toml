@@ -1,0 +1,17 @@
+classname = "EquipRegion_t"
+size = 0x0C
+
+[properties.m_szName]
+type = "Address"
+size = "NumberType_Int32"
+offset = 0
+
+[properties.m_iGroup]
+type = "int"
+size = "NumberType_Int32"
+offset = 4
+
+[properties.m_bitsRegionMask]
+type = "Address"
+size = "NumberType_Int32"
+offset = 8

@@ -1,0 +1,13 @@
+classname = "CEconItemQualityDefinition"
+
+[properties.m_iValue]
+type = "int"
+size = "NumberType_Int32"
+offset = "offs_CEconItemQualityDefinition_iValue"
+declvar = true
+
+[properties.m_szName]
+type = "Address"
+size = "NumberType_Int32"
+offset = "offs_CEconItemQualityDefinition_pszName"
+declvar = true

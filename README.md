@@ -74,3 +74,22 @@ public bool FilterClassTaunts(int defindex, TFClassType playerClass) {
 	return TF2Econ_GetItemSlot(defindex, playerClass) == g_iTauntSlot;
 }
 ```
+
+### Building
+
+This project can be built in a reproductive manner with [Ninja](https://ninja-build.org/),
+`git`, and Python 3.
+
+For this particular project, you will also want the [chevron][] and [toml][] Python packages.
+
+1.  Clone the repository and its submodules: `git clone --recurse-submodules ...`
+2.  Execute `python3 configure.py --spcomp-dir ${PATH}` within the repo, where `${PATH}` is the
+path to the directory containing `spcomp`.  Verified working against 1.9 and 1.10.
+3.  Run `ninja`.  Output will be available under `build/`.
+
+(If you'd like to use a similar build system for your project,
+[the template project is available here][ninjatemplate].)
+
+[ninjatemplate]: https://github.com/nosoop/NinjaBuild-SMPlugin
+[chevron]: https://github.com/noahmorrison/chevron
+[toml]: https://github.com/uiri/toml

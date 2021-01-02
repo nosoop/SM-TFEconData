@@ -1,0 +1,67 @@
+classname = "CEconItemSchema"
+
+[properties.m_nItemCount]
+type = "int"
+size = "NumberType_Int32"
+offset = "offs_CEconItemSchema_nItemCount"
+declvar = true
+
+[properties.m_ItemList]
+type = "@Address"
+size = "NumberType_Int32"
+offset = "offs_CEconItemSchema_ItemList"
+declvar = true
+
+[properties.m_CosmeticUnusualEffectList]
+type = "@Address"
+size = "NumberType_Int32"
+offset = "offs_CEconItemSchema_CosmeticUnusualEffectList"
+declvar = true
+
+[properties.m_WeaponUnusualEffectList]
+type = "@Address"
+size = "NumberType_Int32"
+offset = "offs_CEconItemSchema_WeaponUnusualEffectList"
+declvar = true
+
+[properties.m_TauntUnusualEffectList]
+type = "@Address"
+size = "NumberType_Int32"
+offset = "offs_CEconItemSchema_TauntUnusualEffectList"
+declvar = true
+
+[properties.m_ParticleSystemTree]
+type = "@Address"
+size = "NumberType_Int32"
+offset = "offs_CEconItemSchema_ParticleSystemTree"
+declvar = true
+
+[properties.m_ItemSlotNames]
+type = "@Address"
+size = "NumberType_Int32"
+offset = "offs_CTFItemSchema_ItemSlotNames"
+declvar = true
+
+[properties.m_EquipRegions]
+type = "@Address"
+size = "NumberType_Int32"
+offset = "offs_CEconItemSchema_EquipRegions"
+declvar = true
+
+[properties.m_ItemQualities]
+type = "@Address"
+size = "NumberType_Int32"
+offset = "offs_CEconItemSchema_ItemQualities"
+declvar = true
+
+[properties.m_iLastValidRarity]
+type = "int"
+size = "NumberType_Int32"
+offset = "offs_CEconItemSchema_iLastValidRarity"
+declvar = true
+
+[properties.m_ItemRarities]
+type = "@Address"
+size = "NumberType_Int32"
+offset = "offs_CEconItemSchema_ItemRarities"
+declvar = true

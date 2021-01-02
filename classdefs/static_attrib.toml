@@ -1,0 +1,12 @@
+classname = "StaticAttrib_t"
+size = "sizeof_static_attrib_t"
+
+[properties.m_iAttributeDefinitionIndex]
+type = "int"
+size = "NumberType_Int16"
+offset = 0
+
+[properties.m_iRawValue]
+type = "any"
+size = "NumberType_Int32"
+offset = 4

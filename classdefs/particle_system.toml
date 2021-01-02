@@ -1,0 +1,14 @@
+classname = "AttachedParticleSystem_t"
+size = 0x40
+
+[properties.m_szParticleSystem]
+type = "Address"
+size = "NumberType_Int32"
+offset = "offs_attachedparticlesystem_pszParticleSystem"
+declvar = true
+
+[properties.m_iAttributeValue]
+type = "int"
+size = "NumberType_Int32"
+offset = "offs_attachedparticlesystem_iAttributeValue"
+declvar = true

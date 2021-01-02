@@ -1,0 +1,37 @@
+classname = "CEconItemAttributeDefinition"
+
+[properties.m_pKeyValues]
+type = "Address"
+size = "NumberType_Int32"
+offset = "offs_CEconItemAttributeDefinition_pKeyValues"
+declvar = true
+
+[properties.m_iAttributeDefinitionIndex]
+type = "int"
+size = "NumberType_Int32"
+offset = "offs_CEconItemAttributeDefinition_iAttributeDefinitionIndex"
+declvar = true
+
+[properties.m_bHidden]
+type = "bool"
+size = "NumberType_Int8"
+offset = "offs_CEconItemAttributeDefinition_bHidden"
+declvar = true
+
+[properties.m_bIsInteger]
+type = "bool"
+size = "NumberType_Int8"
+offset = "offs_CEconItemAttributeDefinition_bIsInteger"
+declvar = true
+
+[properties.m_szAttributeName]
+type = "Address"
+size = "NumberType_Int32"
+offset = "offs_CEconItemAttributeDefinition_pszAttributeName"
+declvar = true
+
+[properties.m_szAttributeClass]
+type = "Address"
+size = "NumberType_Int32"
+offset = "offs_CEconItemAttributeDefinition_pszAttributeClass"
+declvar = true

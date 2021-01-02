@@ -2,9 +2,6 @@
  * Natives for loadout slot information.
  */
 
-// CUtlVector of item slot names.
-Address offs_CTFItemSchema_ItemSlotNames;
-
 /**
  * native int(const char[] name);
  * 
@@ -46,12 +43,12 @@ public int Native_TranslateLoadoutSlotIndexToName(Handle hPlugin, int nParams) {
  * Returns the name at the given index.
  */
 static bool TranslateLoadoutSlotIndexToName(int index, char[] buffer, int maxlen) {
-	Address pSchema = GetEconItemSchema();
+	CEconItemSchema pSchema = GetEconItemSchema();
 	if (!pSchema) {
 		return false;
 	}
 	
-	Address pItemSlotNames = pSchema + offs_CTFItemSchema_ItemSlotNames;
+	Address pItemSlotNames = pSchema.m_ItemSlotNames;
 	if (index < 0 || index >= GetLoadoutSlotCount()) {
 		return false;
 	}
@@ -76,11 +73,10 @@ public int Native_GetLoadoutSlotCount(Handle hPlugin, int nParams) {
 }
 
 static int GetLoadoutSlotCount() {
-	Address pSchema = GetEconItemSchema();
+	CEconItemSchema pSchema = GetEconItemSchema();
 	if (!pSchema) {
 		return 0;
 	}
-	
-	return LoadFromAddress(pSchema + offs_CTFItemSchema_ItemSlotNames + view_as<Address>(0x0C),
+	return LoadFromAddress(pSchema.m_ItemSlotNames + view_as<Address>(0x0C),
 			NumberType_Int32);
 }

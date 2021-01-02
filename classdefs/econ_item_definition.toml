@@ -1,0 +1,79 @@
+classname = "CEconItemDefinition"
+
+[properties.m_iDefaultItemSlot]
+type = "int"
+size = "NumberType_Int32"
+offset = "offs_CTFItemDefinition_iDefaultItemSlot"
+declvar = true
+
+[properties.m_aiItemSlot]
+type = "@Address"
+size = "NumberType_Int32"
+offset = "offs_CEconItemDefinition_aiItemSlot"
+declvar = true
+
+[properties.m_bitsEquipRegionGroups]
+type = "int"
+size = "NumberType_Int32"
+offset = "offs_CEconItemDefinition_bitsEquipRegionGroups"
+declvar = true
+
+[properties.m_bitsEquipRegionConflicts]
+type = "int"
+size = "NumberType_Int32"
+offset = "offs_CEconItemDefinition_bitsEquipRegionConflicts"
+declvar = true
+
+[properties.m_u8MinLevel]
+type = "int"
+size = "NumberType_Int8"
+offset = "offs_CEconItemDefinition_u8MinLevel"
+declvar = true
+
+[properties.m_u8MaxLevel]
+type = "int"
+size = "NumberType_Int8"
+offset = "offs_CEconItemDefinition_u8MaxLevel"
+declvar = true
+
+[properties.m_u8ItemQuality]
+type = "int"
+size = "NumberType_Int8"
+offset = "offs_CEconItemDefinition_u8ItemQuality"
+declvar = true
+
+[properties.m_si8ItemRarity]
+type = "int"
+size = "NumberType_Int8"
+offset = "offs_CEconItemDefinition_si8ItemRarity"
+declvar = true
+
+[properties.m_AttributeList]
+type = "@Address"
+size = "NumberType_Int32"
+offset = "offs_CEconItemDefinition_AttributeList"
+declvar = true
+
+[properties.m_pKeyValues]
+type = "Address"
+size = "NumberType_Int32"
+offset = "offs_CEconItemDefinition_pKeyValues"
+declvar = true
+
+[properties.m_szLocalizedItemName]
+type = "Address"
+size = "NumberType_Int32"
+offset = "offs_CEconItemDefinition_pszLocalizedItemName"
+declvar = true
+
+[properties.m_szItemClassname]
+type = "Address"
+size = "NumberType_Int32"
+offset = "offs_CEconItemDefinition_pszItemClassname"
+declvar = true
+
+[properties.m_szItemName]
+type = "Address"
+size = "NumberType_Int32"
+offset = "offs_CEconItemDefinition_pszItemName"
+declvar = true

@@ -5,6 +5,19 @@ plugins = [
 	"tf_econ_data.sp",
 ]
 
+# these are class "definitions" that are converted to methodmaps
+# see the "Build methodmap classes from templates" comment in the build.ninja configuration
+generated_classes = [
+	"classdefs/econ_item_definition.toml",
+	"classdefs/econ_item_schema.toml",
+	"classdefs/econ_item_attribute_definition.toml",
+	"classdefs/econ_item_quality_definition.toml",
+	"classdefs/econ_item_rarity_definition.toml",
+	"classdefs/equip_region.toml",
+	"classdefs/particle_system.toml",
+	"classdefs/static_attrib.toml",
+]
+
 # files to copy to builddir, relative to root
 # plugin names from previous list will be copied automatically
 copy_files = [
@@ -22,7 +35,8 @@ copy_files = [
 
 # additional directories for sourcepawn include lookup
 include_dirs = [
-	'${root}/scripting/include'
+	'${root}/scripting/include',
+	'${builddir}/generated',
 ]
 
 # required version of spcomp (presumably pinned to SM version)
@@ -95,12 +109,30 @@ with contextlib.closing(ninja_syntax.Writer(open('build.ninja', 'wt'))) as build
 			description = 'Compiling ${out}')
 	build.newline()
 	
+	build.rule('genclass',
+			command = sys.executable + ' ${root}/misc/generate_classes.py ${template} ${in} ${out}',
+			description = 'Generating ${out}')
+	build.newline()
+	
 	# Platform-specific copy instructions
 	if platform.system() == "Windows":
 		build.rule('copy', command = 'cmd /c copy ${in} ${out} > NUL',
 				description = 'Copying ${out}')
 	elif platform.system() == "Linux":
 		build.rule('copy', command = 'cp ${in} ${out}', description = 'Copying ${out}')
+	build.newline()
+	
+	build.comment("""Build methodmap classes from templates""")
+	class_sources = []
+	for classdef in generated_classes:
+		template_file = "${root}/scripting/templates/class.ms.sp"
+		
+		sp_name = os.path.splitext(classdef)[0] + '.sp'
+		sp_file = os.path.normpath(os.path.join('$builddir', 'generated', sp_name))
+		
+		class_sources.extend(build.build(sp_file, 'genclass', classdef,
+				implicit = [ template_file, '${root}/misc/generate_classes.py' ],
+				variables = { 'template': template_file }))
 	build.newline()
 	
 	build.comment("""Compile plugins specified in `plugins` list""")
@@ -110,7 +142,7 @@ with contextlib.closing(ninja_syntax.Writer(open('build.ninja', 'wt'))) as build
 		sp_file = os.path.normpath(os.path.join('$root', 'scripting', plugin))
 		
 		smx_file = os.path.normpath(os.path.join('$builddir', 'plugins', smx_plugin))
-		build.build(smx_file, 'spcomp', sp_file)
+		build.build(smx_file, 'spcomp', sp_file, order_only = class_sources)
 	build.newline()
 	
 	build.comment("""Copy plugin sources to build output""")

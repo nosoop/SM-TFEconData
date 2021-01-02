@@ -2,23 +2,10 @@
  * Natives / functions for accessing CEconItemDefinition / CTFItemDefinition properties.
  */
 
-Address offs_CEconItemDefinition_pKeyValues,
-		offs_CEconItemDefinition_u8MinLevel,
-		offs_CEconItemDefinition_u8MaxLevel,
-		offs_CEconItemDefinition_u8ItemQuality,
-		offs_CEconItemDefinition_si8ItemRarity,
-		offs_CEconItemDefinition_AttributeList,
-		offs_CEconItemDefinition_pszLocalizedItemName,
-		offs_CEconItemDefinition_pszItemClassname,
-		offs_CEconItemDefinition_pszItemName,
-		offs_CEconItemDefinition_bitsEquipRegionGroups,
-		offs_CEconItemDefinition_bitsEquipRegionConflicts;
-Address offs_CEconItemDefinition_aiItemSlot,
-		offs_CTFItemDefinition_iDefaultItemSlot;
+any sizeof_static_attrib_t;
 
-Address sizeof_static_attrib_t;
-
-// in CEconItemDefinition, defindex is at 0x08 (we never use this information though)
+#include <classdefs/econ_item_definition.sp>
+#include <classdefs/static_attrib.sp>
 
 /**
  * native bool(int itemdef, char[] buffer, int maxlen);
@@ -29,14 +16,16 @@ public int Native_GetItemName(Handle hPlugin, int nParams) {
 	int defindex = GetNativeCell(1);
 	int maxlen = GetNativeCell(3);
 	
-	char[] buffer = new char[maxlen];
-	bool bResult = LoadEconItemDefinitionString(defindex, offs_CEconItemDefinition_pszItemName,
-			buffer, maxlen);
-	
-	if (bResult) {
-		SetNativeString(2, buffer, maxlen, true);
+	CEconItemDefinition pItemDef = GetEconItemDefinition(defindex);
+	if (!pItemDef) {
+		return false;
 	}
-	return bResult;
+	
+	char[] buffer = new char[maxlen];
+	
+	LoadStringFromAddress(pItemDef.m_szItemName, buffer, maxlen);
+	SetNativeString(2, buffer, maxlen, true);
+	return true;
 }
 
 /**
@@ -49,14 +38,15 @@ public int Native_GetLocalizedItemName(Handle hPlugin, int nParams) {
 	int defindex = GetNativeCell(1);
 	int maxlen = GetNativeCell(3);
 	
-	char[] buffer = new char[maxlen];
-	bool bResult = LoadEconItemDefinitionString(defindex,
-			offs_CEconItemDefinition_pszLocalizedItemName, buffer, maxlen);
-	
-	if (bResult) {
-		SetNativeString(2, buffer, maxlen, true);
+	CEconItemDefinition pItemDef = GetEconItemDefinition(defindex);
+	if (!pItemDef) {
+		return false;
 	}
-	return bResult;
+	
+	char[] buffer = new char[maxlen];
+	LoadStringFromAddress(pItemDef.m_szLocalizedItemName, buffer, maxlen);
+	SetNativeString(2, buffer, maxlen, true);
+	return true;
 }
 
 /**
@@ -68,14 +58,15 @@ public int Native_GetItemClassName(Handle hPlugin, int nParams) {
 	int defindex = GetNativeCell(1);
 	int maxlen = GetNativeCell(3);
 	
-	char[] buffer = new char[maxlen];
-	bool bResult = LoadEconItemDefinitionString(defindex,
-			offs_CEconItemDefinition_pszItemClassname, buffer, maxlen);
-	
-	if (bResult) {
-		SetNativeString(2, buffer, maxlen, true);
+	CEconItemDefinition pItemDef = GetEconItemDefinition(defindex);
+	if (!pItemDef) {
+		return false;
 	}
-	return bResult;
+	
+	char[] buffer = new char[maxlen];
+	LoadStringFromAddress(pItemDef.m_szItemClassname, buffer, maxlen);
+	SetNativeString(2, buffer, maxlen, true);
+	return true;
 }
 
 /**
@@ -88,13 +79,12 @@ public int Native_GetItemSlot(Handle hPlugin, int nParams) {
 	int defindex = GetNativeCell(1);
 	int playerClass = GetNativeCell(2);
 	
-	Address pItemDef = GetEconItemDefinition(defindex);
+	CEconItemDefinition pItemDef = GetEconItemDefinition(defindex);
 	if (!pItemDef) {
 		return -1;
 	}
-	
-	return LoadFromAddress(pItemDef + offs_CEconItemDefinition_aiItemSlot +
-			view_as<Address>(playerClass * 4), NumberType_Int32);
+	return LoadFromAddress(pItemDef.m_aiItemSlot + view_as<Address>(playerClass * 4),
+			NumberType_Int32);
 }
 
 /**
@@ -104,12 +94,11 @@ public int Native_GetItemSlot(Handle hPlugin, int nParams) {
  */
 public int Native_GetItemDefaultSlot(Handle hPlugin, int nParams) {
 	int defindex = GetNativeCell(1);
-	Address pItemDef = GetEconItemDefinition(defindex);
+	CEconItemDefinition pItemDef = GetEconItemDefinition(defindex);
 	if (!pItemDef) {
 		return -1;
 	}
-	return LoadFromAddress(pItemDef + offs_CTFItemDefinition_iDefaultItemSlot,
-			NumberType_Int32);
+	return pItemDef.m_iDefaultItemSlot;
 }
 
 /**
@@ -120,14 +109,13 @@ public int Native_GetItemDefaultSlot(Handle hPlugin, int nParams) {
  */
 public int Native_GetItemEquipRegionMask(Handle hPlugin, int nParams) {
 	int defindex = GetNativeCell(1);
-	Address pItemDef = GetEconItemDefinition(defindex);
+	CEconItemDefinition pItemDef = GetEconItemDefinition(defindex);
 	
 	if (!pItemDef) {
 		ThrowNativeError(1, "Item definition index %d is not valid", defindex);
 	}
 	
-	return LoadFromAddress(
-			pItemDef + offs_CEconItemDefinition_bitsEquipRegionConflicts, NumberType_Int32);
+	return pItemDef.m_bitsEquipRegionConflicts;
 }
 
 /**
@@ -137,14 +125,13 @@ public int Native_GetItemEquipRegionMask(Handle hPlugin, int nParams) {
  */
 public int Native_GetItemEquipRegionGroupBits(Handle hPlugin, int nParams) {
 	int defindex = GetNativeCell(1);
-	Address pItemDef = GetEconItemDefinition(defindex);
+	CEconItemDefinition pItemDef = GetEconItemDefinition(defindex);
 	
 	if (!pItemDef) {
 		ThrowNativeError(1, "Item definition index %d is not valid", defindex);
 	}
 	
-	return LoadFromAddress(
-			pItemDef + offs_CEconItemDefinition_bitsEquipRegionGroups, NumberType_Int32);
+	return pItemDef.m_bitsEquipRegionGroups;
 }
 
 /**
@@ -156,18 +143,13 @@ public int Native_GetItemEquipRegionGroupBits(Handle hPlugin, int nParams) {
 public int Native_GetItemLevelRange(Handle hPlugin, int nParams) {
 	int defindex = GetNativeCell(1);
 	
-	Address pItemDef = GetEconItemDefinition(defindex);
+	CEconItemDefinition pItemDef = GetEconItemDefinition(defindex);
 	if (!pItemDef) {
 		return false;
 	}
 	
-	int iMinLevel = LoadFromAddress(pItemDef + offs_CEconItemDefinition_u8MinLevel,
-			NumberType_Int8);
-	int iMaxLevel = LoadFromAddress(pItemDef + offs_CEconItemDefinition_u8MaxLevel,
-			NumberType_Int8);
-	
-	SetNativeCellRef(2, iMinLevel);
-	SetNativeCellRef(3, iMaxLevel);
+	SetNativeCellRef(2, pItemDef.m_u8MinLevel);
+	SetNativeCellRef(3, pItemDef.m_u8MaxLevel);
 	return true;
 }
 
@@ -178,13 +160,12 @@ public int Native_GetItemLevelRange(Handle hPlugin, int nParams) {
  */
 public int Native_GetItemQuality(Handle hPlugin, int nParams) {
 	int defindex = GetNativeCell(1);
-	Address pItemDef = GetEconItemDefinition(defindex);
+	CEconItemDefinition pItemDef = GetEconItemDefinition(defindex);
 	if (!pItemDef) {
 		ThrowNativeError(1, "Item definition index %d is not valid", defindex);
 	}
 	
-	int quality = LoadFromAddress(pItemDef + offs_CEconItemDefinition_u8ItemQuality,
-			NumberType_Int8);
+	int quality = pItemDef.m_u8ItemQuality;
 	
 	// sign extension on byte -- valve's econ support lib uses "any" as a quality of -1
 	// this is handled through CEconItemSchema::BGetItemQualityFromName()
@@ -198,14 +179,13 @@ public int Native_GetItemQuality(Handle hPlugin, int nParams) {
  */
 public int Native_GetItemRarity(Handle hPlugin, int nParams) {
 	int defindex = GetNativeCell(1);
-	Address pItemDef = GetEconItemDefinition(defindex);
+	CEconItemDefinition pItemDef = GetEconItemDefinition(defindex);
 	
 	if (!pItemDef) {
 		ThrowNativeError(1, "Item definition index %d is not valid", defindex);
 	}
 	
-	int rarity = LoadFromAddress(pItemDef + offs_CEconItemDefinition_si8ItemRarity,
-			NumberType_Int8);
+	int rarity = pItemDef.m_si8ItemRarity;
 	
 	// sign extension on byte -- items that don't have rarities assigned are -1
 	return (rarity >> 7)? 0xFFFFFF00 | rarity : rarity;
@@ -219,29 +199,24 @@ public int Native_GetItemRarity(Handle hPlugin, int nParams) {
 public int Native_GetItemStaticAttributes(Handle hPlugin, int nParams) {
 	int defindex = GetNativeCell(1);
 	
-	Address pItemDef = GetEconItemDefinition(defindex);
+	CEconItemDefinition pItemDef = GetEconItemDefinition(defindex);
 	if (!pItemDef) {
 		return view_as<int>(INVALID_HANDLE);
 	}
 	
 	// get size from CUtlVector
-	int nAttribs = LoadFromAddress(
-			pItemDef + offs_CEconItemDefinition_AttributeList + view_as<Address>(0x0C),
+	int nAttribs = LoadFromAddress(pItemDef.m_AttributeList + view_as<Address>(0x0C),
 			NumberType_Int32);
-	Address pAttribList = DereferencePointer(pItemDef + offs_CEconItemDefinition_AttributeList);
+	Address pAttribList = DereferencePointer(pItemDef.m_AttributeList);
 	
 	// struct { attribute_defindex, value } // (TF2)
 	ArrayList attributeList = new ArrayList(2, nAttribs);
 	for (int i; i < nAttribs; i++) {
-		Address pStaticAttrib = pAttribList
-				+ view_as<Address>(i * view_as<int>(sizeof_static_attrib_t));
+		StaticAttrib_t pStaticAttrib = StaticAttrib_t.FromAddress(pAttribList
+				+ view_as<Address>(i * StaticAttrib_t.GetClassSize()));
 		
-		int attrIndex = LoadFromAddress(pStaticAttrib, NumberType_Int16);
-		any attrValue = LoadFromAddress(pStaticAttrib + view_as<Address>(0x04),
-				NumberType_Int32);
-		
-		attributeList.Set(i, attrIndex, 0);
-		attributeList.Set(i, attrValue, 1);
+		attributeList.Set(i, pStaticAttrib.m_iAttributeDefinitionIndex, 0);
+		attributeList.Set(i, pStaticAttrib.m_iRawValue, 1);
 	}
 	return MoveHandle(attributeList, hPlugin);
 }
@@ -266,9 +241,9 @@ public int Native_GetItemDefinitionString(Handle hPlugin, int nParams) {
 	
 	GetNativeString(5, buffer, maxlen);
 	
-	Address pItemDef = GetEconItemDefinition(defindex);
+	CEconItemDefinition pItemDef = GetEconItemDefinition(defindex);
 	if (pItemDef) {
-		Address pKeyValues = DereferencePointer(pItemDef + offs_CEconItemDefinition_pKeyValues);
+		Address pKeyValues = pItemDef.m_pKeyValues;
 		if (KeyValuesPtrKeyExists(pKeyValues, key)) {
 			KeyValuesPtrGetString(pKeyValues, key, buffer, maxlen, buffer);
 		}
@@ -286,18 +261,4 @@ public int Native_GetItemDefinitionString(Handle hPlugin, int nParams) {
 public int Native_IsValidItemDefinition(Handle hPlugin, int nParams) {
 	int defindex = GetNativeCell(1);
 	return ValidItemDefIndex(defindex);
-}
-
-/**
- * Reads the `char*` at the given item definition offset.
- */
-static bool LoadEconItemDefinitionString(int defindex, Address offset, char[] buffer,
-		int maxlen) {
-	Address pItemDef = GetEconItemDefinition(defindex);
-	if (!pItemDef) {
-		return false;
-	}
-	
-	LoadStringFromAddress(DereferencePointer(pItemDef + offset), buffer, maxlen);
-	return true;
 }
