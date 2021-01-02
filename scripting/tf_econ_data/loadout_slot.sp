@@ -48,8 +48,7 @@ static bool TranslateLoadoutSlotIndexToName(int index, char[] buffer, int maxlen
 		return false;
 	}
 	
-	Address pItemSlotNames = pSchema.m_ItemSlotNames;
-	if (index < 0 || index >= GetLoadoutSlotCount()) {
+	if (index < 0 || index >= pSchema.m_ItemSlotNames.Length) {
 		return false;
 	}
 	
@@ -57,7 +56,7 @@ static bool TranslateLoadoutSlotIndexToName(int index, char[] buffer, int maxlen
 	 * CTFItemSchema::ItemSlotNames is a CUtlVector<char*>, so deref to get to the underlying
 	 * memory then do an array access
 	 */
-	Address pItemSlotData = DereferencePointer(pItemSlotNames);
+	Address pItemSlotData = pSchema.m_ItemSlotNames.m_Memory;
 	Address pItemSlotEntry = DereferencePointer(pItemSlotData + view_as<Address>(0x04 * index));
 	
 	bool bNull;
@@ -74,9 +73,5 @@ public int Native_GetLoadoutSlotCount(Handle hPlugin, int nParams) {
 
 static int GetLoadoutSlotCount() {
 	CEconItemSchema pSchema = GetEconItemSchema();
-	if (!pSchema) {
-		return 0;
-	}
-	return LoadFromAddress(pSchema.m_ItemSlotNames + view_as<Address>(0x0C),
-			NumberType_Int32);
+	return pSchema ? pSchema.m_ItemSlotNames.Length : 0;
 }

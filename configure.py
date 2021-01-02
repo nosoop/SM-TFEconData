@@ -16,6 +16,7 @@ generated_classes = [
 	"classdefs/equip_region.toml",
 	"classdefs/particle_system.toml",
 	"classdefs/static_attrib.toml",
+	"classdefs/utlvector_base.toml",
 ]
 
 # files to copy to builddir, relative to root

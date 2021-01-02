@@ -7,25 +7,25 @@ offset = "offs_CEconItemSchema_nItemCount"
 declvar = true
 
 [properties.m_ItemList]
-type = "@Address"
+type = "@CUtlVectorBase"
 size = "NumberType_Int32"
 offset = "offs_CEconItemSchema_ItemList"
 declvar = true
 
 [properties.m_CosmeticUnusualEffectList]
-type = "@Address"
+type = "@CUtlVectorBase"
 size = "NumberType_Int32"
 offset = "offs_CEconItemSchema_CosmeticUnusualEffectList"
 declvar = true
 
 [properties.m_WeaponUnusualEffectList]
-type = "@Address"
+type = "@CUtlVectorBase"
 size = "NumberType_Int32"
 offset = "offs_CEconItemSchema_WeaponUnusualEffectList"
 declvar = true
 
 [properties.m_TauntUnusualEffectList]
-type = "@Address"
+type = "@CUtlVectorBase"
 size = "NumberType_Int32"
 offset = "offs_CEconItemSchema_TauntUnusualEffectList"
 declvar = true
@@ -37,13 +37,13 @@ offset = "offs_CEconItemSchema_ParticleSystemTree"
 declvar = true
 
 [properties.m_ItemSlotNames]
-type = "@Address"
+type = "@CUtlVectorBase"
 size = "NumberType_Int32"
 offset = "offs_CTFItemSchema_ItemSlotNames"
 declvar = true
 
 [properties.m_EquipRegions]
-type = "@Address"
+type = "@CUtlVectorBase"
 size = "NumberType_Int32"
 offset = "offs_CEconItemSchema_EquipRegions"
 declvar = true

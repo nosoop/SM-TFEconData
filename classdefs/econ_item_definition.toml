@@ -49,7 +49,7 @@ offset = "offs_CEconItemDefinition_si8ItemRarity"
 declvar = true
 
 [properties.m_AttributeList]
-type = "@Address"
+type = "@CUtlVectorBase"
 size = "NumberType_Int32"
 offset = "offs_CEconItemDefinition_AttributeList"
 declvar = true

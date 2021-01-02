@@ -204,10 +204,8 @@ public int Native_GetItemStaticAttributes(Handle hPlugin, int nParams) {
 		return view_as<int>(INVALID_HANDLE);
 	}
 	
-	// get size from CUtlVector
-	int nAttribs = LoadFromAddress(pItemDef.m_AttributeList + view_as<Address>(0x0C),
-			NumberType_Int32);
-	Address pAttribList = DereferencePointer(pItemDef.m_AttributeList);
+	int nAttribs = pItemDef.m_AttributeList.Length;
+	Address pAttribList = pItemDef.m_AttributeList.m_Memory;
 	
 	// struct { attribute_defindex, value } // (TF2)
 	ArrayList attributeList = new ArrayList(2, nAttribs);

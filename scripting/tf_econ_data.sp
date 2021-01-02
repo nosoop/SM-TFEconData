@@ -22,6 +22,7 @@ public Plugin myinfo = {
 	url = "https://github.com/nosoop/SM-TFEconData"
 }
 
+#include <classdefs/utlvector_base.sp>
 #include <classdefs/econ_item_schema.sp>
 
 #include "tf_econ_data/attached_particle_systems.sp"
@@ -314,7 +315,7 @@ public int Native_GetItemList(Handle hPlugin, int nParams) {
 	// (int defindex, CEconItemDefinition*, int m_Unknown)
 	
 	for (int i = 0, nItemDefs = pSchema.m_nItemCount; i < nItemDefs; i++) {
-		Address entry = DereferencePointer(pSchema.m_ItemList) + view_as<Address>(i * 0x0C);
+		Address entry = pSchema.m_ItemList.m_Memory + view_as<Address>(i * 0x0C);
 		
 		// I have no idea how this check works but it's also in
 		// CEconItemSchema::GetItemDefinitionByName

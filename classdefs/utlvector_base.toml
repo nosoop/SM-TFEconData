@@ -1,0 +1,11 @@
+classname = "CUtlVectorBase"
+
+[properties.m_Memory]
+type = "Address"
+size = "NumberType_Int32"
+offset = "0"
+
+[properties.Length]
+type = "int"
+size = "NumberType_Int32"
+offset = 0xC

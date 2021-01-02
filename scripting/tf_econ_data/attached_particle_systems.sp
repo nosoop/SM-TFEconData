@@ -41,18 +41,16 @@ static ArrayList GetParticleAttributeList(TFEconParticleSet particleSet) {
 		return list;
 	}
 	
-	Address pParticleVector = GetParticleListAddress(particleSet);
+	CUtlVectorBase pParticleVector = GetParticleListAddress(particleSet);
 	if (!pParticleVector) {
 		// we should've caught this in Native_GetParticleAttributeList
 		return null;
 	}
 	
-	int nParticles = LoadFromAddress(
-			pParticleVector + view_as<Address>(0x0C), NumberType_Int32);
-	Address pParticleData = DereferencePointer(GetParticleListAddress(particleSet));
+	Address pParticleData = pParticleVector.m_Memory;
 	
 	ArrayList list = new ArrayList();
-	for (int i; i < nParticles; i++) {
+	for (int i, n = pParticleVector.Length; i < n; i++) {
 		Address pParticleID = pParticleData + view_as<Address>(i * 0x04);
 		int value = LoadFromAddress(pParticleID, NumberType_Int32);
 		list.Push(value);
@@ -64,7 +62,7 @@ static ArrayList GetParticleAttributeList(TFEconParticleSet particleSet) {
  * Returns the address to a CUtlVector containing the given particles, or Address_Null if not
  * a valid particle set.
  */
-static Address GetParticleListAddress(TFEconParticleSet particleSet) {
+static CUtlVectorBase GetParticleListAddress(TFEconParticleSet particleSet) {
 	switch (particleSet) {
 		case ParticleSet_CosmeticUnusualEffects: {
 			return GetEconItemSchema().m_CosmeticUnusualEffectList;
@@ -76,7 +74,7 @@ static Address GetParticleListAddress(TFEconParticleSet particleSet) {
 			return GetEconItemSchema().m_TauntUnusualEffectList;
 		}
 	}
-	return Address_Null;
+	return CUtlVectorBase.FromAddress(Address_Null);
 }
 
 /**

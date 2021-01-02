@@ -21,13 +21,8 @@ public int Native_GetEquipRegionGroups(Handle hPlugin, int nParams) {
 	StringMap equipRegionMap = new StringMap();
 	
 	// CUtlVector lookup
-	Address pEquipRegions = pSchema.m_EquipRegions;
-	
-	int nEquipRegions = LoadFromAddress(
-			pEquipRegions + view_as<Address>(0x0C), NumberType_Int32);
-	
-	Address pEquipRegionData = DereferencePointer(pEquipRegions);
-	for (int i; i < nEquipRegions; i++) {
+	Address pEquipRegionData = pSchema.m_EquipRegions.m_Memory;
+	for (int i, n = pSchema.m_EquipRegions.Length; i < n; i++) {
 		char equipRegion[32];
 		
 		EquipRegion_t pEquipRegionEntry = EquipRegion_t.FromAddress(
@@ -58,13 +53,8 @@ public int Native_GetEquipRegionMask(Handle hPlugin, int nParams) {
 	char[] desiredEquipRegion = new char[maxlen];
 	GetNativeString(1, desiredEquipRegion, maxlen);
 	
-	// CUtlVector lookup
-	Address pEquipRegions = pSchema.m_EquipRegions;
-	int nEquipRegions = LoadFromAddress(
-			pEquipRegions + view_as<Address>(0x0C), NumberType_Int32);
-	
-	Address pEquipRegionData = DereferencePointer(pEquipRegions);
-	for (int i; i < nEquipRegions; i++) {
+	Address pEquipRegionData = pSchema.m_EquipRegions.m_Memory;
+	for (int i, n = pSchema.m_EquipRegions.Length; i < n; i++) {
 		char equipRegion[64];
 		
 		EquipRegion_t pEquipRegionEntry = EquipRegion_t.FromAddress(
