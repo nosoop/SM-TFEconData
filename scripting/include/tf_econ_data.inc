@@ -293,6 +293,12 @@ native ArrayList TF2Econ_GetParticleAttributeList(
 native ArrayList TF2Econ_GetPaintKitDefinitionList();
 
 /**
+ * Return the definition index of the specific map.
+ * -1 if not valid.
+ */
+native int TF2Econ_GetMapDefinitionIndex(const char[] name);
+
+/**
  * Returns the address of the singleton CTFItemSchema (subclass of CEconItemSchema).
  * 
  * Here be dragons.
