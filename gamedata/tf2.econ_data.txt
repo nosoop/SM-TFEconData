@@ -37,8 +37,10 @@
 			}
 			"CEconItemSchema::GetMasterMapDefByName()"
 			{
-				"library"			"server"
-				"linux"				"@_ZNK13CTFItemSchema21GetMasterMapDefByNameEPKc"
+				// called in block containing xref "Invalid NextMap list, substituting current map"
+				"library"	"server"
+				"linux"		"@_ZNK13CTFItemSchema21GetMasterMapDefByNameEPKc"
+				"windows"	"\x55\x8B\xEC\x53\x56\x57\x8B\xF9\x33\xF6\x39\xB7\x60\x06\x00\x00"
 			}
 			"TranslateWeaponEntForClass()"
 			{
