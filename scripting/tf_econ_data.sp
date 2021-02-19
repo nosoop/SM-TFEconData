@@ -164,7 +164,7 @@ public void OnPluginStart() {
 	
 	StartPrepSDKCall(SDKCall_Raw);
 	PrepSDKCall_SetFromConf(hGameConf, SDKConf_Signature,
-			"CEconItemSchema::GetMasterMapDefByName()");
+			"CTFItemSchema::GetMasterMapDefByName()");
 	PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);
 	PrepSDKCall_AddParameter(SDKType_String, SDKPass_Pointer);
 	g_SDKCallGetMasterMapDefByName = EndPrepSDKCall();
