@@ -112,7 +112,7 @@ public APLRes AskPluginLoad2(Handle self, bool late, char[] error, int maxlen) {
 	CreateNative("TF2Econ_GetPaintKitDefinitionList", Native_GetPaintKitList);
 
 	// map information
-	CreateNative("TF2Econ_GetMapDefinitionIndex", Native_GetMapDefinitionIndex);
+	CreateNative("TF2Econ_GetMapDefinitionIndexByName", Native_GetMapDefinitionIndex);
 	
 	// low-level stuff
 	CreateNative("TF2Econ_GetItemSchemaAddress", Native_GetItemSchemaAddress);
