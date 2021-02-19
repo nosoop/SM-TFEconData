@@ -431,20 +431,10 @@ Address GetEconAttributeDefinitionByName(const char[] name) {
 			SDKCall(g_SDKCallSchemaGetAttributeDefinitionByName, pSchema, name) : Address_Null;
 }
 
-int GetMapDefinitionIndex(const char[] name) {
+Address GetMapDefinitionByName(const char[] name) {
 	Address pSchema = GetEconItemSchema();
-	if(!pSchema) {
-		return -1;
-	}
-
-	Address mapdef = SDKCall(g_SDKCallGetMasterMapDefByName, pSchema, name);
-	if(!mapdef) {
-		return -1;
-	}
-
-	int index = LoadFromAddress(view_as<Address>(view_as<int>(mapdef) + (4 * 3)), NumberType_Int32);
-
-	return index;
+	return pSchema?
+			SDKCall(g_SDKCallGetMasterMapDefByName, pSchema, name) : Address_Null;
 }
 
 Address GetEconItemSchema() {
