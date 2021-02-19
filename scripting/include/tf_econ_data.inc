@@ -293,8 +293,10 @@ native ArrayList TF2Econ_GetParticleAttributeList(
 native ArrayList TF2Econ_GetPaintKitDefinitionList();
 
 /**
- * Return the definition index of the specific map.
- * -1 if not valid.
+ * Returns the definition index of a given map name, or 0 if not valid.
+ * 
+ * Note that the name "Missing" also points to a valid map definition, and will also return 0;
+ * the zero-on-invalid case is intended to match the behavior of the game.
  */
 native int TF2Econ_GetMapDefinitionIndexByName(const char[] name);
 

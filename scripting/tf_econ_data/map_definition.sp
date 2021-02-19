@@ -10,7 +10,7 @@ public int Native_GetMapDefinitionIndex(Handle hPlugin, int nParams) {
 	
 	Address pMapDef = GetMapDefinitionByName(name);
 	if (!pMapDef) {
-		return -1;
+		return 0;
 	}
 	return LoadFromAddress(pMapDef + view_as<Address>(0xC), NumberType_Int32);
 }
