@@ -34,6 +34,7 @@ Address offs_CEconItemSchema_ItemQualities,
 #include "tf_econ_data/paintkit_definition.sp"
 #include "tf_econ_data/quality_definition.sp"
 #include "tf_econ_data/rarity_definition.sp"
+#include "tf_econ_data/map_definition.sp"
 #include "tf_econ_data/keyvalues.sp"
 
 #define TF_ITEMDEF_DEFAULT -1
@@ -45,6 +46,7 @@ Handle g_SDKCallSchemaGetAttributeDefinitionByName;
 Handle g_SDKCallTranslateWeaponEntForClass;
 Handle g_SDKCallGetProtoDefManager;
 Handle g_SDKCallGetProtoDefIndex;
+Handle g_SDKCallGetMasterMapDefByName;
 
 public APLRes AskPluginLoad2(Handle self, bool late, char[] error, int maxlen) {
 	RegPluginLibrary("tf_econ_data");
@@ -108,6 +110,9 @@ public APLRes AskPluginLoad2(Handle self, bool late, char[] error, int maxlen) {
 	
 	// paintkit / weapon skin information
 	CreateNative("TF2Econ_GetPaintKitDefinitionList", Native_GetPaintKitList);
+
+	// map information
+	CreateNative("TF2Econ_GetMapDefinitionIndexByName", Native_GetMapDefinitionIndex);
 	
 	// low-level stuff
 	CreateNative("TF2Econ_GetItemSchemaAddress", Native_GetItemSchemaAddress);
@@ -157,6 +162,13 @@ public void OnPluginStart() {
 	PrepSDKCall_AddParameter(SDKType_String, SDKPass_Pointer);
 	g_SDKCallSchemaGetAttributeDefinitionByName = EndPrepSDKCall();
 	
+	StartPrepSDKCall(SDKCall_Raw);
+	PrepSDKCall_SetFromConf(hGameConf, SDKConf_Signature,
+			"CTFItemSchema::GetMasterMapDefByName()");
+	PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);
+	PrepSDKCall_AddParameter(SDKType_String, SDKPass_Pointer);
+	g_SDKCallGetMasterMapDefByName = EndPrepSDKCall();
+
 	StartPrepSDKCall(SDKCall_Static);
 	PrepSDKCall_SetFromConf(hGameConf, SDKConf_Signature, "TranslateWeaponEntForClass()");
 	PrepSDKCall_SetReturnInfo(SDKType_String, SDKPass_Pointer);
@@ -188,7 +200,7 @@ public void OnPluginStart() {
 			"IProtoBufScriptObjectDefinition::GetDefIndex()");
 	PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);
 	g_SDKCallGetProtoDefIndex = EndPrepSDKCall();
-	
+
 	offs_CEconItemDefinition_pKeyValues =
 			GameConfGetAddressOffset(hGameConf, "CEconItemDefinition::m_pKeyValues");
 	offs_CEconItemDefinition_u8MinLevel =
@@ -417,6 +429,12 @@ Address GetEconAttributeDefinitionByName(const char[] name) {
 	Address pSchema = GetEconItemSchema();
 	return pSchema?
 			SDKCall(g_SDKCallSchemaGetAttributeDefinitionByName, pSchema, name) : Address_Null;
+}
+
+Address GetMapDefinitionByName(const char[] name) {
+	Address pSchema = GetEconItemSchema();
+	return pSchema?
+			SDKCall(g_SDKCallGetMasterMapDefByName, pSchema, name) : Address_Null;
 }
 
 Address GetEconItemSchema() {
