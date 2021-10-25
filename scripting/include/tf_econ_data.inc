@@ -45,6 +45,11 @@ typedef ItemFilterCriteria = function bool(int itemdef, any data);
 native bool TF2Econ_IsValidItemDefinition(int itemdef);
 
 /**
+ * Returns true if item is base (corresponds to the "baseitem" key).
+ */
+native bool TF2Econ_IsItemBase(int itemdef);
+
+/**
  * Returns the item's name (corresponds to the "name" key).
  */
 native bool TF2Econ_GetItemName(int itemdef, char[] name, int maxlen);
