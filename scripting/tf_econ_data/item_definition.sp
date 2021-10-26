@@ -282,9 +282,9 @@ public int Native_GetItemDefinitionString(Handle hPlugin, int nParams) {
 /**
  * native int(int itemdef);
  * 
- * Returns whenever item is base item, or false if the item definition does not exist.
+ * Returns whenever item is in base set, false if the item definition does not exist.
  */
-public int Native_IsItemBase(Handle hPlugin, int nParams) {
+public int Native_IsItemInBaseSet(Handle hPlugin, int nParams) {
 	int defindex = GetNativeCell(1);
 	Address pItemDef = GetEconItemDefinition(defindex);
 	if (!pItemDef) {
