@@ -13,7 +13,7 @@
 #include <stocksoup/handles>
 #include <stocksoup/memory>
 
-#define PLUGIN_VERSION "0.17.1"
+#define PLUGIN_VERSION "0.18.0"
 public Plugin myinfo = {
 	name = "[TF2] Econ Data",
 	author = "nosoop",
