@@ -138,6 +138,12 @@
 				"linux"		"220"
 				"windows"	"220"
 			}
+			"CEconItemDefinition::m_bBaseItem"
+			{
+				// x-ref "baseitem" in CEconItemDefinition::BInitFromKV()
+				"linux"		"230"
+				"windows"	"230"
+			}
 			"CEconItemDefinition::m_bitsEquipRegionGroups"
 			{
 				// result of CEconItemSchema::GetEquipRegionBitMaskByName() call

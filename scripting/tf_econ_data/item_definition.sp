@@ -11,6 +11,7 @@ Address offs_CEconItemDefinition_pKeyValues,
 		offs_CEconItemDefinition_pszLocalizedItemName,
 		offs_CEconItemDefinition_pszItemClassname,
 		offs_CEconItemDefinition_pszItemName,
+		offs_CEconItemDefinition_bBaseItem,
 		offs_CEconItemDefinition_bitsEquipRegionGroups,
 		offs_CEconItemDefinition_bitsEquipRegionConflicts;
 Address offs_CEconItemDefinition_aiItemSlot,
@@ -276,6 +277,21 @@ public int Native_GetItemDefinitionString(Handle hPlugin, int nParams) {
 	
 	SetNativeString(3, buffer, maxlen, true);
 	return !!buffer[0];
+}
+
+/**
+ * native int(int itemdef);
+ * 
+ * Returns whenever item is in base set, false if the item definition does not exist.
+ */
+public int Native_IsItemInBaseSet(Handle hPlugin, int nParams) {
+	int defindex = GetNativeCell(1);
+	Address pItemDef = GetEconItemDefinition(defindex);
+	if (!pItemDef) {
+		return false;
+	}
+	return !!LoadFromAddress(pItemDef + offs_CEconItemDefinition_bBaseItem,
+			NumberType_Int8);
 }
 
 /**

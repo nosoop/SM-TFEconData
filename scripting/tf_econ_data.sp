@@ -53,6 +53,7 @@ public APLRes AskPluginLoad2(Handle self, bool late, char[] error, int maxlen) {
 	
 	// item information
 	CreateNative("TF2Econ_IsValidItemDefinition", Native_IsValidItemDefinition);
+	CreateNative("TF2Econ_IsItemInBaseSet", Native_IsItemInBaseSet);
 	CreateNative("TF2Econ_GetItemName", Native_GetItemName);
 	CreateNative("TF2Econ_GetLocalizedItemName", Native_GetLocalizedItemName);
 	CreateNative("TF2Econ_GetItemClassName", Native_GetItemClassName);
@@ -219,6 +220,8 @@ public void OnPluginStart() {
 			GameConfGetAddressOffset(hGameConf, "CEconItemDefinition::m_pszItemClassname");
 	offs_CEconItemDefinition_pszItemName =
 			GameConfGetAddressOffset(hGameConf, "CEconItemDefinition::m_pszItemName");
+	offs_CEconItemDefinition_bBaseItem =
+			GameConfGetAddressOffset(hGameConf, "CEconItemDefinition::m_bBaseItem");
 	offs_CEconItemDefinition_bitsEquipRegionGroups =
 			GameConfGetAddressOffset(hGameConf, "CEconItemDefinition::m_bitsEquipRegionGroups");
 	offs_CEconItemDefinition_bitsEquipRegionConflicts =
