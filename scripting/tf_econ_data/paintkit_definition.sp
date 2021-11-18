@@ -61,5 +61,5 @@ static int GetNumPaintKitsAllocated() {
 	// offset after GetProtoScriptObjDefManager() in CTFItemDefinition::GetValidPaintkits()
 	return LoadFromAddress(GetProtoScriptObjDefManager()
 			+ offs_CProtoBufScriptObjectDefinitionManager_PaintList 
-			+ view_as<Address>(0x04), NumberType_Int16);
+			+ view_as<Address>(0xE), NumberType_Int16);
 }
