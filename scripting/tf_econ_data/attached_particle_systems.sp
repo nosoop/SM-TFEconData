@@ -210,12 +210,9 @@ static bool IsParticleSystemRightChild(int index) {
 
 // get address of attachedparticlesystem_t in CUtlRBTree by index
 static Address GetAttachedParticleSystemEntry(int index) {
-	static Address s_pParticleData;
-	if (!s_pParticleData) {
-		Address pParticleSystemTree = GetParticleSystemTree();
-		s_pParticleData = DereferencePointer(pParticleSystemTree + view_as<Address>(0x08));
-	}
-	return s_pParticleData + view_as<Address>(index * ATTACHED_PARTICLE_SYSTEM_STRUCT_SIZE);
+	Address pParticleSystemTree = GetParticleSystemTree();
+	Address pParticleData = DereferencePointer(pParticleSystemTree + view_as<Address>(0x08));
+	return pParticleData + view_as<Address>(index * ATTACHED_PARTICLE_SYSTEM_STRUCT_SIZE);
 }
 
 static Address GetParticleSystemTree() {

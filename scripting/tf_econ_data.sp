@@ -13,7 +13,7 @@
 #include <stocksoup/handles>
 #include <stocksoup/memory>
 
-#define PLUGIN_VERSION "0.18.1"
+#define PLUGIN_VERSION "0.18.2"
 public Plugin myinfo = {
 	name = "[TF2] Econ Data",
 	author = "nosoop",
@@ -394,11 +394,7 @@ Address GetEconItemDefinition(int defindex) {
 }
 
 static Address GetEconDefaultItemDefinition() {
-	static Address s_pDefaultItemDefinition;
-	if (!s_pDefaultItemDefinition) {
-		s_pDefaultItemDefinition = GetEconItemDefinition(TF_ITEMDEF_DEFAULT);
-	}
-	return s_pDefaultItemDefinition;
+	return GetEconItemDefinition(TF_ITEMDEF_DEFAULT);
 }
 
 public int Native_GetAttributeDefinitionAddress(Handle hPlugin, int nParams) {

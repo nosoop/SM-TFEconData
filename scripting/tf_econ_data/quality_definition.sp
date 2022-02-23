@@ -149,16 +149,9 @@ static int GetEconQualityDefinitionCount() {
 }
 
 static Address GetEconQualityDefinitionTree() {
-	static Address s_pItemQualityTree;
-	if (s_pItemQualityTree) {
-		return s_pItemQualityTree;
-	}
-	
 	Address pSchema = GetEconItemSchema();
 	if (!pSchema) {
 		return Address_Null;
 	}
-	
-	s_pItemQualityTree = pSchema + offs_CEconItemSchema_ItemQualities;
-	return s_pItemQualityTree;
+	return pSchema + offs_CEconItemSchema_ItemQualities;
 }

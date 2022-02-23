@@ -132,16 +132,9 @@ static int GetEconRarityDefinitionCount() {
 }
 
 static Address GetEconRarityDefinitionTree() {
-	static Address s_pItemRarityTree;
-	if (s_pItemRarityTree) {
-		return s_pItemRarityTree;
-	}
-	
 	Address pSchema = GetEconItemSchema();
 	if (!pSchema) {
 		return Address_Null;
 	}
-	
-	s_pItemRarityTree = pSchema + offs_CEconItemSchema_ItemRarities;
-	return s_pItemRarityTree;
+	return pSchema + offs_CEconItemSchema_ItemRarities;
 }
