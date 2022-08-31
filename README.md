@@ -14,6 +14,16 @@ as well as [a WIP plugin that implements the natives from those libraries][econc
 [port-old-itemdata]: https://github.com/nosoop/SM-TFEconData/wiki/Porting-TF2IDB-and-TF2II-plugins-to-TFEconData
 [econcompat]: https://github.com/nosoop/SM-TFEconDataCompat
 
+## Installation
+
+1. Download all the non-source code files in [the latest release][release].
+2. Copy `tf_econ_data.smx` to `addons/sourcemod/plugins/`.
+3. Copy `tf2.econ_data.txt` to `addons/sourcemod/gamedata/`.
+4. If you're a developer, copy `tf_econ_data.inc` to `addons/sourcemod/scripting/include/`
+(or the appropriate path for your compiler toolchain / project).
+
+[release]: https://github.com/nosoop/SM-TFEconData/releases
+
 ## Features
 
 - Retrieve certain properties of an item given its definition index, including entity class
