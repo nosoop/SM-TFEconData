@@ -208,7 +208,7 @@ static int GetParticleSystemTreeElement(int index, TreeElement elem) {
 
 static bool IsParticleSystemRightChild(int index) {
 	int parent = GetParticleSystemTreeElement(index, Tree_Parent);
-	return GetParticleSystemTreeElement(parent, Tree_RightChild) == index;
+	return parent != 0xFFFF && GetParticleSystemTreeElement(parent, Tree_RightChild) == index;
 }
 
 // get address of attachedparticlesystem_t in CUtlRBTree by index
