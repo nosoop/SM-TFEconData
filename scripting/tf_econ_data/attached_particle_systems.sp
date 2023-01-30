@@ -20,7 +20,10 @@ enum TFEconParticleSet {
 	ParticleSet_All,
 	ParticleSet_CosmeticUnusualEffects,
 	ParticleSet_WeaponUnusualEffects,
-	ParticleSet_TauntUnusualEffects
+	ParticleSet_TauntUnusualEffects,
+	
+	// only used for bounds checking; this must be the last entry, and isn't part of the include
+	NUM_ECON_PARTICLE_SETS
 };
 
 #define ATTACHED_PARTICLE_SYSTEM_STRUCT_SIZE 0x40
@@ -32,7 +35,7 @@ enum TFEconParticleSet {
  */
 public int Native_GetParticleAttributeList(Handle hPlugin, int nParams) {
 	TFEconParticleSet particleSet = GetNativeCell(1);
-	if (particleSet < ParticleSet_All || particleSet >= TFEconParticleSet) {
+	if (particleSet < ParticleSet_All || particleSet >= NUM_ECON_PARTICLE_SETS) {
 		ThrowNativeError(1, "Invalid particle list %d", particleSet);
 	}
 	
