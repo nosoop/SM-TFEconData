@@ -39,6 +39,14 @@ enum TFEconParticleSet {
 typedef ItemFilterCriteria = function bool(int itemdef, any data);
 
 /**
+ * Callback for `TF2Econ_GetAttributeList`.  Return `true` if the specified attribute definition
+ * index should be added to the returned `ArrayList`.
+ * 
+ * This prototype is the same as `TF2Econ_GetItemList`.  Take care to not mix up the callbacks.
+ */
+typedef AttributeFilterCriteria = function bool(int attrdef, any data);
+
+/**
  * Returns true if there is an item corresponding to the given item definition index.
  * TF_ITEMDEF_DEFAULT returns false here.
  */
@@ -135,6 +143,8 @@ native bool TF2Econ_GetItemDefinitionString(int itemdef, const char[] key,
  * callback is passed in, the ArrayList only contains defindexes that the callback returned
  * `true` on.
  * 
+ * The resulting ArrayList does not have a defined order.
+ * 
  * This handle is owned by the calling plugin, so it should be `delete`d when not needed
  * anymore.
  */
@@ -211,6 +221,19 @@ native bool TF2Econ_GetAttributeDefinitionString(int attrdef, const char[] key,
  * correspond to an attribute.
  */
 native int TF2Econ_TranslateAttributeNameToDefinitionIndex(const char[] name);
+
+/**
+ * Returns an ArrayList containing all valid attribute definition indices.  If an
+ * AttributeFilterCriteria callback is passed in, the ArrayList only contains attribute
+ * definition indices that the callback returned `true` on.
+ * 
+ * The resulting ArrayList does not have a defined order.
+ * 
+ * This handle is owned by the calling plugin, so it should be `delete`d when not needed
+ * anymore.
+ */
+native ArrayList TF2Econ_GetAttributeList(AttributeFilterCriteria func = INVALID_FUNCTION,
+		any data = 0);
 
 /**
  * Stores the quality name in the given buffer and returns true if given a valid quality value,

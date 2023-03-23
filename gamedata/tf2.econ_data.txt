@@ -270,6 +270,12 @@
 				"linux"		"252"
 				"windows"	"252"
 			}
+			"CEconItemSchema::m_AttributeMap"
+			{
+				// accessed in loop at CEconItemSchema::GetAttributeDefinitionByName
+				"linux"		"448"
+				"windows"	"448"
+			}
 			"CEconItemSchema::m_EquipRegions"
 			{
 				// the smaller of the two offsets in CEconItemSchema::GetEquipRegionIndexByName()
@@ -338,6 +344,13 @@
 				// used for iterating over the attribute list
 				"linux"		"8"
 				"windows"	"8"
+			}
+			"sizeof(CEconItemAttributeDefinition)"
+			{
+				// used for iterating over the attribute map
+				// this does not include the members of the map itself
+				"linux"		"68"
+				"windows"	"68"
 			}
 		}
 	}

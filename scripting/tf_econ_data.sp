@@ -13,7 +13,7 @@
 #include <stocksoup/handles>
 #include <stocksoup/memory>
 
-#define PLUGIN_VERSION "0.18.4"
+#define PLUGIN_VERSION "0.19.0"
 public Plugin myinfo = {
 	name = "[TF2] Econ Data",
 	author = "nosoop",
@@ -24,7 +24,11 @@ public Plugin myinfo = {
 
 Address offs_CEconItemSchema_ItemQualities,
 		offs_CEconItemSchema_ItemList,
-		offs_CEconItemSchema_nItemCount;
+		offs_CEconItemSchema_nItemCount,
+		offs_CEconItemSchema_AttributeMap;
+
+#define ATTRDEF_MAP_OFFSET (view_as<Address>(0x14))
+Address sizeof_CEconItemAttributeDefinition;
 
 #include "tf_econ_data/attached_particle_systems.sp"
 #include "tf_econ_data/loadout_slot.sp"
@@ -89,6 +93,9 @@ public APLRes AskPluginLoad2(Handle self, bool late, char[] error, int maxlen) {
 	CreateNative("TF2Econ_GetAttributeDefinitionString", Native_GetAttributeDefinitionString);
 	CreateNative("TF2Econ_TranslateAttributeNameToDefinitionIndex",
 			Native_TranslateAttributeNameToDefinitionIndex);
+	
+	// global attributes
+	CreateNative("TF2Econ_GetAttributeList", Native_GetAttributeList);
 	
 	// quality information
 	CreateNative("TF2Econ_GetQualityName", Native_GetQualityName);
@@ -243,6 +250,8 @@ public void OnPluginStart() {
 			GameConfGetAddressOffset(hGameConf, "CEconItemSchema::m_ItemList");
 	offs_CEconItemSchema_nItemCount =
 			GameConfGetAddressOffset(hGameConf, "CEconItemSchema::m_nItemCount");
+	offs_CEconItemSchema_AttributeMap =
+			GameConfGetAddressOffset(hGameConf, "CEconItemSchema::m_AttributeMap");
 	offs_CEconItemSchema_EquipRegions =
 			GameConfGetAddressOffset(hGameConf, "CEconItemSchema::m_EquipRegions");
 	offs_CEconItemSchema_ParticleSystemTree =
@@ -296,6 +305,8 @@ public void OnPluginStart() {
 			"CProtoBufScriptObjectDefinitionManager::m_PaintList");
 	
 	sizeof_static_attrib_t = GameConfGetAddressOffset(hGameConf, "sizeof(static_attrib_t)");
+	sizeof_CEconItemAttributeDefinition = GameConfGetAddressOffset(hGameConf,
+			"sizeof(CEconItemAttributeDefinition)");
 	
 	delete hGameConf;
 	
@@ -361,6 +372,61 @@ int Native_GetItemList(Handle hPlugin, int nParams) {
 	}
 	
 	return MoveHandle(itemList, hPlugin);
+}
+
+int Native_GetAttributeList(Handle hPlugin, int nParams) {
+	Function func = GetNativeFunction(1);
+	any data = GetNativeCell(2);
+	
+	Address pSchema = GetEconItemSchema();
+	if (!pSchema) {
+		return 0;
+	}
+	
+	ArrayList attributeList = new ArrayList();
+	
+	// this implements FOR_EACH_MAP_FAST
+	int nAttributeCapacity = LoadFromAddress(
+			pSchema + offs_CEconItemSchema_AttributeMap + view_as<Address>(0x4),
+			NumberType_Int32);
+	
+	Address pAttributeData = DereferencePointer(pSchema + offs_CEconItemSchema_AttributeMap);
+	for (int i; i < nAttributeCapacity; i++) {
+		Address pAttributeDataItem = pAttributeData
+				+ view_as<Address>(i) * (sizeof_CEconItemAttributeDefinition + ATTRDEF_MAP_OFFSET);
+		
+		// the struct has 0x14 bytes (ATTRDEF_MAP_OFFSET) preceding the definition
+		// some internal map data
+		int index = LoadFromAddress(pAttributeDataItem, NumberType_Int32);
+		if (index == i) {
+			continue;
+		}
+		
+		Address pAttributeDefinition = pAttributeDataItem + ATTRDEF_MAP_OFFSET;
+		int attrdef = LoadFromAddress(
+				pAttributeDefinition + offs_CEconItemAttributeDefinition_iAttributeDefinitionIndex,
+				NumberType_Int16);
+		if (!attrdef) {
+			continue;
+		}
+		
+		if (func == INVALID_FUNCTION) {
+			attributeList.Push(attrdef);
+			continue;
+		}
+		
+		bool result;
+		Call_StartFunction(hPlugin, func);
+		Call_PushCell(attrdef);
+		Call_PushCell(data);
+		Call_Finish(result);
+		
+		if (result) {
+			attributeList.Push(attrdef);
+		}
+	}
+	
+	return MoveHandle(attributeList, hPlugin);
 }
 
 int Native_GetItemSchemaAddress(Handle hPlugin, int nParams) {
