@@ -26,7 +26,7 @@ Address sizeof_static_attrib_t;
  * 
  * Stores the internal item name into the buffer.  Returns true if the item definition exists.
  */
-public int Native_GetItemName(Handle hPlugin, int nParams) {
+int Native_GetItemName(Handle hPlugin, int nParams) {
 	int defindex = GetNativeCell(1);
 	int maxlen = GetNativeCell(3);
 	
@@ -46,7 +46,7 @@ public int Native_GetItemName(Handle hPlugin, int nParams) {
  * Stores the item's localization token into the buffer.  Returns true if the item definition
  * exists.
  */
-public int Native_GetLocalizedItemName(Handle hPlugin, int nParams) {
+int Native_GetLocalizedItemName(Handle hPlugin, int nParams) {
 	int defindex = GetNativeCell(1);
 	int maxlen = GetNativeCell(3);
 	
@@ -65,7 +65,7 @@ public int Native_GetLocalizedItemName(Handle hPlugin, int nParams) {
  * 
  * Stores the item class name into the buffer.  Returns true if the item definition exists.
  */
-public int Native_GetItemClassName(Handle hPlugin, int nParams) {
+int Native_GetItemClassName(Handle hPlugin, int nParams) {
 	int defindex = GetNativeCell(1);
 	int maxlen = GetNativeCell(3);
 	
@@ -85,7 +85,7 @@ public int Native_GetItemClassName(Handle hPlugin, int nParams) {
  * Stores the item loadout slot for the given class.  Returns -1 if the item definition does 
  * not exist or if the item is not valid for the given player class.
  */
-public int Native_GetItemSlot(Handle hPlugin, int nParams) {
+int Native_GetItemSlot(Handle hPlugin, int nParams) {
 	int defindex = GetNativeCell(1);
 	int playerClass = GetNativeCell(2);
 	
@@ -103,7 +103,7 @@ public int Native_GetItemSlot(Handle hPlugin, int nParams) {
  * 
  * Returns the default assigned item loadout slot, or -1 if the item definition does not exist.
  */
-public int Native_GetItemDefaultSlot(Handle hPlugin, int nParams) {
+int Native_GetItemDefaultSlot(Handle hPlugin, int nParams) {
 	int defindex = GetNativeCell(1);
 	Address pItemDef = GetEconItemDefinition(defindex);
 	if (!pItemDef) {
@@ -119,7 +119,7 @@ public int Native_GetItemDefaultSlot(Handle hPlugin, int nParams) {
  * Returns a bitset indicating group conflicts (that is, item cannot be worn with an item with
  * that bit set).
  */
-public int Native_GetItemEquipRegionMask(Handle hPlugin, int nParams) {
+int Native_GetItemEquipRegionMask(Handle hPlugin, int nParams) {
 	int defindex = GetNativeCell(1);
 	Address pItemDef = GetEconItemDefinition(defindex);
 	
@@ -136,7 +136,7 @@ public int Native_GetItemEquipRegionMask(Handle hPlugin, int nParams) {
  * 
  * Returns a bitset indicating item group membership.
  */
-public int Native_GetItemEquipRegionGroupBits(Handle hPlugin, int nParams) {
+int Native_GetItemEquipRegionGroupBits(Handle hPlugin, int nParams) {
 	int defindex = GetNativeCell(1);
 	Address pItemDef = GetEconItemDefinition(defindex);
 	
@@ -154,7 +154,7 @@ public int Native_GetItemEquipRegionGroupBits(Handle hPlugin, int nParams) {
  * Returns true on a valid item, populating `min` and `max` with the item's min / max level
  * range.
  */
-public int Native_GetItemLevelRange(Handle hPlugin, int nParams) {
+int Native_GetItemLevelRange(Handle hPlugin, int nParams) {
 	int defindex = GetNativeCell(1);
 	
 	Address pItemDef = GetEconItemDefinition(defindex);
@@ -177,7 +177,7 @@ public int Native_GetItemLevelRange(Handle hPlugin, int nParams) {
  * 
  * Returns the item's given item quality.  Throws if the item is not valid.
  */
-public int Native_GetItemQuality(Handle hPlugin, int nParams) {
+int Native_GetItemQuality(Handle hPlugin, int nParams) {
 	int defindex = GetNativeCell(1);
 	Address pItemDef = GetEconItemDefinition(defindex);
 	if (!pItemDef) {
@@ -197,7 +197,7 @@ public int Native_GetItemQuality(Handle hPlugin, int nParams) {
  * 
  * Returns the item's given item rarity.  Throws if the item is not valid.
  */
-public int Native_GetItemRarity(Handle hPlugin, int nParams) {
+int Native_GetItemRarity(Handle hPlugin, int nParams) {
 	int defindex = GetNativeCell(1);
 	Address pItemDef = GetEconItemDefinition(defindex);
 	
@@ -217,7 +217,7 @@ public int Native_GetItemRarity(Handle hPlugin, int nParams) {
  * 
  * Returns an ArrayList containing the item's static attribute index / value pairs.
  */
-public int Native_GetItemStaticAttributes(Handle hPlugin, int nParams) {
+int Native_GetItemStaticAttributes(Handle hPlugin, int nParams) {
 	int defindex = GetNativeCell(1);
 	
 	Address pItemDef = GetEconItemDefinition(defindex);
@@ -253,7 +253,7 @@ public int Native_GetItemStaticAttributes(Handle hPlugin, int nParams) {
  * Looks up the key in the item definition's KeyValues instance.  Returns true if the buffer is
  * not empty after the process.
  */
-public int Native_GetItemDefinitionString(Handle hPlugin, int nParams) {
+int Native_GetItemDefinitionString(Handle hPlugin, int nParams) {
 	int defindex = GetNativeCell(1);
 	int keylen;
 	GetNativeStringLength(2, keylen);
@@ -284,7 +284,7 @@ public int Native_GetItemDefinitionString(Handle hPlugin, int nParams) {
  * 
  * Returns whenever item is in base set, false if the item definition does not exist.
  */
-public int Native_IsItemInBaseSet(Handle hPlugin, int nParams) {
+int Native_IsItemInBaseSet(Handle hPlugin, int nParams) {
 	int defindex = GetNativeCell(1);
 	Address pItemDef = GetEconItemDefinition(defindex);
 	if (!pItemDef) {
@@ -299,7 +299,7 @@ public int Native_IsItemInBaseSet(Handle hPlugin, int nParams) {
  * 
  * Returns true if the given item definition corresponds to an item.
  */
-public int Native_IsValidItemDefinition(Handle hPlugin, int nParams) {
+int Native_IsValidItemDefinition(Handle hPlugin, int nParams) {
 	int defindex = GetNativeCell(1);
 	return ValidItemDefIndex(defindex);
 }

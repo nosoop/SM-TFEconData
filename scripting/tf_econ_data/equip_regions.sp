@@ -19,7 +19,7 @@ int sizeof_EquipRegion = 0x0C;
  * 
  * Returns a mapping of group name to group index.
  */
-public int Native_GetEquipRegionGroups(Handle hPlugin, int nParams) {
+int Native_GetEquipRegionGroups(Handle hPlugin, int nParams) {
 	Address pSchema = GetEconItemSchema();
 	if (!pSchema) {
 		return view_as<int>(INVALID_HANDLE);
@@ -55,7 +55,7 @@ public int Native_GetEquipRegionGroups(Handle hPlugin, int nParams) {
  * 
  * Returns a bitset of groups the given group-by-name conflicts with.
  */
-public int Native_GetEquipRegionMask(Handle hPlugin, int nParams) {
+int Native_GetEquipRegionMask(Handle hPlugin, int nParams) {
 	Address pSchema = GetEconItemSchema();
 	if (!pSchema) {
 		return false;

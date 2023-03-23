@@ -1,6 +1,6 @@
 Address offs_CProtoBufScriptObjectDefinitionManager_PaintList;
 
-public int Native_GetPaintKitList(Handle hPlugin, int nParams) {
+int Native_GetPaintKitList(Handle hPlugin, int nParams) {
 	return MoveHandleImmediate(GetValidPaintKitProtoDefs(), hPlugin);
 }
 
@@ -20,7 +20,7 @@ static ArrayList GetValidPaintKitProtoDefs() {
 	return list;
 }
 
-public int Native_GetPaintKitDefinitionAddress(Handle hPlugin, int nParams) {
+int Native_GetPaintKitDefinitionAddress(Handle hPlugin, int nParams) {
 	int protoDefIndex = GetNativeCell(1);
 	
 	int nPaintsAllocated = GetNumPaintKitsAllocated();

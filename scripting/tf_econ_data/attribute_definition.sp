@@ -10,7 +10,7 @@ Address offs_CEconItemAttributeDefinition_pKeyValues,
  * 
  * Returns true if the given attribute is marked as hidden.
  */
-public int Native_IsAttributeHidden(Handle hPlugin, int nParams) {
+int Native_IsAttributeHidden(Handle hPlugin, int nParams) {
 	int defindex = GetNativeCell(1);
 	Address pAttributeDef = GetEconAttributeDefinition(defindex);
 	if (!pAttributeDef) {
@@ -26,7 +26,7 @@ public int Native_IsAttributeHidden(Handle hPlugin, int nParams) {
  * 
  * Returns true if the given attribute is marked as stored as an integer.
  */
-public int Native_IsAttributeStoredAsInteger(Handle hPlugin, int nParams) {
+int Native_IsAttributeStoredAsInteger(Handle hPlugin, int nParams) {
 	int defindex = GetNativeCell(1);
 	Address pAttributeDef = GetEconAttributeDefinition(defindex);
 	if (!pAttributeDef) {
@@ -42,7 +42,7 @@ public int Native_IsAttributeStoredAsInteger(Handle hPlugin, int nParams) {
  *
  * Returns true if the given attribute definition is valid, storing its name into the buffer.
  */
-public int Native_GetAttributeName(Handle hPlugin, int nParams) {
+int Native_GetAttributeName(Handle hPlugin, int nParams) {
 	int defindex = GetNativeCell(1);
 	int maxlen = GetNativeCell(3);
 	
@@ -62,7 +62,7 @@ public int Native_GetAttributeName(Handle hPlugin, int nParams) {
  * Returns true if the given attribute definition is valid, storing its attribute class name
  * into the buffer.
  */
-public int Native_GetAttributeClassName(Handle hPlugin, int nParams) {
+int Native_GetAttributeClassName(Handle hPlugin, int nParams) {
 	int defindex = GetNativeCell(1);
 	int maxlen = GetNativeCell(3);
 	
@@ -82,7 +82,7 @@ public int Native_GetAttributeClassName(Handle hPlugin, int nParams) {
  * Retrieves the `key` entry from the attribute's KeyValues struct and returns true if the
  * given output buffer is not empty.  If `defaultVal` is set, it is copied to the output buffer.
  */
-public int Native_GetAttributeDefinitionString(Handle hPlugin, int nParams) {
+int Native_GetAttributeDefinitionString(Handle hPlugin, int nParams) {
 	int defindex = GetNativeCell(1);
 	int keylen;
 	GetNativeStringLength(2, keylen);
@@ -118,7 +118,7 @@ bool IsValidAttributeDefinition(int defindex) {
  * 
  * Returns true if the given identifier corresponds to an attribute definition.
  */
-public int Native_IsValidAttributeDefinition(Handle hPlugin, int nParams) {
+int Native_IsValidAttributeDefinition(Handle hPlugin, int nParams) {
 	int defindex = GetNativeCell(1);
 	return IsValidAttributeDefinition(defindex);
 }

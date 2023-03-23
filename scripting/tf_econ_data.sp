@@ -13,7 +13,7 @@
 #include <stocksoup/handles>
 #include <stocksoup/memory>
 
-#define PLUGIN_VERSION "0.18.3"
+#define PLUGIN_VERSION "0.18.4"
 public Plugin myinfo = {
 	name = "[TF2] Econ Data",
 	author = "nosoop",
@@ -303,7 +303,7 @@ public void OnPluginStart() {
 			"Version for TF2 Econ Data, to gauge popularity.", FCVAR_NOTIFY);
 }
 
-public int Native_TranslateWeaponEntForClass(Handle hPlugin, int nParams) {
+int Native_TranslateWeaponEntForClass(Handle hPlugin, int nParams) {
 	char weaponClass[64];
 	GetNativeString(1, weaponClass, sizeof(weaponClass));
 	int maxlen = GetNativeCell(2);
@@ -316,7 +316,7 @@ public int Native_TranslateWeaponEntForClass(Handle hPlugin, int nParams) {
 	return false;
 }
 
-public int Native_GetItemList(Handle hPlugin, int nParams) {
+int Native_GetItemList(Handle hPlugin, int nParams) {
 	Function func = GetNativeFunction(1);
 	any data = GetNativeCell(2);
 	
@@ -363,11 +363,11 @@ public int Native_GetItemList(Handle hPlugin, int nParams) {
 	return MoveHandle(itemList, hPlugin);
 }
 
-public int Native_GetItemSchemaAddress(Handle hPlugin, int nParams) {
+int Native_GetItemSchemaAddress(Handle hPlugin, int nParams) {
 	return view_as<int>(GetEconItemSchema());
 }
 
-public int Native_GetItemDefinitionAddress(Handle hPlugin, int nParams) {
+int Native_GetItemDefinitionAddress(Handle hPlugin, int nParams) {
 	int defindex = GetNativeCell(1);
 	return view_as<int>(GetEconItemDefinition(defindex));
 }
@@ -397,7 +397,7 @@ static Address GetEconDefaultItemDefinition() {
 	return GetEconItemDefinition(TF_ITEMDEF_DEFAULT);
 }
 
-public int Native_GetAttributeDefinitionAddress(Handle hPlugin, int nParams) {
+int Native_GetAttributeDefinitionAddress(Handle hPlugin, int nParams) {
 	int defindex = GetNativeCell(1);
 	return view_as<int>(GetEconAttributeDefinition(defindex));
 }
@@ -408,7 +408,7 @@ Address GetEconAttributeDefinition(int defindex) {
 			SDKCall(g_SDKCallSchemaGetAttributeDefinition, pSchema, defindex) : Address_Null;
 }
 
-public int Native_TranslateAttributeNameToDefinitionIndex(Handle hPlugin, int nParams) {
+int Native_TranslateAttributeNameToDefinitionIndex(Handle hPlugin, int nParams) {
 	int maxlen;
 	GetNativeStringLength(1, maxlen);
 	maxlen++;
@@ -444,7 +444,7 @@ Address GetProtoScriptObjDefManager() {
 	return SDKCall(g_SDKCallGetProtoDefManager);
 }
 
-public int Native_GetProtoDefManagerAddress(Handle hPlugin, int nParams) {
+int Native_GetProtoDefManagerAddress(Handle hPlugin, int nParams) {
 	return view_as<int>(GetProtoScriptObjDefManager());
 }
 

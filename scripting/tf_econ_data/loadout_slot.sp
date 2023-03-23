@@ -10,7 +10,7 @@ Address offs_CTFItemSchema_ItemSlotNames;
  * 
  * Returns the loadout slot index given the name.
  */
-public int Native_TranslateLoadoutSlotNameToIndex(Handle hPlugin, int nParams) {
+int Native_TranslateLoadoutSlotNameToIndex(Handle hPlugin, int nParams) {
 	char slot[64];
 	GetNativeString(1, slot, sizeof(slot));
 	
@@ -30,7 +30,7 @@ public int Native_TranslateLoadoutSlotNameToIndex(Handle hPlugin, int nParams) {
  * 
  * Returns true if the loadout slot exists, storing the name in the given buffer.
  */
-public int Native_TranslateLoadoutSlotIndexToName(Handle hPlugin, int nParams) {
+int Native_TranslateLoadoutSlotIndexToName(Handle hPlugin, int nParams) {
 	int index = GetNativeCell(1);
 	int maxlen = GetNativeCell(3);
 	
@@ -71,7 +71,7 @@ static bool TranslateLoadoutSlotIndexToName(int index, char[] buffer, int maxlen
 /**
  * Returns the number of loadout slots.
  */
-public int Native_GetLoadoutSlotCount(Handle hPlugin, int nParams) {
+int Native_GetLoadoutSlotCount(Handle hPlugin, int nParams) {
 	return GetLoadoutSlotCount();
 }
 

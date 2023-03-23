@@ -1,7 +1,7 @@
 /**
  * native int(const char[] name);
  */
-public int Native_GetMapDefinitionIndex(Handle hPlugin, int nParams) {
+int Native_GetMapDefinitionIndex(Handle hPlugin, int nParams) {
 	int len;
 	GetNativeStringLength(1, len);
 	
