@@ -366,8 +366,18 @@
 				"linux64"	"1320"
 				"windows64"	"1320"
 			}
+			"CEconItemSchema::m_mapAttributeControlledParticleSystems"
+			{
+				// CUtlMap<int, attachedparticlesystem_t > using unsigned short indexes
+				// can be validated on linux as being the first add/lea offset at the start of ::BInitAttributeControlledParticleSystems()
+				"linux"		"880"
+				"windows"	"880"
+				"linux64"	"1184"
+				"windows64"	"1184"
+			}
 			"CEconItemSchema::m_ParticleSystemTree"
 			{
+				// DEPRECATED: this is present as a transitional period for backwards compatibility as m_mapAttributeControlledParticleSystems - 4
 				// a CUtlRBTree instance
 				// the underlying map's ::Insert function is accessed close to the end of ::BInitAttributeControlledParticleSystems()
 				// subtract by 4 to get the offset of the CUtlRBTree itself

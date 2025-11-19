@@ -256,7 +256,7 @@ public void OnPluginStart() {
 	offs_CEconItemSchema_EquipRegions =
 			GameConfGetAddressOffset(hGameConf, "CEconItemSchema::m_EquipRegions");
 	offs_CEconItemSchema_ParticleSystemTree =
-			GameConfGetAddressOffset(hGameConf, "CEconItemSchema::m_ParticleSystemTree");
+			GameConfGetAddressOffset(hGameConf, "CEconItemSchema::m_mapAttributeControlledParticleSystems");
 	
 	offs_CEconItemSchema_CosmeticUnusualEffectList =
 			GameConfGetAddressOffset(hGameConf, "CEconItemSchema::m_CosmeticUnusualEffectList");

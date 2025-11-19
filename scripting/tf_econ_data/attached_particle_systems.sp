@@ -155,7 +155,7 @@ static int GetParticleSystemPtrAttributeValue(Address pParticleSystemEntry) {
 // implementation of CUtlRBTree<>::FirstInorder()
 static int GetFirstParticleSystem() {
 	// get root left child of CUtlRBTree
-	int index = LoadFromAddress(GetParticleSystemTree() + view_as<Address>(0x14),
+	int index = LoadFromAddress(GetParticleSystemTree() + view_as<Address>(0x10),
 			NumberType_Int16);
 	if (index == 0xFFFF) {
 		return -1;
@@ -214,7 +214,7 @@ static bool IsParticleSystemRightChild(int index) {
 // get address of attachedparticlesystem_t in CUtlRBTree by index
 static Address GetAttachedParticleSystemEntry(int index) {
 	Address pParticleSystemTree = GetParticleSystemTree();
-	Address pParticleData = DereferencePointer(pParticleSystemTree + view_as<Address>(0x08));
+	Address pParticleData = DereferencePointer(pParticleSystemTree + view_as<Address>(0x04));
 	return pParticleData + view_as<Address>(index * ATTACHED_PARTICLE_SYSTEM_STRUCT_SIZE);
 }
 
