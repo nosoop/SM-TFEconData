@@ -7,6 +7,7 @@
 #include <sourcemod>
 
 #include <sdktools>
+#include <virtual_address>
 
 #pragma newdecls required
 
@@ -146,67 +147,67 @@ public void OnPluginStart() {
 	
 	StartPrepSDKCall(SDKCall_Static);
 	PrepSDKCall_SetFromConf(hGameConf, SDKConf_Signature, "GEconItemSchema()");
-	PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);
+	PrepSDKCall_SetReturnInfo(SDKType_VirtualAddress, SDKPass_Plain);	//Returns address of CEconItemSchema
 	g_SDKCallGetEconItemSchema = EndPrepSDKCall();
 	
-	StartPrepSDKCall(SDKCall_Raw);
+	StartPrepSDKCall(SDKCall_VirtualAddress);
 	PrepSDKCall_SetFromConf(hGameConf, SDKConf_Signature,
 			"CEconItemSchema::GetItemDefinition()");
-	PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);
-	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);
+	PrepSDKCall_SetReturnInfo(SDKType_VirtualAddress, SDKPass_Plain);	//Returns address of a CEconItemDefinition
+	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);		//int iItemIndex
 	g_SDKCallSchemaGetItemDefinition = EndPrepSDKCall();
 	
-	StartPrepSDKCall(SDKCall_Raw);
+	StartPrepSDKCall(SDKCall_VirtualAddress);
 	PrepSDKCall_SetFromConf(hGameConf, SDKConf_Signature,
 			"CEconItemSchema::GetAttributeDefinition()");
-	PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);
-	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);
+	PrepSDKCall_SetReturnInfo(SDKType_VirtualAddress, SDKPass_Plain);	//Returns address of a CEconItemAttributeDefinition
+	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);		//int iAttribIndex
 	g_SDKCallSchemaGetAttributeDefinition = EndPrepSDKCall();
 	
-	StartPrepSDKCall(SDKCall_Raw);
+	StartPrepSDKCall(SDKCall_VirtualAddress);
 	PrepSDKCall_SetFromConf(hGameConf, SDKConf_Signature,
 			"CEconItemSchema::GetAttributeDefinitionByName()");
-	PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);
-	PrepSDKCall_AddParameter(SDKType_String, SDKPass_Pointer);
+	PrepSDKCall_SetReturnInfo(SDKType_VirtualAddress, SDKPass_Plain);	//Returns address of a CEconItemAttributeDefinition
+	PrepSDKCall_AddParameter(SDKType_String, SDKPass_Pointer);			//const char *pszDefName
 	g_SDKCallSchemaGetAttributeDefinitionByName = EndPrepSDKCall();
 	
-	StartPrepSDKCall(SDKCall_Raw);
+	StartPrepSDKCall(SDKCall_VirtualAddress);
 	PrepSDKCall_SetFromConf(hGameConf, SDKConf_Signature,
 			"CTFItemSchema::GetMasterMapDefByName()");
-	PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);
-	PrepSDKCall_AddParameter(SDKType_String, SDKPass_Pointer);
+	PrepSDKCall_SetReturnInfo(SDKType_VirtualAddress, SDKPass_Plain);	//Returns address of a MapDef_t
+	PrepSDKCall_AddParameter(SDKType_String, SDKPass_Pointer);			//const char *pszSearchName
 	g_SDKCallGetMasterMapDefByName = EndPrepSDKCall();
 
 	StartPrepSDKCall(SDKCall_Static);
 	PrepSDKCall_SetFromConf(hGameConf, SDKConf_Signature, "TranslateWeaponEntForClass()");
 	PrepSDKCall_SetReturnInfo(SDKType_String, SDKPass_Pointer);
-	PrepSDKCall_AddParameter(SDKType_String, SDKPass_Pointer);
-	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);
+	PrepSDKCall_AddParameter(SDKType_String, SDKPass_Pointer);			//const char *pszName
+	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);		//int iClass
 	g_SDKCallTranslateWeaponEntForClass = EndPrepSDKCall();
 	
-	StartPrepSDKCall(SDKCall_Raw);
+	StartPrepSDKCall(SDKCall_VirtualAddress);
 	PrepSDKCall_SetFromConf(hGameConf, SDKConf_Signature, "KeyValues::GetString()");
 	PrepSDKCall_SetReturnInfo(SDKType_String, SDKPass_Pointer);
-	PrepSDKCall_AddParameter(SDKType_String, SDKPass_Pointer);
-	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);
+	PrepSDKCall_AddParameter(SDKType_String, SDKPass_Pointer);			//const char *keyName
+	PrepSDKCall_AddParameter(SDKType_VirtualAddress, SDKPass_Plain);	//const char *defaultValue
 	g_SDKCallGetKeyValuesString = EndPrepSDKCall();
 	
-	StartPrepSDKCall(SDKCall_Raw);
+	StartPrepSDKCall(SDKCall_VirtualAddress);
 	PrepSDKCall_SetFromConf(hGameConf, SDKConf_Signature, "KeyValues::FindKey()");
-	PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);
-	PrepSDKCall_AddParameter(SDKType_String, SDKPass_Pointer);
-	PrepSDKCall_AddParameter(SDKType_Bool, SDKPass_Plain);
+	PrepSDKCall_SetReturnInfo(SDKType_VirtualAddress, SDKPass_Plain);	//Returns address of KeyValues
+	PrepSDKCall_AddParameter(SDKType_String, SDKPass_Pointer);			//const char *keyName
+	PrepSDKCall_AddParameter(SDKType_Bool, SDKPass_Plain);				//bool bCreate
 	g_SDKCallGetKeyValuesFindKey = EndPrepSDKCall();
 	
 	StartPrepSDKCall(SDKCall_Static);
 	PrepSDKCall_SetFromConf(hGameConf, SDKConf_Signature, "GetProtoScriptObjDefManager()");
-	PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);
+	PrepSDKCall_SetReturnInfo(SDKType_VirtualAddress, SDKPass_Plain);	//Returns address of CProtoBufScriptObjectDefinitionManager
 	g_SDKCallGetProtoDefManager = EndPrepSDKCall();
 	
-	StartPrepSDKCall(SDKCall_Raw);
+	StartPrepSDKCall(SDKCall_VirtualAddress);
 	PrepSDKCall_SetFromConf(hGameConf, SDKConf_Signature,
 			"IProtoBufScriptObjectDefinition::GetDefIndex()");
-	PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);
+	PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);		//Returns uint32
 	g_SDKCallGetProtoDefIndex = EndPrepSDKCall();
 
 	offs_CEconItemDefinition_pKeyValues =
