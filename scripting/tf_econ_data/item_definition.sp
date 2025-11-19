@@ -227,9 +227,9 @@ int Native_GetItemStaticAttributes(Handle hPlugin, int nParams) {
 	
 	// get size from CUtlVector
 	int nAttribs = LoadFromAddress(
-			pItemDef + offs_CEconItemDefinition_AttributeList + view_as<Address>(0x0C),
+			pItemDef + offs_CEconItemDefinition_AttributeList + offs_CUtlVector_m_size,
 			NumberType_Int32);
-	Address pAttribList = DereferencePointer(pItemDef + offs_CEconItemDefinition_AttributeList);
+	Address pAttribList = LoadAddressFromAddress(pItemDef + offs_CEconItemDefinition_AttributeList);
 	
 	// struct { attribute_defindex, value } // (TF2)
 	ArrayList attributeList = new ArrayList(2, nAttribs);
@@ -238,7 +238,7 @@ int Native_GetItemStaticAttributes(Handle hPlugin, int nParams) {
 				+ view_as<Address>(i * view_as<int>(sizeof_static_attrib_t));
 		
 		int attrIndex = LoadFromAddress(pStaticAttrib, NumberType_Int16);
-		any attrValue = LoadFromAddress(pStaticAttrib + view_as<Address>(0x04),
+		any attrValue = LoadFromAddress(pStaticAttrib + PointerSize,
 				NumberType_Int32);
 		
 		attributeList.Set(i, attrIndex, 0);
@@ -269,7 +269,7 @@ int Native_GetItemDefinitionString(Handle hPlugin, int nParams) {
 	
 	Address pItemDef = GetEconItemDefinition(defindex);
 	if (pItemDef) {
-		Address pKeyValues = DereferencePointer(pItemDef + offs_CEconItemDefinition_pKeyValues);
+		Address pKeyValues = LoadAddressFromAddress(pItemDef + offs_CEconItemDefinition_pKeyValues);
 		if (KeyValuesPtrKeyExists(pKeyValues, key)) {
 			KeyValuesPtrGetString(pKeyValues, key, buffer, maxlen, buffer);
 		}
@@ -314,6 +314,6 @@ static bool LoadEconItemDefinitionString(int defindex, Address offset, char[] bu
 		return false;
 	}
 	
-	LoadStringFromAddress(DereferencePointer(pItemDef + offset), buffer, maxlen);
+	LoadStringFromAddress(LoadAddressFromAddress(pItemDef + offset), buffer, maxlen);
 	return true;
 }

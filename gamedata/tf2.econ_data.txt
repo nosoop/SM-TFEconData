@@ -465,6 +465,33 @@
 				"linux64"	"104"
 				"windows64"	"104"
 			}
+			"sizeof(attachedparticlesystem_t)"
+			{
+				// used for iterating over the particle systems map
+				// this does not include the members of the map itself
+				"linux"		"52"
+				"windows"	"52"
+				"linux64"	"88"
+				"windows64"	"88"
+			}
+			"sizeof(CEconItemRarityDefinition)"
+			{
+				// used for iterating over the particle systems map
+				// this does not include the members of the map itself
+				"linux"		"32"
+				"windows"	"32"
+				"linux64"	"56"
+				"windows64"	"56"
+			}
+			"sizeof(CEconItemQualityDefinition)"
+			{
+				// used for iterating over the particle systems map
+				// this does not include the members of the map itself
+				"linux"		"16"
+				"windows"	"16"
+				"linux64"	"32"
+				"windows64"	"32"
+			}
 		}
 	}
 }

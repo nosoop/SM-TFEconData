@@ -23,13 +23,22 @@ public Plugin myinfo = {
 	url = "https://github.com/nosoop/SM-TFEconData"
 }
 
+Address offs_CUtlMap_m_Tree_m_Elements_m_pMemory, // 4/8 (0x04/0x08)
+			offs_CUtlMap_m_Tree_m_Elements_m_pMemory_m_Data_elem_u16, // 12/16 (0x0C/0x10), IndexType_t == unsigned short
+			offs_CUtlMap_m_Tree_m_Elements_m_pMemory_m_Data_elem_i32, // 20/24 (0x14/0x18), IndexType_t == int
+		offs_CUtlMap_m_Tree_m_Elements_m_nAllocationCount, // 8/16 (0x08/0x10)
+		offs_CUtlMap_m_Tree_m_Root, // 16/24 (0x10/0x18)
+		offs_CUtlMap_m_Tree_m_NumElements_u16; // 18/26 (0x12/0x1A), IndexType_t == unsigned short
+
+Address offs_CUtlVector_m_size;
+
 Address offs_CEconItemSchema_ItemQualities,
 		offs_CEconItemSchema_ItemList,
 		offs_CEconItemSchema_nItemCount,
-		offs_CEconItemSchema_AttributeMap;
-
-#define ATTRDEF_MAP_OFFSET (view_as<Address>(0x14))
-Address sizeof_CEconItemAttributeDefinition;
+		offs_CEconItemSchema_AttributeMap,
+		sizeof_m_pMemory_CEconItemAttributeDefinition,
+		offs_CEconItemSchema_m_mapItems_m_pMemory_m_iNextNode, // 8/16 (0x08/0x10) CUtlHashMapLarge<int, CEconItemDefinition*> CUtlMemory<Node_t> m_memNodes.m_iNextNode
+		sizeof_ItemDefinitionMap_t_Node_t; // 12/24 (0x0C/0x18) {int m_key, CEconItemDefinition* m_elem, int m_iNextNode}
 
 #include "tf_econ_data/attached_particle_systems.sp"
 #include "tf_econ_data/loadout_slot.sp"
@@ -140,7 +149,7 @@ public APLRes AskPluginLoad2(Handle self, bool late, char[] error, int maxlen) {
 }
 
 public void OnPluginStart() {
-	Handle hGameConf = LoadGameConfigFile("tf2.econ_data");
+	GameData hGameConf = new GameData("tf2.econ_data");
 	if (!hGameConf) {
 		SetFailState("Failed to load gamedata (tf2.econ_data).");
 	}
@@ -210,6 +219,15 @@ public void OnPluginStart() {
 	PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);		//Returns uint32
 	g_SDKCallGetProtoDefIndex = EndPrepSDKCall();
 
+	offs_CUtlMap_m_Tree_m_Elements_m_pMemory = PointerSize;
+		offs_CUtlMap_m_Tree_m_Elements_m_pMemory_m_Data_elem_u16 = view_as<Address>(0x08) + PointerSize; // m_pMemory.m_Data.key + PointerSize
+		offs_CUtlMap_m_Tree_m_Elements_m_pMemory_m_Data_elem_i32 = view_as<Address>(0x10) + PointerSize; // m_pMemory.m_Data.key + PointerSize
+	offs_CUtlMap_m_Tree_m_Elements_m_nAllocationCount = PointerSize * view_as<Address>(2);
+	offs_CUtlMap_m_Tree_m_Root = offs_CUtlMap_m_Tree_m_Elements_m_nAllocationCount + view_as<Address>(0x04 + 0x04);
+	offs_CUtlMap_m_Tree_m_NumElements_u16 = offs_CUtlMap_m_Tree_m_Root + view_as<Address>(0x02);
+
+	offs_CUtlVector_m_size = PointerSize + view_as<Address>(0x04 + 0x04);
+
 	offs_CEconItemDefinition_pKeyValues =
 			GameConfGetAddressOffset(hGameConf, "CEconItemDefinition::m_pKeyValues");
 	offs_CEconItemDefinition_u8MinLevel =
@@ -255,6 +273,10 @@ public void OnPluginStart() {
 			GameConfGetAddressOffset(hGameConf, "CEconItemSchema::m_AttributeMap");
 	offs_CEconItemSchema_EquipRegions =
 			GameConfGetAddressOffset(hGameConf, "CEconItemSchema::m_EquipRegions");
+	offs_CEconItemSchema_EquipRegion_iGroup = PointerSize;
+	offs_CEconItemSchema_EquipRegion_bitsRegionMask = offs_CEconItemSchema_EquipRegion_iGroup + view_as<Address>(0x04);
+	sizeof_EquipRegion = offs_CEconItemSchema_EquipRegion_bitsRegionMask + view_as<Address>(0x04);
+
 	offs_CEconItemSchema_ParticleSystemTree =
 			GameConfGetAddressOffset(hGameConf, "CEconItemSchema::m_mapAttributeControlledParticleSystems");
 	
@@ -304,10 +326,25 @@ public void OnPluginStart() {
 	offs_CProtoBufScriptObjectDefinitionManager_PaintList =
 			GameConfGetAddressOffset(hGameConf,
 			"CProtoBufScriptObjectDefinitionManager::m_PaintList");
+	sizeof_m_pMemory_DefinitionMap_t = offs_CUtlMap_m_Tree_m_Elements_m_pMemory_m_Data_elem_u16 + PointerSize;
 	
 	sizeof_static_attrib_t = GameConfGetAddressOffset(hGameConf, "sizeof(static_attrib_t)");
-	sizeof_CEconItemAttributeDefinition = GameConfGetAddressOffset(hGameConf,
-			"sizeof(CEconItemAttributeDefinition)");
+	sizeof_m_pMemory_CEconItemAttributeDefinition = offs_CUtlMap_m_Tree_m_Elements_m_pMemory_m_Data_elem_i32
+		+ GameConfGetAddressOffset(hGameConf, "sizeof(CEconItemAttributeDefinition)");
+
+	sizeof_m_pMemory_attachedparticlesystem_t = offs_CUtlMap_m_Tree_m_Elements_m_pMemory_m_Data_elem_u16
+		+ GameConfGetAddressOffset(hGameConf, "sizeof(attachedparticlesystem_t)");
+	
+	sizeof_m_pMemory_CEconItemRarityDefinition = offs_CUtlMap_m_Tree_m_Elements_m_pMemory_m_Data_elem_i32
+		+ GameConfGetAddressOffset(hGameConf, "sizeof(CEconItemRarityDefinition)");
+	sizeof_m_pMemory_CEconItemQualityDefinition = offs_CUtlMap_m_Tree_m_Elements_m_pMemory_m_Data_elem_i32
+		+ GameConfGetAddressOffset(hGameConf, "sizeof(CEconItemQualityDefinition)");
+
+	offs_MapDef_t_m_nDefIndex = PointerSize * view_as<Address>(3); // + sizeof(CSchemaItemDefHandle)
+
+	sizeof_ItemDefinitionMap_t_Node_t = PointerSize * view_as<Address>(3); // {int, pointer, int}, aligned to PointerSize
+	offs_CEconItemSchema_m_mapItems_m_pMemory_m_iNextNode =  sizeof_ItemDefinitionMap_t_Node_t - PointerSize;
+	
 	
 	delete hGameConf;
 	
@@ -345,12 +382,12 @@ int Native_GetItemList(Handle hPlugin, int nParams) {
 	int nItemDefs = LoadFromAddress(pSchema + offs_CEconItemSchema_nItemCount,
 			NumberType_Int32);
 	for (int i = 0; i < nItemDefs; i++) {
-		Address entry = DereferencePointer(pSchema + offs_CEconItemSchema_ItemList)
-				+ view_as<Address>(i * 0x0C);
+		Address entry = LoadAddressFromAddress(pSchema + offs_CEconItemSchema_ItemList) // m_ItemList.m_memNodes.m_pMemory
+				+ view_as<Address>(i) * sizeof_ItemDefinitionMap_t_Node_t;
 		
 		// I have no idea how this check works but it's also in
 		// CEconItemSchema::GetItemDefinitionByName
-		if (LoadFromAddress(entry + view_as<Address>(0x08), NumberType_Int32) < -1) {
+		if (LoadFromAddress(entry + offs_CEconItemSchema_m_mapItems_m_pMemory_m_iNextNode, NumberType_Int32) < -1) {
 			continue;
 		}
 		
@@ -388,13 +425,14 @@ int Native_GetAttributeList(Handle hPlugin, int nParams) {
 	
 	// this implements FOR_EACH_MAP_FAST
 	int nAttributeCapacity = LoadFromAddress(
-			pSchema + offs_CEconItemSchema_AttributeMap + view_as<Address>(0x4),
-			NumberType_Int32);
+			pSchema + offs_CEconItemSchema_AttributeMap + PointerSize, // m_mapAttributes.m_Tree.m_Elements.m_pMemory + 4/8
+			NumberType_Int32); // m_mapAttributes.m_Tree.m_Elements.m_nAllocationCount
 	
-	Address pAttributeData = DereferencePointer(pSchema + offs_CEconItemSchema_AttributeMap);
+	// CUtlMap<int, CEconItemAttributeDefinition, int >	m_mapAttributes;
+	Address pAttributeData = LoadAddressFromAddress(pSchema + offs_CEconItemSchema_AttributeMap); // m_mapAttributes.m_Tree.m_Elements.m_pMemory
 	for (int i; i < nAttributeCapacity; i++) {
 		Address pAttributeDataItem = pAttributeData
-				+ view_as<Address>(i) * (sizeof_CEconItemAttributeDefinition + ATTRDEF_MAP_OFFSET);
+				+ view_as<Address>(i) * sizeof_m_pMemory_CEconItemAttributeDefinition;
 		
 		// the struct has 0x14 bytes (ATTRDEF_MAP_OFFSET) preceding the definition
 		// some internal map data
@@ -403,7 +441,8 @@ int Native_GetAttributeList(Handle hPlugin, int nParams) {
 			continue;
 		}
 		
-		Address pAttributeDefinition = pAttributeDataItem + ATTRDEF_MAP_OFFSET;
+		Address pAttributeDefinition = pAttributeDataItem
+				+ offs_CUtlMap_m_Tree_m_Elements_m_pMemory_m_Data_elem_i32;
 		int attrdef = LoadFromAddress(
 				pAttributeDefinition + offs_CEconItemAttributeDefinition_iAttributeDefinitionIndex,
 				NumberType_Int16);
@@ -523,8 +562,8 @@ static bool TranslateWeaponEntForClass(char[] buffer, int maxlen, int playerClas
 	return SDKCall(g_SDKCallTranslateWeaponEntForClass, buffer, maxlen, buffer, playerClass) > 0;
 }
 
-static Address GameConfGetAddressOffset(Handle gamedata, const char[] key) {
-	Address offs = view_as<Address>(GameConfGetOffset(gamedata, key));
+static Address GameConfGetAddressOffset(GameData gamedata, const char[] key) {
+	Address offs = view_as<Address>(gamedata.GetOffset(key));
 	if (offs == view_as<Address>(-1)) {
 		SetFailState("Failed to get member offset %s", key);
 	}
