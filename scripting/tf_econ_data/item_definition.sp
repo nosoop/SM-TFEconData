@@ -17,7 +17,10 @@ Address offs_CEconItemDefinition_pKeyValues,
 Address offs_CEconItemDefinition_aiItemSlot,
 		offs_CTFItemDefinition_iDefaultItemSlot;
 
+Address offs_CEconItemAttributeDefinition_m_pAttrType;
 Address sizeof_static_attrib_t;
+
+IntMap g_imapAttrIsNetworked;
 
 // in CEconItemDefinition, defindex is at 0x08 (we never use this information though)
 
@@ -233,13 +236,26 @@ int Native_GetItemStaticAttributes(Handle hPlugin, int nParams) {
 	
 	// struct { attribute_defindex, value } // (TF2)
 	ArrayList attributeList = new ArrayList(2, nAttribs);
+
+	bool bNetworked;
+
 	for (int i; i < nAttribs; i++) {
 		Address pStaticAttrib = pAttribList
 				+ view_as<Address>(i * view_as<int>(sizeof_static_attrib_t));
 		
 		int attrIndex = LoadFromAddress(pStaticAttrib, NumberType_Int16);
-		any attrValue = LoadFromAddress(pStaticAttrib + PointerSize,
-				NumberType_Int32);
+
+		if (!g_imapAttrIsNetworked.GetValue(attrIndex, bNetworked)) {
+			Address pDefType =	LoadAddressFromAddress(GetEconAttributeDefinition(attrIndex)
+					+ offs_CEconItemAttributeDefinition_m_pAttrType);
+
+			bNetworked = IsNetworkedRuntimeAttribute(pDefType);
+			g_imapAttrIsNetworked.SetValue(attrIndex, bNetworked);
+		}
+
+		any attrValue = bNetworked // union attribute_data_union_t {float asFloat; uint32 asUint32; byte *asBlobPointer;}
+				? LoadFromAddress(pStaticAttrib + PointerSize, NumberType_Int32)
+				: LoadAddressFromAddress(pStaticAttrib + PointerSize);
 		
 		attributeList.Set(i, attrIndex, 0);
 		attributeList.Set(i, attrValue, 1);

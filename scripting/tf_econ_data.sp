@@ -83,6 +83,7 @@ Handle g_SDKCallGetEconItemSchema;
 Handle g_SDKCallSchemaGetItemDefinition;
 Handle g_SDKCallSchemaGetAttributeDefinition;
 Handle g_SDKCallSchemaGetAttributeDefinitionByName;
+Handle g_SDKCallAttributeTypeCanBeNetworked;
 Handle g_SDKCallTranslateWeaponEntForClass;
 Handle g_SDKCallGetProtoDefManager;
 Handle g_SDKCallGetProtoDefIndex;
@@ -205,6 +206,12 @@ public void OnPluginStart() {
 	PrepSDKCall_SetReturnInfo(SDKType_VirtualAddress, SDKPass_Plain);	//Returns address of a CEconItemAttributeDefinition
 	PrepSDKCall_AddParameter(SDKType_String, SDKPass_Pointer);			//const char *pszDefName
 	g_SDKCallSchemaGetAttributeDefinitionByName = EndPrepSDKCall();
+
+	StartPrepSDKCall(SDKCall_VirtualAddress); // attr_type
+	PrepSDKCall_SetFromConf(hGameConf, SDKConf_Virtual,
+			"ISchemaAttributeTypeBase::BSupportsGame..."); // 64 chars ought to be enough for anyone -- dvander, probably
+	PrepSDKCall_SetReturnInfo(SDKType_Bool, SDKPass_Plain);
+	g_SDKCallAttributeTypeCanBeNetworked = EndPrepSDKCall();
 	
 	StartPrepSDKCall(SDKCall_VirtualAddress);
 	PrepSDKCall_SetFromConf(hGameConf, SDKConf_Signature,
@@ -284,6 +291,8 @@ public void OnPluginStart() {
 			GameConfGetAddressOffset(hGameConf, "CTFItemDefinition::m_iDefaultItemSlot");
 	offs_CEconItemDefinition_aiItemSlot =
 			GameConfGetAddressOffset(hGameConf, "CTFItemDefinition::m_aiItemSlot");
+	offs_CEconItemAttributeDefinition_m_pAttrType =
+			GameConfGetAddressOffset(hGameConf, "CEconItemAttributeDefinition::m_pAttrType");
 	
 	offs_CEconItemSchema_ItemRarities =
 			GameConfGetAddressOffset(hGameConf, "CEconItemSchema::m_ItemRarities");
@@ -373,6 +382,8 @@ public void OnPluginStart() {
 	
 	
 	delete hGameConf;
+
+	g_imapAttrIsNetworked = new IntMap();
 	
 	CreateConVar("tfecondata_version", PLUGIN_VERSION,
 			"Version for TF2 Econ Data, to gauge popularity.", FCVAR_NOTIFY);
@@ -586,6 +597,16 @@ int GetProtoDefIndex(Address pProtoDefinition) {
 
 static bool TranslateWeaponEntForClass(char[] buffer, int maxlen, int playerClass) {
 	return SDKCall(g_SDKCallTranslateWeaponEntForClass, buffer, maxlen, buffer, playerClass) > 0;
+}
+
+/**
+ * Returns true if the given attribute type can (normally) be networked.
+ * We make the assumption that non-networked attributes have to be heap / inline allocated.
+ * This should correlate with an attribute's "attribute_type" value listed in items_game.txt.
+ * If the "attribute_type" key is missing or has value "float"(never used), then it is networked.
+ */
+bool IsNetworkedRuntimeAttribute(Address pDefType) {
+	return SDKCall(g_SDKCallAttributeTypeCanBeNetworked, pDefType);
 }
 
 static Address GameConfGetAddressOffset(GameData gamedata, const char[] key) {

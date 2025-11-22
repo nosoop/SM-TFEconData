@@ -108,6 +108,15 @@
 
 		"Offsets"
 		{
+			"ISchemaAttributeTypeBase::BSupportsGame..."
+			{
+				// taken straight from tf2attributes
+				// "ISchemaAttributeTypeBase::BSupportsGameplayModificationAndNetworking()"
+				"windows"	"10"
+				"windows64"	"10"
+				"linux"		"11"
+				"linux64"	"11"
+			}
 			"CEconItemDefinition::m_pKeyValues"
 			{
 				// in CEconItemDefinition::GetDefinitionString()
@@ -245,6 +254,13 @@
 				"windows"	"4"
 				"linux64"	"8"
 				"windows64"	"8"
+			}
+			"CEconItemAttributeDefinition::m_pAttrType"
+			{
+				"linux"		"8"
+				"windows"	"8"
+				"linux64"	"16"
+				"windows64"	"16"
 			}
 			"CEconItemAttributeDefinition::m_bHidden"
 			{
