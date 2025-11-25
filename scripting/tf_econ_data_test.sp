@@ -13,7 +13,7 @@ public Plugin myinfo =
 	url			= ""
 }
 
-#define LOG_PREFIX "[TF2Attributes Test] "
+#define LOG_PREFIX "[TFEconData Test] "
 #define LOG_PREFIX_START LOG_PREFIX ... "Starting: "
 #define LOG_PREFIX_PASS LOG_PREFIX ... "Passed: "
 #define LOG_PREFIX_FAIL LOG_PREFIX ... "***FAILED*** "
@@ -243,7 +243,7 @@ enum struct TestItem
 
 		if (!TF2Econ_GetItemName(this.iDefIndex, sName, sizeof(sName)))
 		{
-			LogTest(client, LogType_Failed, "TF2Econ_GetItemName(%d) returned false.", sTest, this.iDefIndex);
+			LogTest(client, LogType_Failed, "TF2Econ_GetItemName(%d) returned false.", this.iDefIndex);
 			return;
 		}
 
@@ -263,7 +263,7 @@ enum struct TestItem
 
 		if (!TF2Econ_GetLocalizedItemName(this.iDefIndex, sItemName, sizeof(sItemName)))
 		{
-			LogTest(client, LogType_Failed, "TF2Econ_GetLocalizedItemName(%d) returned false.", sTest, this.iDefIndex);
+			LogTest(client, LogType_Failed, "TF2Econ_GetLocalizedItemName(%d) returned false.", this.iDefIndex);
 			return;
 		}
 
@@ -283,7 +283,7 @@ enum struct TestItem
 
 		if (!TF2Econ_GetItemClassName(this.iDefIndex, sItemClass, sizeof(sItemClass)))
 		{
-			LogTest(client, LogType_Failed, "TF2Econ_GetItemClassName(%d) returned false.", sTest, this.iDefIndex);
+			LogTest(client, LogType_Failed, "TF2Econ_GetItemClassName(%d) returned false.", this.iDefIndex);
 			return;
 		}
 
@@ -370,7 +370,7 @@ enum struct TestItem
 
 		if (!TF2Econ_GetItemLevelRange(this.iDefIndex, iMinLevel, iMaxLevel))
 		{
-			LogTest(client, LogType_Failed, "TF2Econ_GetItemLevelRange(%d) returned false.", sTest, this.iDefIndex);
+			LogTest(client, LogType_Failed, "TF2Econ_GetItemLevelRange(%d) returned false.", this.iDefIndex);
 			return;
 		}
 
@@ -437,7 +437,7 @@ enum struct TestItem
 
 		if (!attrs)
 		{
-			LogTest(client, LogType_Failed, "TF2Econ_GetItemStaticAttributes(%d) returned null.", sTest, this.iDefIndex);
+			LogTest(client, LogType_Failed, "TF2Econ_GetItemStaticAttributes(%d) returned null.", this.iDefIndex);
 			delete attrs;
 
 			return;
@@ -447,7 +447,7 @@ enum struct TestItem
 
 		if (!iNumAttr)
 		{
-			LogTest(client, LogType_Failed, "TF2Econ_GetItemStaticAttributes(%d) returned empty list.", sTest, this.iDefIndex);
+			LogTest(client, LogType_Failed, "TF2Econ_GetItemStaticAttributes(%d) returned empty list.", this.iDefIndex);
 			return;
 		}
 
