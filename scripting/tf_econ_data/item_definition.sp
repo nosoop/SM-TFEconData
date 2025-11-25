@@ -236,7 +236,6 @@ int Native_GetItemStaticAttributes(Handle hPlugin, int nParams) {
 	
 	// struct { attribute_defindex, value } // (TF2)
 	ArrayList attributeList = new ArrayList(2, nAttribs);
-
 	bool bNetworked;
 
 	for (int i; i < nAttribs; i++) {
