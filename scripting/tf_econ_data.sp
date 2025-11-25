@@ -231,7 +231,7 @@ public void OnPluginStart() {
 	PrepSDKCall_SetFromConf(hGameConf, SDKConf_Signature, "KeyValues::GetString()");
 	PrepSDKCall_SetReturnInfo(SDKType_String, SDKPass_Pointer);
 	PrepSDKCall_AddParameter(SDKType_String, SDKPass_Pointer);			//const char *keyName
-	PrepSDKCall_AddParameter(SDKType_VirtualAddress, SDKPass_Plain);	//const char *defaultValue
+	PrepSDKCall_AddParameter(SDKType_String, SDKPass_Pointer);			//const char *defaultValue
 	g_SDKCallGetKeyValuesString = EndPrepSDKCall();
 	
 	StartPrepSDKCall(SDKCall_VirtualAddress);
