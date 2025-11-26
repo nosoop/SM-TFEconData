@@ -438,8 +438,6 @@ enum struct TestItem
 		if (!attrs)
 		{
 			LogTest(client, LogType_Failed, "TF2Econ_GetItemStaticAttributes(%d) returned null.", this.iDefIndex);
-			delete attrs;
-
 			return;
 		}
 
@@ -448,6 +446,8 @@ enum struct TestItem
 		if (!iNumAttr)
 		{
 			LogTest(client, LogType_Failed, "TF2Econ_GetItemStaticAttributes(%d) returned empty list.", this.iDefIndex);
+
+			delete attrs;
 			return;
 		}
 
@@ -707,7 +707,7 @@ void Test_TF2Econ_GetAttributeDefinitionString(int client)
 
 	char sExpectedValue[] = "1";
 	char sDefault[] = " Yip!";
-	char sValue[sizeof(sExpectedValue) + 8];
+	char sValue[64];
 
 	if (!TF2Econ_GetAttributeDefinitionString(g_iTestAttribDefIndexInt, "Invalid Key Test", sValue, sizeof(sValue), sDefault))
 	{
@@ -770,7 +770,7 @@ void Test_TF2Econ_GetAttributeList(int client)
 
 	LogTest(client, LogType_Info, "TF2Econ_GetAttributeList returned %d attributes.", iNumAttr);
 
-	if (!attrs.FindValue(g_iTestAttribDefIndexInt))
+	if (attrs.FindValue(g_iTestAttribDefIndexInt) == -1)
 	{
 		LogTest(client, LogType_Failed, "TF2Econ_GetAttributeList did not contain expected attribute def index %d.",
 			g_iTestAttribDefIndexInt);
@@ -809,14 +809,15 @@ void Test_TF2Econ_TranslateQualityNameToValue(int client)
 	char sTest[] = "TF2Econ_TranslateQualityNameToValue";
 	LogTest(client, LogType_Start, sTest);
 
+	char sQualityName[] = "unique";
 	int iExpectedValue = TF2ItemQuality_Unique;
-	int iValue = TF2Econ_TranslateQualityNameToValue("unique");
+	int iValue = TF2Econ_TranslateQualityNameToValue(sQualityName);
 
 	if (iValue == iExpectedValue)
 		LogTest(client, LogType_Passed, sTest);
 	else
-		LogTest(client, LogType_Failed, "TF2Econ_TranslateQualityNameToValue('unique') returned %d, expected %d.",
-			iValue, iExpectedValue);
+		LogTest(client, LogType_Failed, "TF2Econ_TranslateQualityNameToValue('%s') returned %d, expected %d.",
+			sQualityName, iValue, iExpectedValue);
 }
 
 void Test_TF2Econ_GetQualityList(int client)
@@ -844,7 +845,7 @@ void Test_TF2Econ_GetQualityList(int client)
 
 	LogTest(client, LogType_Info, "TF2Econ_GetQualityList returned %d qualities.", iNumQualities);
 
-	if (!qualities.FindValue(TF2ItemQuality_Unique))
+	if (qualities.FindValue(TF2ItemQuality_Unique) == -1)
 	{
 		LogTest(client, LogType_Failed, "TF2Econ_GetQualityList did not contain expected quality %d.",
 			TF2ItemQuality_Unique);
@@ -863,7 +864,7 @@ void Test_TF2Econ_GetRarityName(int client)
 	LogTest(client, LogType_Start, sTest);
 
 	char sExpectedName[] = "uncommon";
-	char sName[sizeof(sExpectedName)];
+	char sName[64];
 
 	if (!TF2Econ_GetRarityName(TF2ItemRarity_Uncommon, sName, sizeof(sName)))
 	{
@@ -883,14 +884,15 @@ void Test_TF2Econ_TranslateRarityNameToValue(int client)
 	char sTest[] = "TF2Econ_TranslateRarityNameToValue";
 	LogTest(client, LogType_Start, sTest);
 
+	char sRarityName[] = "uncommon";
 	int iExpectedValue = TF2ItemRarity_Uncommon;
-	int iValue = TF2Econ_TranslateRarityNameToValue("uncommon");
+	int iValue = TF2Econ_TranslateRarityNameToValue(sRarityName);
 
 	if (iValue == iExpectedValue)
 		LogTest(client, LogType_Passed, sTest);
 	else
-		LogTest(client, LogType_Failed, "TF2Econ_TranslateRarityNameToValue('uncommon') returned %d, expected %d.",
-			iValue, iExpectedValue);
+		LogTest(client, LogType_Failed, "TF2Econ_TranslateRarityNameToValue('%s') returned %d, expected %d.",
+			sRarityName, iValue, iExpectedValue);
 }
 
 void Test_TF2Econ_GetRarityList(int client)
@@ -918,7 +920,7 @@ void Test_TF2Econ_GetRarityList(int client)
 
 	LogTest(client, LogType_Info, "TF2Econ_GetRarityList returned %d rarities.", iNumRarities);
 
-	if (!rarities.FindValue(TF2ItemRarity_Uncommon))
+	if (rarities.FindValue(TF2ItemRarity_Uncommon) == -1)
 	{
 		LogTest(client, LogType_Failed, "TF2Econ_GetRarityList did not contain expected rarity %d.",
 			TF2ItemRarity_Uncommon);
@@ -976,6 +978,7 @@ void Test_TF2Econ_GetEquipRegionMask(int client)
 	LogTest(client, LogType_Start, sTest);
 
 	char sRegion[] = "right_shoulder";
+	TF2EquipRegion iExpectedMask = TF2EquipRegion_RightShoulder;
 	TF2EquipRegion iMask;
 
 	if (!TF2Econ_GetEquipRegionMask(sRegion, iMask))
@@ -984,11 +987,11 @@ void Test_TF2Econ_GetEquipRegionMask(int client)
 		return;
 	}
 
-	if (iMask == TF2EquipRegion_RightShoulder)
+	if (iMask == iExpectedMask)
 		LogTest(client, LogType_Passed, sTest);
 	else
 		LogTest(client, LogType_Failed, "TF2Econ_GetEquipRegionMask('%s') returned %d, expected %d.",
-			sRegion, iMask, TF2EquipRegion_RightShoulder);
+			sRegion, iMask, iExpectedMask);
 }
 
 void Test_TF2Econ_GetParticleAttributeList(int client)
