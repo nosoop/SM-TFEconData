@@ -63,7 +63,7 @@
 				"windows"	"\x55\x8B\xEC\x53\x8B\x5D\x08\x56\x57\x85\xDB\x74\x2A\x33\xFF"
 				"windows64"	"\x48\x89\x5C\x24\x2A\x48\x89\x6C\x24\x2A\x48\x89\x74\x24\x2A\x48\x89\x7C\x24\x2A\x41\x56\x48\x83\xEC\x2A\x48\x63\xEA"
 			}
-
+			
 			"KeyValues::GetString()"
 			{
 				// contains semi-unique x-ref "%lld" (in the windows version there's two refs to it in the function)
@@ -82,7 +82,7 @@
 				"windows"	"\x55\x8B\xEC\x81\xEC\x04\x01\x00\x00\x56\x8B\x75\x08\x57\x8B\xF9"
 				"windows64"	"\x48\x8B\xC4\x53\x57\x41\x56"
 			}
-
+			
 			"GetProtoScriptObjDefManager()"
 			{
 				// start from CQuestDefinition::BPostDataLoaded() with xref "Invalid loaner item name %s in %d: %s"
@@ -105,7 +105,7 @@
 				"windows64"	"\x48\x83\xEC\x2A\xE8\x2A\x2A\x2A\x2A\x8B\x40"
 			}
 		}
-
+		
 		"Offsets"
 		{
 			"ISchemaAttributeTypeBase::BSupportsGame..."
@@ -213,7 +213,7 @@
 				"linux64"	"528"
 				"windows64"	"528"
 			}
-
+			
 			"CTFItemDefinition::m_iDefaultItemSlot" // CTFItemDefinition::m_iDefaultLoadoutSlot
 			{
 				"linux"		"400"
@@ -231,7 +231,7 @@
 				"linux64"	"884"
 				"windows64"	"884"
 			}
-
+			
 			// DEPRECATED: this is present as a transitional period for backwards compatibility.
 			// this will be removed at some point
 			"CEconItemDefinition::m_aiItemSlot" // CEconItemDefinition::m_iLoadoutSlots[LOADOUT_COUNT]
@@ -239,7 +239,7 @@
 				"linux"		"512"
 				"windows"	"512"
 			}
-
+			
 			"CEconItemAttributeDefinition::m_pKeyValues" // CEconItemAttributeDefinition::m_pKVAttribute
 			{
 				// set in CEconItemAttributeDefinition::BInitFromKV() after KeyValues::MakeCopy()
@@ -290,7 +290,7 @@
 				"linux64"	"80"
 				"windows64"	"80"
 			}
-
+			
 			"CEconItemQualityDefinition::m_iValue" // CEconItemQualityDefinition::m_nValue
 			{
 				// refer to CEconItemQualityDefinition::BInitFromKV()
@@ -306,7 +306,7 @@
 				"linux64"	"8"
 				"windows64"	"8"
 			}
-
+			
 			"CEconItemRarityDefinition::m_iValue" // CEconItemRarityDefinition::m_nValue
 			{
 				// refer to CEconItemRarityDefinition::BInitFromKV()
@@ -322,7 +322,7 @@
 				"linux64"	"8"
 				"windows64"	"8"
 			}
-
+			
 			"CEconItemSchema::m_ItemRarities" // CEconItemSchema::m_mapRarities
 			{
 				// offset into `ebx` in CEconItemSchema::GetRarityDefinition() on linux
@@ -426,7 +426,7 @@
 				"linux64"	"1288"
 				"windows64"	"1288"
 			}
-
+			
 			"CTFItemSchema::m_ItemSlotNames" // CTFItemSchema::m_vecClassLoadoutStrings
 			{
 				// used in CTFItemDefinition::BInitFromKV() in the same block that "head" and "misc" are referenced
@@ -436,7 +436,7 @@
 				"linux64"	"1968"
 				"windows64"	"1968"
 			}
-
+			
 			// attachedparticlesystem_t is initialized in CEconItemSchema::BInitAttributeControlledParticleSystems()
 			"attachedparticlesystem_t::m_pszParticleSystem" // attachedparticlesystem_t::nSystemID
 			{
@@ -452,7 +452,7 @@
 				"linux64"	"32"
 				"windows64"	"32"
 			}
-
+			
 			"CProtoBufScriptObjectDefinitionManager::m_PaintList" // CProtoBufScriptObjectDefinitionManager::m_arDefinitionsMaps[DEF_TYPE_PAINTKIT_DEFINITION].m_Tree.m_Elements.m_pMemory
 			{
 				// some sort of struct of size 0x10 with a CPaintKitDefinition* at 0x0C
@@ -463,7 +463,7 @@
 				"linux64"	"392"
 				"windows64"	"392"
 			}
-
+			
 			"sizeof(static_attrib_t)"
 			{
 				// used for iterating over the attribute list
