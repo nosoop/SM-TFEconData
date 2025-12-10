@@ -18,7 +18,7 @@ jobs:
     - name: Setup SourcePawn Compiler
       uses: rumblefrog/setup-sp@v1.2.1
       with:
-        version: "1.10.x"
+        version: "1.13.x"
         no-spcomp-proxy: true
 
     - name: Setup Ninja Build
