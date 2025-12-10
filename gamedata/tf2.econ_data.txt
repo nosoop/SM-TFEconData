@@ -110,8 +110,9 @@
 		{
 			"ISchemaAttributeTypeBase::BSupportsGame..."
 			{
+				// ISchemaAttributeTypeBase::BSupportsGameplayModificationAndNetworking()
 				// taken straight from tf2attributes
-				// "ISchemaAttributeTypeBase::BSupportsGameplayModificationAndNetworking()"
+				// (older versions of SourceMod had a limit on section length)
 				"windows"	"10"
 				"windows64"	"10"
 				"linux"		"11"
