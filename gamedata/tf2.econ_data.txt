@@ -236,7 +236,7 @@
 			}
 			"CTFItemDefinition::m_aiItemSlot"
 			{
-				// CTFItemDefinition::m_iLoadoutSlots[LOADOUT_COUNT]
+				// CTFItemDefinition::m_iLoadoutSlots[]
 				// array mapping class indices to item slots (-1 if not valid for class)
 				// x-ref "used_by_classes" in CTFItemDefinition::BInitFromKV()
 				// offset in second-to-last block before loop
@@ -250,7 +250,7 @@
 			// this will be removed at some point
 			"CEconItemDefinition::m_aiItemSlot"
 			{
-				// CEconItemDefinition::m_iLoadoutSlots[LOADOUT_COUNT]
+				// CEconItemDefinition::m_iLoadoutSlots[]
 				"linux"		"512"
 				"windows"	"512"
 			}
@@ -495,7 +495,7 @@
 			
 			"CProtoBufScriptObjectDefinitionManager::m_PaintList"
 			{
-				// CProtoBufScriptObjectDefinitionManager::m_arDefinitionsMaps[DEF_TYPE_PAINTKIT_DEFINITION].m_Tree.m_Elements.m_pMemory
+				// CProtoBufScriptObjectDefinitionManager::m_arDefinitionsMaps[].m_Tree.m_Elements.m_pMemory
 				// some sort of struct of size 0x10 with a CPaintKitDefinition* at 0x0C
 				// offset in block before CPaintKitDefinition::CanApplyToItem() call in CTFItemDefinition::GetValidPaintkits()
 				// m_arDefinitionsMaps[9].m_Tree.m_Elements.m_pMemory
