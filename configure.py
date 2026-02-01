@@ -27,7 +27,7 @@ include_dirs = [
 ]
 
 # required version of spcomp (presumably pinned to SM version)
-spcomp_min_version = (1, 9)
+spcomp_min_version = (1, 13)
 
 ########################
 # build.ninja script generation below.
