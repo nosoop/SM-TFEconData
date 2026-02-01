@@ -135,9 +135,9 @@ static Address GetEconQualityDefinitionFromMemoryIndex(int index) {
 	 * This array access can be checked against the call made to
 	 * CEconItemQualityDefinition::BInitFromKV() within CEconItemSchema::BInitQualities().
 	 */
-	return LoadAddressFromAddress(GetEconQualityDefinitionTree() + offs_CUtlMap_m_Tree_m_Elements_m_pMemory)
+	return LoadAddressFromAddress(GetEconQualityDefinitionTree() + offs_CUtlMap_pMemory)
 			+ view_as<Address>((index)) * sizeof_m_pMemory_CEconItemQualityDefinition
-			+ offs_CUtlMap_m_Tree_m_Elements_m_pMemory_m_Data_elem_i32; // m_Data_elem + 0 CEconItemQualityDefinition::m_nValue
+			+ offs_CUtlMap_Data_elem_i32; // m_Data_elem + 0 CEconItemQualityDefinition::m_nValue
 }
 
 /**
@@ -146,7 +146,7 @@ static Address GetEconQualityDefinitionFromMemoryIndex(int index) {
 static int GetEconQualityDefinitionCount() {
 	Address pItemQualityTree = GetEconQualityDefinitionTree();
 	return pItemQualityTree?
-			LoadFromAddress(pItemQualityTree + offs_CUtlMap_m_Tree_m_Elements_m_nAllocationCount, NumberType_Int32) :
+			LoadFromAddress(pItemQualityTree + offs_CUtlMap_nAllocationCount, NumberType_Int32) :
 			0;
 }
 

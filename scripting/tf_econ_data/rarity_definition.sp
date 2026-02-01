@@ -116,9 +116,9 @@ static Address GetEconRarityDefinitionFromMemoryIndex(int index) {
 		return Address_Null;
 	}
 	
-	return LoadAddressFromAddress(GetEconRarityDefinitionTree() + offs_CUtlMap_m_Tree_m_Elements_m_pMemory)
+	return LoadAddressFromAddress(GetEconRarityDefinitionTree() + offs_CUtlMap_pMemory)
 			+ view_as<Address>(index) * sizeof_m_pMemory_CEconItemRarityDefinition
-			+ offs_CUtlMap_m_Tree_m_Elements_m_pMemory_m_Data_elem_i32;
+			+ offs_CUtlMap_Data_elem_i32;
 }
 
 /**

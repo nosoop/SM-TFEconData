@@ -55,12 +55,12 @@ static Address GetPaintKitArrayEntry(int index) {
 		return Address_Null;
 	}
 	
-	return LoadAddressFromAddress(pPaintKitEntry + offs_CUtlMap_m_Tree_m_Elements_m_pMemory_m_Data_elem_u16); // m_Data_elem + 0
+	return LoadAddressFromAddress(pPaintKitEntry + offs_CUtlMap_Data_elem_u16); // m_Data_elem + 0
 }
 
 static int GetNumPaintKitsAllocated() {
 	// offset after GetProtoScriptObjDefManager() in CTFItemDefinition::GetValidPaintkits()
 	return LoadFromAddress(GetProtoScriptObjDefManager()
 			+ offs_CProtoBufScriptObjectDefinitionManager_PaintList	// This is already at offs_CUtlMap_m_Tree_m_Elements_m_pMemory(+4/8)
-			+ (offs_CUtlMap_m_Tree_m_NumElements_u16 - offs_CUtlMap_m_Tree_m_Elements_m_pMemory), NumberType_Int16);
+			+ (offs_CUtlMap_NumElements_u16 - offs_CUtlMap_pMemory), NumberType_Int16);
 }

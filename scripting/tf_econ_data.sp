@@ -23,38 +23,12 @@ public Plugin myinfo = {
 	url = "https://github.com/nosoop/SM-TFEconData"
 }
 
-/*
-// CUtlMap<typename KeyType_t, typename ElemType_t, typename IndexType_t = unsigned short>
-// 32/64-bit
-// IndexType_t <typename unsigned short><typename int>
-
-	+0		(0x00)	  — m_Tree.m_LessFunc (type CKeyLess)
-	+4/8  (0x04/0x08) — m_Tree.m_Elements.m_pMemory (T* from CUtlMemory)
-		// UtlRBTreeLinks_t
-		+0  (0x00)		— m_pMemory.Links.m_Left — 2/4 bytes
-		+<2><4>			— m_pMemory.Links.m_Right — 2/4 bytes
-		+<4><8>			— m_pMemory.Links.m_Parent — 2/4 bytes
-		+<6><12>		— m_pMemory.Links.m_Tag — 2/4 bytes
-		// Node_t
-		+<8><16>	 	— m_pMemory.m_Data.key — 2/4 bytes // KeyType_t
-		+<12/16><20/24>	— m_pMemory.m_Data.elem — sizeof(ElemType_t), starts at <0x0C/0x10><0x14/0x18> // aligned to 4/8 bytes, so KeyType_t doesn't matter
-		sizeof(m_pMemory) = <12/16><20/24> + sizeof(ElemType_t) bytes // continuous blocks * m_nAllocationCount
-	+8/16  (0x08/0x10) — m_Tree.m_Elements.m_nAllocationCount (int) — 4 bytes
-	+12/20 (0x0C/0x14) — m_Tree.m_Elements.m_nGrowSize (int) — 4 bytes
-	+16/24 (0x10/0x18) — m_Tree.m_Root (IndexType_t) — 2/4 bytes
-	+<18/26><20/28>	   — m_Tree.m_NumElements (IndexType_t) — 2/4 bytes
-	+<20/30><24/32>	   — m_Tree.m_FirstFree (IndexType_t) — 2/4 bytes
-	+<22/34><28/36>	   — m_Tree.m_LastAlloc.index (IndexType_t) — 2/4 bytes
-	+<24/38><32/40>	   — m_Tree.m_pElements (Node_t*) — 4/8 bytes
-	sizeof(CUtlMap) = <28/40><36/48> bytes
-*/
-
-Address offs_CUtlMap_m_Tree_m_Elements_m_pMemory, // 4/8 (0x04/0x08)
-			offs_CUtlMap_m_Tree_m_Elements_m_pMemory_m_Data_elem_u16, // 12/16 (0x0C/0x10), IndexType_t == unsigned short
-			offs_CUtlMap_m_Tree_m_Elements_m_pMemory_m_Data_elem_i32, // 20/24 (0x14/0x18), IndexType_t == int
-		offs_CUtlMap_m_Tree_m_Elements_m_nAllocationCount, // 8/16 (0x08/0x10)
-		offs_CUtlMap_m_Tree_m_Root, // 16/24 (0x10/0x18)
-		offs_CUtlMap_m_Tree_m_NumElements_u16; // 18/26 (0x12/0x1A), IndexType_t == unsigned short
+Address offs_CUtlMap_pMemory, // 4/8 (0x04/0x08)
+		offs_CUtlMap_Data_elem_u16, // 12/16 (0x0C/0x10), IndexType_t == unsigned short
+		offs_CUtlMap_Data_elem_i32, // 20/24 (0x14/0x18), IndexType_t == int
+		offs_CUtlMap_nAllocationCount, // 8/16 (0x08/0x10)
+		offs_CUtlMap_Root, // 16/24 (0x10/0x18)
+		offs_CUtlMap_NumElements_u16; // 18/26 (0x12/0x1A), IndexType_t == unsigned short
 
 Address offs_CUtlVector_m_size;
 
@@ -63,7 +37,7 @@ Address offs_CEconItemSchema_ItemQualities,
 		offs_CEconItemSchema_nItemCount,
 		offs_CEconItemSchema_AttributeMap,
 		sizeof_m_pMemory_CEconItemAttributeDefinition,
-		offs_CEconItemSchema_m_mapItems_m_pMemory_m_iNextNode, // 8/16 (0x08/0x10) CUtlHashMapLarge<int, CEconItemDefinition*> CUtlMemory<Node_t> m_memNodes.m_iNextNode
+		offs_CEconItemSchema_iNextNode, // 8/16 (0x08/0x10) CUtlHashMapLarge<int, CEconItemDefinition*> CUtlMemory<Node_t> m_memNodes.m_iNextNode
 		sizeof_ItemDefinitionMap_t_Node_t; // 12/24 (0x0C/0x18) {int m_key, CEconItemDefinition* m_elem, int m_iNextNode}
 
 #include "tf_econ_data/attached_particle_systems.sp"
@@ -252,12 +226,12 @@ public void OnPluginStart() {
 	PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);		//Returns uint32
 	g_SDKCallGetProtoDefIndex = EndPrepSDKCall();
 
-	offs_CUtlMap_m_Tree_m_Elements_m_pMemory = PointerSize;
-		offs_CUtlMap_m_Tree_m_Elements_m_pMemory_m_Data_elem_u16 = view_as<Address>(0x08) + PointerSize; // m_pMemory.m_Data.key + PointerSize
-		offs_CUtlMap_m_Tree_m_Elements_m_pMemory_m_Data_elem_i32 = view_as<Address>(0x10) + PointerSize; // m_pMemory.m_Data.key + PointerSize
-	offs_CUtlMap_m_Tree_m_Elements_m_nAllocationCount = PointerSize * view_as<Address>(2);
-	offs_CUtlMap_m_Tree_m_Root = offs_CUtlMap_m_Tree_m_Elements_m_nAllocationCount + view_as<Address>(0x04 + 0x04);
-	offs_CUtlMap_m_Tree_m_NumElements_u16 = offs_CUtlMap_m_Tree_m_Root + view_as<Address>(0x02);
+	offs_CUtlMap_pMemory = PointerSize;
+	offs_CUtlMap_Data_elem_u16 = view_as<Address>(0x08) + PointerSize; // m_pMemory.m_Data.key + PointerSize
+	offs_CUtlMap_Data_elem_i32 = view_as<Address>(0x10) + PointerSize; // m_pMemory.m_Data.key + PointerSize
+	offs_CUtlMap_nAllocationCount = PointerSize * view_as<Address>(2);
+	offs_CUtlMap_Root = offs_CUtlMap_nAllocationCount + view_as<Address>(0x04 + 0x04);
+	offs_CUtlMap_NumElements_u16 = offs_CUtlMap_Root + view_as<Address>(0x02);
 
 	offs_CUtlVector_m_size = PointerSize + view_as<Address>(0x04 + 0x04);
 
@@ -361,24 +335,24 @@ public void OnPluginStart() {
 	offs_CProtoBufScriptObjectDefinitionManager_PaintList =
 			GameConfGetAddressOffset(hGameConf,
 			"CProtoBufScriptObjectDefinitionManager::m_PaintList");
-	sizeof_m_pMemory_DefinitionMap_t = offs_CUtlMap_m_Tree_m_Elements_m_pMemory_m_Data_elem_u16 + PointerSize;
+	sizeof_m_pMemory_DefinitionMap_t = offs_CUtlMap_Data_elem_u16 + PointerSize;
 	
 	sizeof_static_attrib_t = GameConfGetAddressOffset(hGameConf, "sizeof(static_attrib_t)");
-	sizeof_m_pMemory_CEconItemAttributeDefinition = offs_CUtlMap_m_Tree_m_Elements_m_pMemory_m_Data_elem_i32
+	sizeof_m_pMemory_CEconItemAttributeDefinition = offs_CUtlMap_Data_elem_i32
 		+ GameConfGetAddressOffset(hGameConf, "sizeof(CEconItemAttributeDefinition)");
 
-	sizeof_m_pMemory_attachedparticlesystem_t = offs_CUtlMap_m_Tree_m_Elements_m_pMemory_m_Data_elem_u16
+	sizeof_m_pMemory_attachedparticlesystem_t = offs_CUtlMap_Data_elem_u16
 		+ GameConfGetAddressOffset(hGameConf, "sizeof(attachedparticlesystem_t)");
 	
-	sizeof_m_pMemory_CEconItemRarityDefinition = offs_CUtlMap_m_Tree_m_Elements_m_pMemory_m_Data_elem_i32
+	sizeof_m_pMemory_CEconItemRarityDefinition = offs_CUtlMap_Data_elem_i32
 		+ GameConfGetAddressOffset(hGameConf, "sizeof(CEconItemRarityDefinition)");
-	sizeof_m_pMemory_CEconItemQualityDefinition = offs_CUtlMap_m_Tree_m_Elements_m_pMemory_m_Data_elem_i32
+	sizeof_m_pMemory_CEconItemQualityDefinition = offs_CUtlMap_Data_elem_i32
 		+ GameConfGetAddressOffset(hGameConf, "sizeof(CEconItemQualityDefinition)");
 
 	offs_MapDef_t_m_nDefIndex = PointerSize * view_as<Address>(3); // + sizeof(CSchemaItemDefHandle)
 
 	sizeof_ItemDefinitionMap_t_Node_t = PointerSize * view_as<Address>(3); // {int, pointer, int}, aligned to PointerSize
-	offs_CEconItemSchema_m_mapItems_m_pMemory_m_iNextNode =  sizeof_ItemDefinitionMap_t_Node_t - PointerSize;
+	offs_CEconItemSchema_iNextNode =  sizeof_ItemDefinitionMap_t_Node_t - PointerSize;
 	
 	
 	delete hGameConf;
@@ -424,7 +398,7 @@ int Native_GetItemList(Handle hPlugin, int nParams) {
 		
 		// I have no idea how this check works but it's also in
 		// CEconItemSchema::GetItemDefinitionByName
-		if (LoadFromAddress(entry + offs_CEconItemSchema_m_mapItems_m_pMemory_m_iNextNode, NumberType_Int32) < -1) {
+		if (LoadFromAddress(entry + offs_CEconItemSchema_iNextNode, NumberType_Int32) < -1) {
 			continue;
 		}
 		
@@ -479,7 +453,7 @@ int Native_GetAttributeList(Handle hPlugin, int nParams) {
 		}
 		
 		Address pAttributeDefinition = pAttributeDataItem
-				+ offs_CUtlMap_m_Tree_m_Elements_m_pMemory_m_Data_elem_i32;
+				+ offs_CUtlMap_Data_elem_i32;
 		int attrdef = LoadFromAddress(
 				pAttributeDefinition + offs_CEconItemAttributeDefinition_iAttributeDefinitionIndex,
 				NumberType_Int16);
