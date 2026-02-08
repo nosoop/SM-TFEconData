@@ -26,18 +26,18 @@ as well as [a WIP plugin that implements the natives from those libraries][econc
 
 ## Development
 
-1.  Ensure you have [ninja][], [Python 3][], and a clean copy of [spcomp][] installed.
-    A "clean" copy is one that has no third-party libraries installed.  I know many
-    developers install stock libraries and such in their main compiler search paths.
-2.  Clone the repository using
+1. Ensure you have [ninja][], [Python 3][], and a clean copy of [spcomp][] installed.
+   A "clean" copy is one that has no third-party libraries installed.  I know many
+   developers install stock libraries and such in their main compiler search paths.
+2. Clone the repository using
 
        git clone --recurse-submodules https://github.com/nosoop/SM-TFEconData.git
 
-    `--recurse-submodules` is important here, as it will download the version of stocksoup that
-    this project is built against.
+   `--recurse-submodules` is important here, as it will download the version of stocksoup that
+   this project is built against.
 
-3.  `python3 configure.py --spcomp-dir /path/to/scripting`
-4.  `ninja` to build.  Outputs are generated in the `build` directory.
+3. `python3 configure.py --spcomp-dir /path/to/scripting`
+4. `ninja` to build.  Outputs are generated in the `build` directory.
 
 [ninja]: https://github.com/ninja-build/ninja/wiki/Pre-built-Ninja-packages
 [Python 3]: https://www.python.org/downloads/
