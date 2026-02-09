@@ -232,7 +232,7 @@ int Native_GetItemStaticAttributes(Handle hPlugin, int nParams) {
 	int nAttribs = LoadFromAddress(
 			pItemDef + offs_CEconItemDefinition_AttributeList + offs_CUtlVector_m_size,
 			NumberType_Int32);
-	Address pAttribList = LoadAddressFromAddress(pItemDef + offs_CEconItemDefinition_AttributeList);
+	Address pAttribList = pItemDef + offs_CEconItemDefinition_AttributeList;
 	
 	// struct { attribute_defindex, value } // (TF2)
 	ArrayList attributeList = new ArrayList(2, nAttribs);
