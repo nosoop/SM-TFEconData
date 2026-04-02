@@ -61,7 +61,7 @@ static bool TranslateLoadoutSlotIndexToName(int index, char[] buffer, int maxlen
 	 * memory then do an array access
 	 */
 	Address pItemSlotData = LoadAddressFromAddress(pItemSlotNames);
-	Address pItemSlotEntry = LoadAddressFromAddress(pItemSlotData + view_as<Address>(index) * PointerSize);
+	Address pItemSlotEntry = LoadAddressFromAddress(pItemSlotData + (index * Address_PointerSize));
 	
 	bool bNull;
 	LoadStringFromAddress(pItemSlotEntry, buffer, maxlen, bNull);
