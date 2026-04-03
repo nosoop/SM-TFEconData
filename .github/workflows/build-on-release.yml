@@ -5,6 +5,9 @@ on:
   release:
     types: [published]
 
+env:
+  SOURCEMOD_PACKAGE_URL: "https://github.com/alliedmodders/sourcemod/releases/download/1.13.0.7316/sourcemod-1.13.0-git7316-linux.tar.gz"
+
 jobs:
   run:
     name: Build Release Package
@@ -16,10 +19,10 @@ jobs:
         submodules: true
 
     - name: Setup SourcePawn Compiler
-      uses: rumblefrog/setup-sp@v1.2.1
-      with:
-        version: "1.13.x"
-        no-spcomp-proxy: true
+      run: |
+        mkdir "smpkg"
+        curl -L "${SOURCEMOD_PACKAGE_URL}" | tar -C "smpkg" -xzf - addons/sourcemod/scripting
+        echo "$(realpath smpkg/addons/sourcemod/scripting)" >> "$GITHUB_PATH"
 
     - name: Setup Ninja Build
       uses: ashutoshvarma/setup-ninja@master
