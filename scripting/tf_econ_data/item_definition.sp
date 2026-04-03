@@ -98,7 +98,7 @@ int Native_GetItemSlot(Handle hPlugin, int nParams) {
 	}
 	
 	return LoadFromAddress(pItemDef + offs_CEconItemDefinition_aiItemSlot +
-			view_as<Address>(playerClass * 4), NumberType_Int32);
+			(playerClass * 4), NumberType_Int32);
 }
 
 /**
@@ -240,7 +240,7 @@ int Native_GetItemStaticAttributes(Handle hPlugin, int nParams) {
 
 	for (int i; i < nAttribs; i++) {
 		Address pStaticAttrib = pAttribList
-				+ view_as<Address>(i * view_as<int>(sizeof_static_attrib_t));
+				+ (i * sizeof_static_attrib_t);
 		
 		int attrIndex = LoadFromAddress(pStaticAttrib, NumberType_Int16);
 
@@ -252,9 +252,13 @@ int Native_GetItemStaticAttributes(Handle hPlugin, int nParams) {
 			g_imapAttrIsNetworked.SetValue(attrIndex, bNetworked);
 		}
 
-		any attrValue = bNetworked // union attribute_data_union_t {float asFloat; uint32 asUint32; byte *asBlobPointer;}
-				? LoadFromAddress(pStaticAttrib + PointerSize, NumberType_Int32)
-				: LoadAddressFromAddress(pStaticAttrib + PointerSize);
+		int attrValue;
+		if (!bNetworked) {
+			attrValue = view_as<int>(LoadAddressFromAddress(pStaticAttrib + Address_PointerSize));
+		} else {
+			int val = LoadFromAddress(pStaticAttrib + Address_PointerSize, NumberType_Int32);
+			attrValue = val;
+		}
 		
 		attributeList.Set(i, attrIndex, 0);
 		attributeList.Set(i, attrValue, 1);

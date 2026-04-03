@@ -8,11 +8,11 @@ Address offs_CEconItemSchema_EquipRegions;
 /**
  * I'm not going to bother putting these in gamedata for now.  It's a struct.
  */
-Address offs_CEconItemSchema_EquipRegion_pszName = view_as<Address>(0x00),
+Address offs_CEconItemSchema_EquipRegion_pszName = 0x00,
 		offs_CEconItemSchema_EquipRegion_iGroup, // 4/8 (0x04/0x08)
 		offs_CEconItemSchema_EquipRegion_bitsRegionMask; // 8/12 (0x08/0x0C)
 
-int sizeof_EquipRegion; // 12/16 (0x0C/0x10)
+Address sizeof_EquipRegion; // 12/16 (0x0C/0x10)
 
 /**
  * native StringMap<int>();
@@ -37,7 +37,7 @@ int Native_GetEquipRegionGroups(Handle hPlugin, int nParams) {
 	for (int i; i < nEquipRegions; i++) {
 		char equipRegion[32];
 		
-		Address pEquipRegionEntry = pEquipRegionData + view_as<Address>(i * sizeof_EquipRegion);
+		Address pEquipRegionEntry = pEquipRegionData + (i * sizeof_EquipRegion);
 		Address pName = LoadAddressFromAddress(
 				pEquipRegionEntry + offs_CEconItemSchema_EquipRegion_pszName);
 		LoadStringFromAddress(pName, equipRegion, sizeof(equipRegion));
@@ -78,7 +78,7 @@ int Native_GetEquipRegionMask(Handle hPlugin, int nParams) {
 	for (int i; i < nEquipRegions; i++) {
 		char equipRegion[64];
 		
-		Address pEquipRegionEntry = pEquipRegionData + view_as<Address>(i * sizeof_EquipRegion);
+		Address pEquipRegionEntry = pEquipRegionData + (i * sizeof_EquipRegion);
 		Address pName = LoadAddressFromAddress(
 				pEquipRegionEntry + offs_CEconItemSchema_EquipRegion_pszName);
 		LoadStringFromAddress(pName, equipRegion, sizeof(equipRegion));

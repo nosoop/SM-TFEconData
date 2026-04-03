@@ -136,7 +136,7 @@ static Address GetEconQualityDefinitionFromMemoryIndex(int index) {
 	 * CEconItemQualityDefinition::BInitFromKV() within CEconItemSchema::BInitQualities().
 	 */
 	return LoadAddressFromAddress(GetEconQualityDefinitionTree() + offs_CUtlMap_pMemory)
-			+ view_as<Address>((index)) * sizeof_m_pMemory_CEconItemQualityDefinition
+			+ (index * sizeof_m_pMemory_CEconItemQualityDefinition)
 			+ offs_CUtlMap_Data_elem_i32; // m_Data_elem + 0 CEconItemQualityDefinition::m_nValue
 }
 

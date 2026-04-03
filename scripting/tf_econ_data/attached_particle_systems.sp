@@ -64,7 +64,7 @@ static ArrayList GetParticleAttributeList(TFEconParticleSet particleSet) {
 	
 	ArrayList list = new ArrayList();
 	for (int i; i < nParticles; i++) {
-		Address pParticleID = pParticleData + view_as<Address>(i * 0x04); // CUtlVector< int >
+		Address pParticleID = pParticleData + (i * 0x04); // CUtlVector< int >
 		int value = LoadFromAddress(pParticleID, NumberType_Int32);
 		list.Push(value);
 	}
@@ -195,10 +195,10 @@ static int GetParticleSystemTreeElement(int index, TreeElement elem) {
 			return LoadFromAddress(pTree, NumberType_Int16);
 		}
 		case Tree_RightChild: {
-			return LoadFromAddress(pTree + view_as<Address>(0x02), NumberType_Int16);
+			return LoadFromAddress(pTree + 0x02, NumberType_Int16);
 		}
 		case Tree_Parent: {
-			return LoadFromAddress(pTree + view_as<Address>(0x04), NumberType_Int16);
+			return LoadFromAddress(pTree + 0x04, NumberType_Int16);
 		}
 	}
 	return 0xFFFF;
@@ -213,7 +213,7 @@ static bool IsParticleSystemRightChild(int index) {
 static Address GetAttachedParticleSystemEntry(int index) {
 	Address pParticleSystemTree = GetParticleSystemTree();
 	Address pParticleData = LoadAddressFromAddress(pParticleSystemTree + offs_CUtlMap_pMemory);
-	return pParticleData + view_as<Address>(index) * sizeof_m_pMemory_attachedparticlesystem_t;
+	return pParticleData + (index * sizeof_m_pMemory_attachedparticlesystem_t);
 }
 
 static Address GetParticleSystemTree() {

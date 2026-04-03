@@ -7,7 +7,6 @@
 #include <sourcemod>
 
 #include <sdktools>
-#include <virtual_address>
 
 #pragma newdecls required
 
@@ -157,40 +156,40 @@ public void OnPluginStart() {
 	
 	StartPrepSDKCall(SDKCall_Static);
 	PrepSDKCall_SetFromConf(hGameConf, SDKConf_Signature, "GEconItemSchema()");
-	PrepSDKCall_SetReturnInfo(SDKType_VirtualAddress, SDKPass_Plain);	//Returns address of CEconItemSchema
+	PrepSDKCall_SetReturnInfo(SDKType_Address, SDKPass_Plain);	//Returns address of CEconItemSchema
 	g_SDKCallGetEconItemSchema = EndPrepSDKCall();
 	
-	StartPrepSDKCall(SDKCall_VirtualAddress);
+	StartPrepSDKCall(SDKCall_Raw);
 	PrepSDKCall_SetFromConf(hGameConf, SDKConf_Signature,
 			"CEconItemSchema::GetItemDefinition()");
-	PrepSDKCall_SetReturnInfo(SDKType_VirtualAddress, SDKPass_Plain);	//Returns address of a CEconItemDefinition
+	PrepSDKCall_SetReturnInfo(SDKType_Address, SDKPass_Plain);	//Returns address of a CEconItemDefinition
 	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);		//int iItemIndex
 	g_SDKCallSchemaGetItemDefinition = EndPrepSDKCall();
 	
-	StartPrepSDKCall(SDKCall_VirtualAddress);
+	StartPrepSDKCall(SDKCall_Raw);
 	PrepSDKCall_SetFromConf(hGameConf, SDKConf_Signature,
 			"CEconItemSchema::GetAttributeDefinition()");
-	PrepSDKCall_SetReturnInfo(SDKType_VirtualAddress, SDKPass_Plain);	//Returns address of a CEconItemAttributeDefinition
+	PrepSDKCall_SetReturnInfo(SDKType_Address, SDKPass_Plain);	//Returns address of a CEconItemAttributeDefinition
 	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);		//int iAttribIndex
 	g_SDKCallSchemaGetAttributeDefinition = EndPrepSDKCall();
 	
-	StartPrepSDKCall(SDKCall_VirtualAddress);
+	StartPrepSDKCall(SDKCall_Raw);
 	PrepSDKCall_SetFromConf(hGameConf, SDKConf_Signature,
 			"CEconItemSchema::GetAttributeDefinitionByName()");
-	PrepSDKCall_SetReturnInfo(SDKType_VirtualAddress, SDKPass_Plain);	//Returns address of a CEconItemAttributeDefinition
+	PrepSDKCall_SetReturnInfo(SDKType_Address, SDKPass_Plain);	//Returns address of a CEconItemAttributeDefinition
 	PrepSDKCall_AddParameter(SDKType_String, SDKPass_Pointer);			//const char *pszDefName
 	g_SDKCallSchemaGetAttributeDefinitionByName = EndPrepSDKCall();
 
-	StartPrepSDKCall(SDKCall_VirtualAddress); // attr_type
+	StartPrepSDKCall(SDKCall_Raw); // attr_type
 	PrepSDKCall_SetFromConf(hGameConf, SDKConf_Virtual,
 			"ISchemaAttributeTypeBase::BSupportsGame..."); // 64 chars ought to be enough for anyone -- dvander, probably
 	PrepSDKCall_SetReturnInfo(SDKType_Bool, SDKPass_Plain);
 	g_SDKCallAttributeTypeCanBeNetworked = EndPrepSDKCall();
 	
-	StartPrepSDKCall(SDKCall_VirtualAddress);
+	StartPrepSDKCall(SDKCall_Raw);
 	PrepSDKCall_SetFromConf(hGameConf, SDKConf_Signature,
 			"CTFItemSchema::GetMasterMapDefByName()");
-	PrepSDKCall_SetReturnInfo(SDKType_VirtualAddress, SDKPass_Plain);	//Returns address of a MapDef_t
+	PrepSDKCall_SetReturnInfo(SDKType_Address, SDKPass_Plain);	//Returns address of a MapDef_t
 	PrepSDKCall_AddParameter(SDKType_String, SDKPass_Pointer);			//const char *pszSearchName
 	g_SDKCallGetMasterMapDefByName = EndPrepSDKCall();
 
@@ -201,39 +200,39 @@ public void OnPluginStart() {
 	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);		//int iClass
 	g_SDKCallTranslateWeaponEntForClass = EndPrepSDKCall();
 	
-	StartPrepSDKCall(SDKCall_VirtualAddress);
+	StartPrepSDKCall(SDKCall_Raw);
 	PrepSDKCall_SetFromConf(hGameConf, SDKConf_Signature, "KeyValues::GetString()");
 	PrepSDKCall_SetReturnInfo(SDKType_String, SDKPass_Pointer);
 	PrepSDKCall_AddParameter(SDKType_String, SDKPass_Pointer);			//const char *keyName
 	PrepSDKCall_AddParameter(SDKType_String, SDKPass_Pointer);			//const char *defaultValue
 	g_SDKCallGetKeyValuesString = EndPrepSDKCall();
 	
-	StartPrepSDKCall(SDKCall_VirtualAddress);
+	StartPrepSDKCall(SDKCall_Raw);
 	PrepSDKCall_SetFromConf(hGameConf, SDKConf_Signature, "KeyValues::FindKey()");
-	PrepSDKCall_SetReturnInfo(SDKType_VirtualAddress, SDKPass_Plain);	//Returns address of KeyValues
+	PrepSDKCall_SetReturnInfo(SDKType_Address, SDKPass_Plain);	//Returns address of KeyValues
 	PrepSDKCall_AddParameter(SDKType_String, SDKPass_Pointer);			//const char *keyName
 	PrepSDKCall_AddParameter(SDKType_Bool, SDKPass_Plain);				//bool bCreate
 	g_SDKCallGetKeyValuesFindKey = EndPrepSDKCall();
 	
 	StartPrepSDKCall(SDKCall_Static);
 	PrepSDKCall_SetFromConf(hGameConf, SDKConf_Signature, "GetProtoScriptObjDefManager()");
-	PrepSDKCall_SetReturnInfo(SDKType_VirtualAddress, SDKPass_Plain);	//Returns address of CProtoBufScriptObjectDefinitionManager
+	PrepSDKCall_SetReturnInfo(SDKType_Address, SDKPass_Plain);	//Returns address of CProtoBufScriptObjectDefinitionManager
 	g_SDKCallGetProtoDefManager = EndPrepSDKCall();
 	
-	StartPrepSDKCall(SDKCall_VirtualAddress);
+	StartPrepSDKCall(SDKCall_Raw);
 	PrepSDKCall_SetFromConf(hGameConf, SDKConf_Signature,
 			"IProtoBufScriptObjectDefinition::GetDefIndex()");
 	PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);		//Returns uint32
 	g_SDKCallGetProtoDefIndex = EndPrepSDKCall();
 
-	offs_CUtlMap_pMemory = PointerSize;
-	offs_CUtlMap_Data_elem_u16 = view_as<Address>(0x08) + PointerSize; // m_pMemory.m_Data.key + PointerSize
-	offs_CUtlMap_Data_elem_i32 = view_as<Address>(0x10) + PointerSize; // m_pMemory.m_Data.key + PointerSize
-	offs_CUtlMap_nAllocationCount = PointerSize * view_as<Address>(2);
-	offs_CUtlMap_Root = offs_CUtlMap_nAllocationCount + view_as<Address>(0x04 + 0x04);
-	offs_CUtlMap_NumElements_u16 = offs_CUtlMap_Root + view_as<Address>(0x02);
+	offs_CUtlMap_pMemory = Address_PointerSize;
+	offs_CUtlMap_Data_elem_u16 = 0x08 + Address_PointerSize; // m_pMemory.m_Data.key + Address_PointerSize
+	offs_CUtlMap_Data_elem_i32 = 0x10 + Address_PointerSize; // m_pMemory.m_Data.key + Address_PointerSize
+	offs_CUtlMap_nAllocationCount = Address_PointerSize * 2;
+	offs_CUtlMap_Root = offs_CUtlMap_nAllocationCount + 0x04 + 0x04;
+	offs_CUtlMap_NumElements_u16 = offs_CUtlMap_Root + 0x02;
 
-	offs_CUtlVector_m_size = PointerSize + view_as<Address>(0x04 + 0x04);
+	offs_CUtlVector_m_size = Address_PointerSize + 0x04 + 0x04;
 
 	offs_CEconItemDefinition_pKeyValues =
 			GameConfGetAddressOffset(hGameConf, "CEconItemDefinition::m_pKeyValues");
@@ -282,9 +281,9 @@ public void OnPluginStart() {
 			GameConfGetAddressOffset(hGameConf, "CEconItemSchema::m_AttributeMap");
 	offs_CEconItemSchema_EquipRegions =
 			GameConfGetAddressOffset(hGameConf, "CEconItemSchema::m_EquipRegions");
-	offs_CEconItemSchema_EquipRegion_iGroup = PointerSize;
-	offs_CEconItemSchema_EquipRegion_bitsRegionMask = offs_CEconItemSchema_EquipRegion_iGroup + view_as<Address>(0x04);
-	sizeof_EquipRegion = offs_CEconItemSchema_EquipRegion_bitsRegionMask + view_as<Address>(0x04);
+	offs_CEconItemSchema_EquipRegion_iGroup = Address_PointerSize;
+	offs_CEconItemSchema_EquipRegion_bitsRegionMask = offs_CEconItemSchema_EquipRegion_iGroup + 0x04;
+	sizeof_EquipRegion = offs_CEconItemSchema_EquipRegion_bitsRegionMask + 0x04;
 
 	offs_CEconItemSchema_ParticleSystemTree =
 			GameConfGetAddressOffset(hGameConf, "CEconItemSchema::m_mapAttributeControlledParticleSystems");
@@ -335,7 +334,7 @@ public void OnPluginStart() {
 	offs_CProtoBufScriptObjectDefinitionManager_PaintList =
 			GameConfGetAddressOffset(hGameConf,
 			"CProtoBufScriptObjectDefinitionManager::m_PaintList");
-	sizeof_m_pMemory_DefinitionMap_t = offs_CUtlMap_Data_elem_u16 + PointerSize;
+	sizeof_m_pMemory_DefinitionMap_t = offs_CUtlMap_Data_elem_u16 + Address_PointerSize;
 	
 	sizeof_static_attrib_t = GameConfGetAddressOffset(hGameConf, "sizeof(static_attrib_t)");
 	sizeof_m_pMemory_CEconItemAttributeDefinition = offs_CUtlMap_Data_elem_i32
@@ -349,10 +348,10 @@ public void OnPluginStart() {
 	sizeof_m_pMemory_CEconItemQualityDefinition = offs_CUtlMap_Data_elem_i32
 		+ GameConfGetAddressOffset(hGameConf, "sizeof(CEconItemQualityDefinition)");
 
-	offs_MapDef_t_m_nDefIndex = PointerSize * view_as<Address>(3); // + sizeof(CSchemaItemDefHandle)
+	offs_MapDef_t_m_nDefIndex = (Address_PointerSize * 3); // + sizeof(CSchemaItemDefHandle)
 
-	sizeof_ItemDefinitionMap_t_Node_t = PointerSize * view_as<Address>(3); // {int, pointer, int}, aligned to PointerSize
-	offs_CEconItemSchema_iNextNode =  sizeof_ItemDefinitionMap_t_Node_t - PointerSize;
+	sizeof_ItemDefinitionMap_t_Node_t = (Address_PointerSize * 3); // {int, pointer, int}, aligned to Address_PointerSize
+	offs_CEconItemSchema_iNextNode =  sizeof_ItemDefinitionMap_t_Node_t - Address_PointerSize;
 	
 	
 	delete hGameConf;
@@ -394,7 +393,7 @@ int Native_GetItemList(Handle hPlugin, int nParams) {
 			NumberType_Int32);
 	for (int i = 0; i < nItemDefs; i++) {
 		Address entry = LoadAddressFromAddress(pSchema + offs_CEconItemSchema_ItemList) // m_ItemList.m_memNodes.m_pMemory
-				+ view_as<Address>(i) * sizeof_ItemDefinitionMap_t_Node_t;
+				+ (i * sizeof_ItemDefinitionMap_t_Node_t);
 		
 		// I have no idea how this check works but it's also in
 		// CEconItemSchema::GetItemDefinitionByName
@@ -436,14 +435,14 @@ int Native_GetAttributeList(Handle hPlugin, int nParams) {
 	
 	// this implements FOR_EACH_MAP_FAST
 	int nAttributeCapacity = LoadFromAddress(
-			pSchema + offs_CEconItemSchema_AttributeMap + PointerSize, // m_mapAttributes.m_Tree.m_Elements.m_pMemory + 4/8
+			pSchema + offs_CEconItemSchema_AttributeMap + Address_PointerSize, // m_mapAttributes.m_Tree.m_Elements.m_pMemory + 4/8
 			NumberType_Int32); // m_mapAttributes.m_Tree.m_Elements.m_nAllocationCount
 	
 	// CUtlMap<int, CEconItemAttributeDefinition, int >	m_mapAttributes;
 	Address pAttributeData = LoadAddressFromAddress(pSchema + offs_CEconItemSchema_AttributeMap); // m_mapAttributes.m_Tree.m_Elements.m_pMemory
 	for (int i; i < nAttributeCapacity; i++) {
 		Address pAttributeDataItem = pAttributeData
-				+ view_as<Address>(i) * sizeof_m_pMemory_CEconItemAttributeDefinition;
+				+ (i * sizeof_m_pMemory_CEconItemAttributeDefinition);
 		
 		// the struct has 0x14 bytes (ATTRDEF_MAP_OFFSET) preceding the definition
 		// some internal map data
@@ -500,7 +499,8 @@ Address GetEconItemDefinition(int defindex) {
 		return Address_Null;
 	}
 	
-	Address pItemDefinition = SDKCall(g_SDKCallSchemaGetItemDefinition, pSchema, defindex);
+	Address pItemDefinition;
+	SDKCall(g_SDKCallSchemaGetItemDefinition, pItemDefinition, pSchema, defindex);
 	
 	// special case: return default item definition on TF_ITEMDEF_DEFAULT (-1)
 	// otherwise return a valid definition iff not the default
@@ -521,8 +521,11 @@ int Native_GetAttributeDefinitionAddress(Handle hPlugin, int nParams) {
 
 Address GetEconAttributeDefinition(int defindex) {
 	Address pSchema = GetEconItemSchema();
-	return pSchema?
-			SDKCall(g_SDKCallSchemaGetAttributeDefinition, pSchema, defindex) : Address_Null;
+	Address ret = Address_Null;
+	if (pSchema) {
+		SDKCall(g_SDKCallSchemaGetAttributeDefinition, ret, pSchema, defindex);
+	}
+	return ret;
 }
 
 int Native_TranslateAttributeNameToDefinitionIndex(Handle hPlugin, int nParams) {
@@ -543,22 +546,32 @@ int Native_TranslateAttributeNameToDefinitionIndex(Handle hPlugin, int nParams) 
 
 Address GetEconAttributeDefinitionByName(const char[] name) {
 	Address pSchema = GetEconItemSchema();
-	return pSchema?
-			SDKCall(g_SDKCallSchemaGetAttributeDefinitionByName, pSchema, name) : Address_Null;
+	Address ret = Address_Null;
+	if (pSchema) {
+		SDKCall(g_SDKCallSchemaGetAttributeDefinitionByName, ret, pSchema, name);
+	}
+	return ret;
 }
 
 Address GetMapDefinitionByName(const char[] name) {
 	Address pSchema = GetEconItemSchema();
-	return pSchema?
-			SDKCall(g_SDKCallGetMasterMapDefByName, pSchema, name) : Address_Null;
+	Address ret = Address_Null;
+	if (pSchema) {
+		SDKCall(g_SDKCallGetMasterMapDefByName, ret, pSchema, name);
+	}
+	return ret;
 }
 
 Address GetEconItemSchema() {
-	return SDKCall(g_SDKCallGetEconItemSchema);
+	Address ret;
+	SDKCall(g_SDKCallGetEconItemSchema, ret);
+	return ret;
 }
 
 Address GetProtoScriptObjDefManager() {
-	return SDKCall(g_SDKCallGetProtoDefManager);
+	Address ret;
+	SDKCall(g_SDKCallGetProtoDefManager, ret);
+	return ret;
 }
 
 int Native_GetProtoDefManagerAddress(Handle hPlugin, int nParams) {
@@ -584,8 +597,8 @@ bool IsNetworkedRuntimeAttribute(Address pDefType) {
 }
 
 static Address GameConfGetAddressOffset(GameData gamedata, const char[] key) {
-	Address offs = view_as<Address>(gamedata.GetOffset(key));
-	if (offs == view_as<Address>(-1)) {
+	Address offs = gamedata.GetOffset(key);
+	if (offs == -1) {
 		SetFailState("Failed to get member offset %s", key);
 	}
 	return offs;
