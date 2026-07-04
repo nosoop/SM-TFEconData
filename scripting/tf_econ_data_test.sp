@@ -1,7 +1,6 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#include <virtual_address>
 #include <tf_econ_data>
 
 public Plugin myinfo =

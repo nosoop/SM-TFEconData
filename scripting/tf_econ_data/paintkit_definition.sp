@@ -22,20 +22,20 @@ static ArrayList GetValidPaintKitProtoDefs() {
 }
 
 int Native_GetPaintKitDefinitionAddress(Handle hPlugin, int nParams) {
-	int protoDefIndex = GetNativeCell(1);
-	
+	int protoDefIndex = GetNativeCell(2);
+
 	int nPaintsAllocated = GetNumPaintKitsAllocated();
 	for (int i; i < nPaintsAllocated; i++) {
 		Address pPaintKitDefinition = GetPaintKitArrayEntry(i);
 		if (!pPaintKitDefinition) {
-			return view_as<int>(Address_Null);
+			break;
 		}
-		
+
 		if (protoDefIndex == GetProtoDefIndex(pPaintKitDefinition)) {
-			return view_as<int>(pPaintKitDefinition);
+			return ReturnNativeAddress(pPaintKitDefinition);
 		}
 	}
-	return view_as<int>(Address_Null);
+	return ReturnNativeAddress(Address_Null);
 }
 
 /**
