@@ -500,7 +500,7 @@ Address GetEconItemDefinition(int defindex) {
 	}
 	
 	Address pItemDefinition;
-	SDKCall(g_SDKCallSchemaGetItemDefinition, pItemDefinition, pSchema, defindex);
+	SDKCall(g_SDKCallSchemaGetItemDefinition, pSchema, pItemDefinition, defindex);
 	
 	// special case: return default item definition on TF_ITEMDEF_DEFAULT (-1)
 	// otherwise return a valid definition iff not the default
@@ -523,7 +523,7 @@ Address GetEconAttributeDefinition(int defindex) {
 	Address pSchema = GetEconItemSchema();
 	Address ret = Address_Null;
 	if (pSchema) {
-		SDKCall(g_SDKCallSchemaGetAttributeDefinition, ret, pSchema, defindex);
+		SDKCall(g_SDKCallSchemaGetAttributeDefinition, pSchema, ret, defindex);
 	}
 	return ret;
 }
@@ -548,7 +548,7 @@ Address GetEconAttributeDefinitionByName(const char[] name) {
 	Address pSchema = GetEconItemSchema();
 	Address ret = Address_Null;
 	if (pSchema) {
-		SDKCall(g_SDKCallSchemaGetAttributeDefinitionByName, ret, pSchema, name);
+		SDKCall(g_SDKCallSchemaGetAttributeDefinitionByName, pSchema, ret, name);
 	}
 	return ret;
 }
@@ -557,7 +557,7 @@ Address GetMapDefinitionByName(const char[] name) {
 	Address pSchema = GetEconItemSchema();
 	Address ret = Address_Null;
 	if (pSchema) {
-		SDKCall(g_SDKCallGetMasterMapDefByName, ret, pSchema, name);
+		SDKCall(g_SDKCallGetMasterMapDefByName, pSchema, ret, name);
 	}
 	return ret;
 }
