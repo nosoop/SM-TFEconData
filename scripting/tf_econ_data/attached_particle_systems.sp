@@ -124,8 +124,8 @@ int Native_GetParticleAttributeSystemName(Handle hPlugin, int nParams) {
  * Address_Null if invalid.
  */
 int Native_GetParticleAttributeAddress(Handle hPlugin, int nParams) {
-	int attrValue = GetNativeCell(1);
-	return view_as<int>(FindParticleSystemByAttributeValue(attrValue));
+	int attrValue = GetNativeCell(2);
+	return ReturnNativeAddress(FindParticleSystemByAttributeValue(attrValue));
 }
 
 static Address FindParticleSystemByAttributeValue(int attributeValue) {

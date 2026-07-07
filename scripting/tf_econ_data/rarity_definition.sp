@@ -78,8 +78,8 @@ int Native_GetRarityList(Handle hPlugin, int nParams) {
  * native Address<CEconItemRarityDefinition>(int index);
  */
 int Native_GetRarityDefinitionAddress(Handle hPlugin, int nParams) {
-	int value = GetNativeCell(1);
-	return view_as<int>(GetEconRarityDefinition(value));
+	int value = GetNativeCell(2);
+	return ReturnNativeAddress(GetEconRarityDefinition(value));
 }
 
 Address GetEconRarityDefinition(int rarity) {

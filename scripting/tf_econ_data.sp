@@ -480,12 +480,12 @@ int Native_GetAttributeList(Handle hPlugin, int nParams) {
 }
 
 int Native_GetItemSchemaAddress(Handle hPlugin, int nParams) {
-	return view_as<int>(GetEconItemSchema());
+	return ReturnNativeAddress(GetEconItemSchema());
 }
 
 int Native_GetItemDefinitionAddress(Handle hPlugin, int nParams) {
-	int defindex = GetNativeCell(1);
-	return view_as<int>(GetEconItemDefinition(defindex));
+	int defindex = GetNativeCell(2);
+	return ReturnNativeAddress(GetEconItemDefinition(defindex));
 }
 
 bool ValidItemDefIndex(int defindex) {
@@ -500,7 +500,7 @@ Address GetEconItemDefinition(int defindex) {
 	}
 	
 	Address pItemDefinition;
-	SDKCall(g_SDKCallSchemaGetItemDefinition, pItemDefinition, pSchema, defindex);
+	SDKCall(g_SDKCallSchemaGetItemDefinition, pSchema, pItemDefinition, defindex);
 	
 	// special case: return default item definition on TF_ITEMDEF_DEFAULT (-1)
 	// otherwise return a valid definition iff not the default
@@ -515,15 +515,15 @@ static Address GetEconDefaultItemDefinition() {
 }
 
 int Native_GetAttributeDefinitionAddress(Handle hPlugin, int nParams) {
-	int defindex = GetNativeCell(1);
-	return view_as<int>(GetEconAttributeDefinition(defindex));
+	int defindex = GetNativeCell(2);
+	return ReturnNativeAddress(GetEconAttributeDefinition(defindex));
 }
 
 Address GetEconAttributeDefinition(int defindex) {
 	Address pSchema = GetEconItemSchema();
 	Address ret = Address_Null;
 	if (pSchema) {
-		SDKCall(g_SDKCallSchemaGetAttributeDefinition, ret, pSchema, defindex);
+		SDKCall(g_SDKCallSchemaGetAttributeDefinition, pSchema, ret, defindex);
 	}
 	return ret;
 }
@@ -548,7 +548,7 @@ Address GetEconAttributeDefinitionByName(const char[] name) {
 	Address pSchema = GetEconItemSchema();
 	Address ret = Address_Null;
 	if (pSchema) {
-		SDKCall(g_SDKCallSchemaGetAttributeDefinitionByName, ret, pSchema, name);
+		SDKCall(g_SDKCallSchemaGetAttributeDefinitionByName, pSchema, ret, name);
 	}
 	return ret;
 }
@@ -557,7 +557,7 @@ Address GetMapDefinitionByName(const char[] name) {
 	Address pSchema = GetEconItemSchema();
 	Address ret = Address_Null;
 	if (pSchema) {
-		SDKCall(g_SDKCallGetMasterMapDefByName, ret, pSchema, name);
+		SDKCall(g_SDKCallGetMasterMapDefByName, pSchema, ret, name);
 	}
 	return ret;
 }
@@ -575,7 +575,7 @@ Address GetProtoScriptObjDefManager() {
 }
 
 int Native_GetProtoDefManagerAddress(Handle hPlugin, int nParams) {
-	return view_as<int>(GetProtoScriptObjDefManager());
+	return ReturnNativeAddress(GetProtoScriptObjDefManager());
 }
 
 int GetProtoDefIndex(Address pProtoDefinition) {
@@ -594,6 +594,14 @@ static bool TranslateWeaponEntForClass(char[] buffer, int maxlen, int playerClas
  */
 bool IsNetworkedRuntimeAttribute(Address pDefType) {
 	return SDKCall(g_SDKCallAttributeTypeCanBeNetworked, pDefType);
+}
+
+int ReturnNativeAddress(Address value) {
+	int result[2];
+	result[0] = view_as<int>(value);
+	result[1] = view_as<int>(value >> 32);
+	SetNativeArray(1, result, 2);
+	return view_as<int>(value);
 }
 
 static Address GameConfGetAddressOffset(GameData gamedata, const char[] key) {
