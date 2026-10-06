@@ -444,7 +444,7 @@
 				"linux"		"944"
 				"windows"	"944"
 				"linux64"	"1272"
-				"windows64"	"1224"
+				"windows64"	"1272"
 			}
 			"CEconItemSchema::m_WeaponUnusualEffectList"
 			{
@@ -453,7 +453,7 @@
 				"linux"		"964"
 				"windows"	"964"
 				"linux64"	"1304"
-				"windows64"	"1256"
+				"windows64"	"1304"
 			}
 			"CEconItemSchema::m_TauntUnusualEffectList"
 			{
@@ -462,7 +462,7 @@
 				"linux"		"984"
 				"windows"	"984"
 				"linux64"	"1336"
-				"windows64"	"1288"
+				"windows64"	"1336"
 			}
 			
 			"CTFItemSchema::m_ItemSlotNames"
@@ -473,7 +473,7 @@
 				"linux"		"1468"
 				"windows"	"1468"
 				"linux64"	"2016"
-				"windows64"	"1968"
+				"windows64"	"2016"
 			}
 			
 			// attachedparticlesystem_t is initialized in CEconItemSchema::BInitAttributeControlledParticleSystems()
