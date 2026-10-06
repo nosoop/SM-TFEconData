@@ -43,7 +43,7 @@
 				"linux"				"@_ZN15CEconItemSchema28GetAttributeDefinitionByNameEPKc"
 				"linux64"			"@_ZN15CEconItemSchema28GetAttributeDefinitionByNameEPKc"
 				"windows"			"\x55\x8B\xEC\x8B\x45\x08\x56\x8B\xF1\x57\x85\xC0"
-				"windows64"			"\x40\x55\x56\x48\x83\xEC\x78"
+				"windows64"			"\x40\x53\x48\x83\xEC\x20\x48\x8B\xD9\x48\x85\xD2\x74\x2A\x48\x81\xC1\x80\x02\x00\x00"
 			}
 			"CTFItemSchema::GetMasterMapDefByName()"
 			{
@@ -414,7 +414,7 @@
 				"linux"		"1004"
 				"windows"	"1004"
 				"linux64"	"1368"
-				"windows64"	"1320"
+				"windows64"	"1368"
 			}
 			"CEconItemSchema::m_mapAttributeControlledParticleSystems"
 			{
@@ -422,9 +422,9 @@
 				// CUtlMap<int, attachedparticlesystem_t > using unsigned short indexes
 				// can be validated on linux as being the first add/lea offset at the start of ::BInitAttributeControlledParticleSystems()
 				"linux"		"916"
-				"windows"	"880"
+				"windows"	"916"
 				"linux64"	"1232"
-				"windows64"	"1184"
+				"windows64"	"1232"
 			}
 			"CEconItemSchema::m_ParticleSystemTree"
 			{
