@@ -35,14 +35,14 @@
 				// has unique x-ref string "CEconItemSchema::GetAttributeDefinitionByName", even on Windows
 				"library"			"server"
 				"linux"				"@_ZN15CEconItemSchema28GetAttributeDefinitionByNameEPKc"
-				"windows"			"\x55\x8B\xEC\x83\xEC\x1C\x83\x7D\x08\x00"
+				"windows"			"\x55\x8B\xEC\x8B\x45\x08\x56\x8B\xF1\x57\x85\xC0"
 			}
 			"CTFItemSchema::GetMasterMapDefByName()"
 			{
 				// called in block containing xref "Invalid NextMap list, substituting current map"
 				"library"	"server"
 				"linux"		"@_ZNK13CTFItemSchema21GetMasterMapDefByNameEPKc"
-				"windows"	"\x55\x8B\xEC\x53\x56\x57\x8B\xF9\x33\xF6\x39\xB7\x60\x06\x00\x00"
+				"windows"	"\x55\x8B\xEC\x53\x56\x57\x8B\xF9\x33\xF6\x39\xB7\x84\x06\x00\x00"
 			}
 			"TranslateWeaponEntForClass()"
 			{
@@ -275,50 +275,50 @@
 			"CEconItemSchema::m_AttributeMap"
 			{
 				// accessed in loop at CEconItemSchema::GetAttributeDefinitionByName
-				"linux"		"448"
-				"windows"	"448"
+				"linux"		"484"
+				"windows"	"484"
 			}
 			"CEconItemSchema::m_EquipRegions"
 			{
 				// the smaller of the two offsets in CEconItemSchema::GetEquipRegionIndexByName()
-				"linux"		"968"
-				"windows"	"968"
+				"linux"		"1004"
+				"windows"	"1004"
 			}
 			"CEconItemSchema::m_ParticleSystemTree"
 			{
 				// a CUtlRBTree instance
 				// the underlying map's ::Insert function is accessed close to the end of ::BInitAttributeControlledParticleSystems()
 				// subtract by 4 to get the offset of the CUtlRBTree itself
-				"linux"		"876"
-				"windows"	"876"
+				"linux"		"912"
+				"windows"	"912"
 			}
 			"CEconItemSchema::m_CosmeticUnusualEffectList"
 			{
 				// a CUtlVector, referenced in CEconItemSchema::BInitAttributeControlledParticleSystems()
 				// we specify the offsets of all three lists in case any offset changes independently
 				// (e.g., Valve adds a new list in between one of the others, for some weird reason)
-				"linux"		"908"
-				"windows"	"908"
+				"linux"		"944"
+				"windows"	"944"
 			}
 			"CEconItemSchema::m_WeaponUnusualEffectList"
 			{
 				// a CUtlVector, referenced in CEconItemSchema::BInitAttributeControlledParticleSystems()
-				"linux"		"928"
-				"windows"	"928"
+				"linux"		"964"
+				"windows"	"964"
 			}
 			"CEconItemSchema::m_TauntUnusualEffectList"
 			{
 				// a CUtlVector, referenced in CEconItemSchema::BInitAttributeControlledParticleSystems()
-				"linux"		"948"
-				"windows"	"948"
+				"linux"		"984"
+				"windows"	"984"
 			}
 			
 			"CTFItemSchema::m_ItemSlotNames"
 			{
 				// used in CTFItemDefinition::BInitFromKV() in the same block that "head" and "misc" are referenced
 				// on Windows, "misc" is a unique subroutine x-ref
-				"linux"		"1432"
-				"windows"	"1432"
+				"linux"		"1468"
+				"windows"	"1468"
 			}
 			
 			// attachedparticlesystem_t is initialized in CEconItemSchema::BInitAttributeControlledParticleSystems()
