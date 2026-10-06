@@ -471,7 +471,7 @@
 				// used in CTFItemDefinition::BInitFromKV() in the same block that "head" and "misc" are referenced
 				// on Windows, "misc" is a unique subroutine x-ref
 				"linux"		"1468"
-        "windows"	"1468"
+				"windows"	"1468"
 				"linux64"	"2016"
 				"windows64"	"1968"
 			}
