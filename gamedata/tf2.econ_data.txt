@@ -413,7 +413,7 @@
 				// the smaller of the two offsets in CEconItemSchema::GetEquipRegionIndexByName()
 				"linux"		"1004"
 				"windows"	"1004"
-				"linux64"	"1320"
+				"linux64"	"1368"
 				"windows64"	"1320"
 			}
 			"CEconItemSchema::m_mapAttributeControlledParticleSystems"
@@ -421,9 +421,9 @@
 				// CEconItemSchema::m_mapAttributeControlledParticleSystems
 				// CUtlMap<int, attachedparticlesystem_t > using unsigned short indexes
 				// can be validated on linux as being the first add/lea offset at the start of ::BInitAttributeControlledParticleSystems()
-				"linux"		"880"
+				"linux"		"916"
 				"windows"	"880"
-				"linux64"	"1184"
+				"linux64"	"1232"
 				"windows64"	"1184"
 			}
 			"CEconItemSchema::m_ParticleSystemTree"
@@ -443,7 +443,7 @@
 				// (e.g., Valve adds a new list in between one of the others, for some weird reason)
 				"linux"		"944"
 				"windows"	"944"
-				"linux64"	"1224"
+				"linux64"	"1272"
 				"windows64"	"1224"
 			}
 			"CEconItemSchema::m_WeaponUnusualEffectList"
@@ -452,7 +452,7 @@
 				// a CUtlVector, referenced in CEconItemSchema::BInitAttributeControlledParticleSystems()
 				"linux"		"964"
 				"windows"	"964"
-				"linux64"	"1256"
+				"linux64"	"1304"
 				"windows64"	"1256"
 			}
 			"CEconItemSchema::m_TauntUnusualEffectList"
@@ -461,7 +461,7 @@
 				// a CUtlVector, referenced in CEconItemSchema::BInitAttributeControlledParticleSystems()
 				"linux"		"984"
 				"windows"	"984"
-				"linux64"	"1288"
+				"linux64"	"1336"
 				"windows64"	"1288"
 			}
 			
@@ -472,7 +472,7 @@
 				// on Windows, "misc" is a unique subroutine x-ref
 				"linux"		"1468"
 				"windows"	"1468"
-				"linux64"	"1968"
+				"linux64"	"2016"
 				"windows64"	"1968"
 			}
 			
