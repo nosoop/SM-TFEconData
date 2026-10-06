@@ -411,9 +411,9 @@
 			{
 				// CEconItemSchema::m_vecEquipRegionsList
 				// the smaller of the two offsets in CEconItemSchema::GetEquipRegionIndexByName()
-				"linux"		"968"
+				"linux"		"1004"
 				"windows"	"968"
-				"linux64"	"1320"
+				"linux64"	"1368"
 				"windows64"	"1320"
 			}
 			"CEconItemSchema::m_mapAttributeControlledParticleSystems"
@@ -421,9 +421,9 @@
 				// CEconItemSchema::m_mapAttributeControlledParticleSystems
 				// CUtlMap<int, attachedparticlesystem_t > using unsigned short indexes
 				// can be validated on linux as being the first add/lea offset at the start of ::BInitAttributeControlledParticleSystems()
-				"linux"		"880"
+				"linux"		"916"
 				"windows"	"880"
-				"linux64"	"1184"
+				"linux64"	"1232"
 				"windows64"	"1184"
 			}
 			"CEconItemSchema::m_ParticleSystemTree"
@@ -432,7 +432,7 @@
 				// a CUtlRBTree instance
 				// the underlying map's ::Insert function is accessed close to the end of ::BInitAttributeControlledParticleSystems()
 				// subtract by 4 to get the offset of the CUtlRBTree itself
-				"linux"		"876"
+				"linux"		"912"
 				"windows"	"876"
 			}
 			"CEconItemSchema::m_CosmeticUnusualEffectList"
@@ -441,27 +441,27 @@
 				// a CUtlVector, referenced in CEconItemSchema::BInitAttributeControlledParticleSystems()
 				// we specify the offsets of all three lists in case any offset changes independently
 				// (e.g., Valve adds a new list in between one of the others, for some weird reason)
-				"linux"		"908"
+				"linux"		"944"
 				"windows"	"908"
-				"linux64"	"1224"
+				"linux64"	"1272"
 				"windows64"	"1224"
 			}
 			"CEconItemSchema::m_WeaponUnusualEffectList"
 			{
 				// CEconItemSchema::m_vecAttributeControlledParticleSystemsWeapons
 				// a CUtlVector, referenced in CEconItemSchema::BInitAttributeControlledParticleSystems()
-				"linux"		"928"
+				"linux"		"964"
 				"windows"	"928"
-				"linux64"	"1256"
+				"linux64"	"1304"
 				"windows64"	"1256"
 			}
 			"CEconItemSchema::m_TauntUnusualEffectList"
 			{
 				// CEconItemSchema::m_vecAttributeControlledParticleSystemsTaunts
 				// a CUtlVector, referenced in CEconItemSchema::BInitAttributeControlledParticleSystems()
-				"linux"		"948"
+				"linux"		"984"
 				"windows"	"948"
-				"linux64"	"1288"
+				"linux64"	"1336"
 				"windows64"	"1288"
 			}
 			
@@ -470,9 +470,9 @@
 				// CTFItemSchema::m_vecClassLoadoutStrings
 				// used in CTFItemDefinition::BInitFromKV() in the same block that "head" and "misc" are referenced
 				// on Windows, "misc" is a unique subroutine x-ref
-				"linux"		"1432"
+				"linux"		"1468"
 				"windows"	"1432"
-				"linux64"	"1968"
+				"linux64"	"2016"
 				"windows64"	"1968"
 			}
 			
