@@ -32,8 +32,8 @@
 				"library"			"server"
 				"linux"				"@_ZN15CEconItemSchema22GetAttributeDefinitionEi"
 				"linux64"			"@_ZN15CEconItemSchema22GetAttributeDefinitionEi"
-				"windows"			"\x55\x8B\xEC\x56\x8B\xF1\x8D\x45\x08\x50\x8D\x8E\xBC\x01\x00\x00"
-				"windows64"			"\x89\x54\x24\x10\x53\x48\x83\xEC\x20\x48\x8B\xD9\x48\x8D\x54\x24\x38\x48\x81\xC1\x50\x02\x00\x00"
+				"windows"			"\x55\x8B\xEC\x8B\x55\x08\x85\xD2\x78\x2A\x3B\x91\x2C\x02\x00\x00\x7D\x2A\x8B\x81\x20\x02\x00\x00\x8B\x04\x90"
+				"windows64"			"\x85\xD2\x78\x2A\x3B\x91\xE8\x02\x00\x00\x7D\x2A\x48\x8B\x81\xD8\x02\x00\x00\x8B\xD2\x48\x8B\x04\xD0"
 			}
 			"CEconItemSchema::GetAttributeDefinitionByName()"
 			{
@@ -43,7 +43,7 @@
 				"linux"				"@_ZN15CEconItemSchema28GetAttributeDefinitionByNameEPKc"
 				"linux64"			"@_ZN15CEconItemSchema28GetAttributeDefinitionByNameEPKc"
 				"windows"			"\x55\x8B\xEC\x8B\x45\x08\x56\x8B\xF1\x57\x85\xC0"
-				"windows64"			"\x40\x53\x48\x83\xEC\x20\x48\x8B\xD9\x48\x85\xD2\x74\x2A\x48\x81\xC1\x80\x02\x00\x00"
+				"windows64"			"\x40\x53\x48\x83\xEC\x20\x48\x8B\xD9\x48\x85\xD2\x74\x2A\x48\x81\xC1\xA8\x02\x00\x00"
 			}
 			"CTFItemSchema::GetMasterMapDefByName()"
 			{
@@ -51,7 +51,7 @@
 				"library"	"server"
 				"linux"		"@_ZNK13CTFItemSchema21GetMasterMapDefByNameEPKc"
 				"linux64"	"@_ZNK13CTFItemSchema21GetMasterMapDefByNameEPKc"
-				"windows"	"\x55\x8B\xEC\x53\x56\x57\x8B\xF9\x33\xF6\x39\xB7\x84\x06\x00\x00"
+				"windows"	"\x55\x8B\xEC\x53\x56\x57\x8B\xF9\x33\xF6\x39\xB7\xB4\x06\x00\x00"
 				"windows64"	"\x48\x89\x5C\x24\x2A\x48\x89\x6C\x24\x2A\x48\x89\x74\x24\x2A\x57\x48\x83\xEC\x2A\x33\xDB\x48\x8B\xEA\x48\x8B\xF9\x39\x99\x2A\x2A\x2A\x2A\x7E\x2A\x0F\x1F\x40\x2A\x0F\x1F\x84\x00\x2A\x2A\x2A\x2A\x48\x8B\x87\x2A\x2A\x2A\x2A\x48\x8D\x34\xDD\x2A\x2A\x2A\x2A\x48\x8B\xD5\x48\x8B\x0C\x06\x48\x8B\x49"
 			}
 			"TranslateWeaponEntForClass()"
@@ -402,29 +402,29 @@
 			{
 				// CEconItemSchema::m_mapAttributes.m_tree.m_pMemory
 				// accessed in loop at CEconItemSchema::GetAttributeDefinitionByName
-				"linux"		"484"
-				"windows"	"484"
-				"linux64"	"600"
-				"windows64"	"600"
+				"linux"		"476"
+				"windows"	"476"
+				"linux64"	"640"
+				"windows64"	"640"
 			}
 			"CEconItemSchema::m_EquipRegions"
 			{
 				// CEconItemSchema::m_vecEquipRegionsList
 				// the smaller of the two offsets in CEconItemSchema::GetEquipRegionIndexByName()
-				"linux"		"1004"
-				"windows"	"1004"
-				"linux64"	"1368"
-				"windows64"	"1368"
+				"linux"		"1052"
+				"windows"	"1052"
+				"linux64"	"1440"
+				"windows64"	"1440"
 			}
 			"CEconItemSchema::m_mapAttributeControlledParticleSystems"
 			{
 				// CEconItemSchema::m_mapAttributeControlledParticleSystems
 				// CUtlMap<int, attachedparticlesystem_t > using unsigned short indexes
 				// can be validated on linux as being the first add/lea offset at the start of ::BInitAttributeControlledParticleSystems()
-				"linux"		"916"
-				"windows"	"916"
-				"linux64"	"1232"
-				"windows64"	"1232"
+				"linux"		"964"
+				"windows"	"964"
+				"linux64"	"1304"
+				"windows64"	"1304"
 			}
 			"CEconItemSchema::m_ParticleSystemTree"
 			{
@@ -432,8 +432,8 @@
 				// a CUtlRBTree instance
 				// the underlying map's ::Insert function is accessed close to the end of ::BInitAttributeControlledParticleSystems()
 				// subtract by 4 to get the offset of the CUtlRBTree itself
-				"linux"		"912"
-				"windows"	"912"
+				"linux"		"960"
+				"windows"	"960"
 			}
 			"CEconItemSchema::m_CosmeticUnusualEffectList"
 			{
@@ -441,28 +441,28 @@
 				// a CUtlVector, referenced in CEconItemSchema::BInitAttributeControlledParticleSystems()
 				// we specify the offsets of all three lists in case any offset changes independently
 				// (e.g., Valve adds a new list in between one of the others, for some weird reason)
-				"linux"		"944"
-				"windows"	"944"
-				"linux64"	"1272"
-				"windows64"	"1272"
+				"linux"		"992"
+				"windows"	"992"
+				"linux64"	"1344"
+				"windows64"	"1344"
 			}
 			"CEconItemSchema::m_WeaponUnusualEffectList"
 			{
 				// CEconItemSchema::m_vecAttributeControlledParticleSystemsWeapons
 				// a CUtlVector, referenced in CEconItemSchema::BInitAttributeControlledParticleSystems()
-				"linux"		"964"
-				"windows"	"964"
-				"linux64"	"1304"
-				"windows64"	"1304"
+				"linux"		"1012"
+				"windows"	"1012"
+				"linux64"	"1376"
+				"windows64"	"1376"
 			}
 			"CEconItemSchema::m_TauntUnusualEffectList"
 			{
 				// CEconItemSchema::m_vecAttributeControlledParticleSystemsTaunts
 				// a CUtlVector, referenced in CEconItemSchema::BInitAttributeControlledParticleSystems()
-				"linux"		"984"
-				"windows"	"984"
-				"linux64"	"1336"
-				"windows64"	"1336"
+				"linux"		"1032"
+				"windows"	"1032"
+				"linux64"	"1408"
+				"windows64"	"1408"
 			}
 			
 			"CTFItemSchema::m_ItemSlotNames"
@@ -470,10 +470,10 @@
 				// CTFItemSchema::m_vecClassLoadoutStrings
 				// used in CTFItemDefinition::BInitFromKV() in the same block that "head" and "misc" are referenced
 				// on Windows, "misc" is a unique subroutine x-ref
-				"linux"		"1468"
-				"windows"	"1468"
-				"linux64"	"2016"
-				"windows64"	"2016"
+				"linux"		"1516"
+				"windows"	"1516"
+				"linux64"	"2088"
+				"windows64"	"2088"
 			}
 			
 			// attachedparticlesystem_t is initialized in CEconItemSchema::BInitAttributeControlledParticleSystems()
